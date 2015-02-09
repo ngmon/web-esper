@@ -1,0 +1,1 @@
+timestamp String, type String, p.value Integer, p.value2 String, hostname String, application String, process String, processId Integer, level Integer, priority Integer
