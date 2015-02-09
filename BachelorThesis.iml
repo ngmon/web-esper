@@ -6,7 +6,6 @@
         <fileset id="fileset" name="Spring Application Context" removed="false">
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/root-context.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml</file>
-          <file>file://$MODULE_DIR$/src/main/java/cz/muni/fgdovin/bachelorthesis/core/EventHandler.java</file>
           <file>file://$MODULE_DIR$/src/main/java/cz/muni/fgdovin/bachelorthesis/Main.java</file>
           <file>file://$MODULE_DIR$/src/main/java/cz/muni/fgdovin/bachelorthesis/rest/JsonApi.java</file>
         </fileset>
