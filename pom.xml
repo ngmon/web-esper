@@ -69,7 +69,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>cz.muni.fgdovin.bachelorthesis.Main</mainClass>
+                            <mainClass>cz.muni.fgdovin.bachelorthesis.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
