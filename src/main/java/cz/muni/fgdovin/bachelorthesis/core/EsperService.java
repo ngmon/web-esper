@@ -4,6 +4,7 @@ import com.espertech.esper.client.EPOnDemandQueryResult;
 
 import com.espertech.esper.client.EPStatement;
 import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
+import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
 
 import java.util.Map;
 
@@ -12,10 +13,11 @@ import java.util.Map;
  */
 public interface EsperService{
     public long returnTime();
-    public EPStatement executeQuery(String statement);
-    public void setAMQPSource(AMQPQueue source);
-    public void setAMQPSink(AMQPQueue sink);
-    public void setEventSchema(String eventName, Map schema);
-    public void removeAMQPSource(AMQPQueue source);
-    public void removeAMQPSink(AMQPQueue sink);
+    public void setQuery(String statement);
+    public void removeQuery();
+    public AMQPQueue setAMQPSource(AMQPQueue source);
+    public AMQPQueue setAMQPSink(AMQPQueue sink);
+    public void setEventSchema(EventSchema schema);
+    public void removeAMQPSource();
+    public void removeAMQPSink();
 }

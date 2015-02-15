@@ -5,7 +5,7 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
-import cz.muni.fgdovin.bachelorthesis.support.CreateEventSchema;
+import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,46 +36,50 @@ public class EsperServiceImpl implements EsperService {
     }
 
     @Override
-    public EPStatement executeQuery(String statement) {
+    public void setQuery(String statement) {
         result = esperServiceProvider.getEPAdministrator().createEPL(statement);
         sourceFlow.start();
-        return result;
     }
 
     @Override
-    public void setAMQPSource(AMQPQueue source) {
+    public void removeQuery() {
+
+    }
+
+    @Override
+    public AMQPQueue setAMQPSource(AMQPQueue source) {
         if (EsperServiceImpl.source == source){
-            return;
+            return null;
         }
         esperServiceProvider.getEPAdministrator().createEPL(source.toString());
         sourceFlow = esperServiceProvider.getEPRuntime().getDataFlowRuntime().instantiate("AMQPIncomingDataFlow");
+        return source;
     }
 
     @Override
-    public void setAMQPSink(AMQPQueue sink) {
+    public AMQPQueue setAMQPSink(AMQPQueue sink) {
         if (EsperServiceImpl.sink == sink){
-            return;
+            return null;
         }
         esperServiceProvider.getEPAdministrator().createEPL(sink.toString());
         esperServiceProvider.getEPRuntime().getDataFlowRuntime().instantiate("AMQPOutcomingDataFlow");
+        return sink;
     }
 
     @Override
-    public void setEventSchema(String eventName, Map schema) {
-        EsperServiceImpl.eventName = eventName;
+    public void setEventSchema(EventSchema input) {
+        EsperServiceImpl.eventName = input.getEventName();
         esperServiceProvider.getEPAdministrator().createEPL("create schema " + eventName
-                + "(" + CreateEventSchema.schemaMapToString(schema)+ ")");
-        EsperServiceImpl.schema = schema;
-        System.out.println(CreateEventSchema.schemaMapToString(schema));
+                + "(" + input.getEventSchema()+ ")");
+        EsperServiceImpl.schema = input.getEventSchemaAsMap();
     }
 
     @Override
-    public void removeAMQPSource(AMQPQueue source) {
+    public void removeAMQPSource() {
     }
 
     @Override
-    public void removeAMQPSink(AMQPQueue sink) {
+    public void removeAMQPSink() {
 
     }
-
 }

@@ -1,12 +1,10 @@
 package cz.muni.fgdovin.bachelorthesis.rest;
 
-import com.espertech.esper.client.EPStatement;
 import cz.muni.fgdovin.bachelorthesis.core.EsperService;
 import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
+import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +23,9 @@ public class JsonApi {
     private static final Logger logger = Logger.getLogger(JsonApi.class);
 
     //here comes API
-    @RequestMapping(value = "/")
+    @RequestMapping(value = URIConstants.CREATE_DUMMY, method = RequestMethod.POST)
     String getDummy() {
         AMQPQueue testInputQueue = new AMQPQueue("myEventType","testQueue", "logs");
-
-        AMQPQueue testOutputQueue = new AMQPQueue("myEventType","testOutputQueue", "sortedLogs");
 
         Map<String, Object> eventSchema = new HashMap<>();
         eventSchema.put("timestamp", "String");
@@ -43,31 +39,71 @@ public class JsonApi {
         eventSchema.put("level", "Integer");
         eventSchema.put("priority", "Integer");
 
+        EventSchema testSchema = new EventSchema("myEventType",eventSchema);
+
         String statement = "select avg(p.value) from myEventType.win:length(8)";
 
-        esperService.setEventSchema("myEventType", eventSchema);
+        esperService.setEventSchema(testSchema);
         esperService.setAMQPSource(testInputQueue);
-        esperService.executeQuery(statement);
+        esperService.setQuery(statement);
 
         return "Ready to consume events";
     }
 
-    @RequestMapping(value = URIConstants.GET_COMMAND, method = RequestMethod.GET)
+    @RequestMapping(value = URIConstants.CREATE_SCHEMA)
     public
     @ResponseBody
-    void getCommand(@PathVariable("id") int commandId) {
+    String createEventSchema(@RequestBody EventSchema input) {
+        esperService.setEventSchema(input);
+        return input.toString();
     }
 
-    @RequestMapping(value = URIConstants.CREATE_COMMAND, method = RequestMethod.POST)
+    @RequestMapping(value = URIConstants.DELETE_SCHEMA)
     public
     @ResponseBody
-    void createCommand(@RequestBody JsonSerializable newCommand) {
-
+    void deleteEventSchema() {
+        esperService.removeAMQPSource();
     }
 
-    @RequestMapping(value = URIConstants.DELETE_COMMAND, method = RequestMethod.PUT)
+    @RequestMapping(value = URIConstants.CREATE_INPUT)
     public
     @ResponseBody
-    void deleteCommand(@PathVariable("id") int commandId) {
+    AMQPQueue createAmqpSource(@RequestBody AMQPQueue newQueue) {
+        return esperService.setAMQPSource(newQueue);
+    }
+
+    @RequestMapping(value = URIConstants.DELETE_INPUT)
+    public
+    @ResponseBody
+    void deleteSource() {
+        esperService.removeAMQPSource();
+    }
+
+    @RequestMapping(value = URIConstants.CREATE_OUTPUT)
+    public
+    @ResponseBody
+    AMQPQueue createAmqpSink(@RequestBody AMQPQueue newQueue) {
+        return esperService.setAMQPSink(newQueue);
+    }
+
+    @RequestMapping(value = URIConstants.DELETE_OUTPUT)
+    public
+    @ResponseBody
+    void deleteSink() {
+        esperService.removeAMQPSink();
+    }
+
+    @RequestMapping(value = URIConstants.CREATE_STAT)
+    public
+    @ResponseBody
+    String createStatement(@RequestBody String statement) {
+        return ("Executing " + statement);
+    }
+
+    @RequestMapping(value = URIConstants.DELETE_STAT)
+    public
+    @ResponseBody
+    void deleteStatement() {
+        esperService.removeQuery();
     }
 }
