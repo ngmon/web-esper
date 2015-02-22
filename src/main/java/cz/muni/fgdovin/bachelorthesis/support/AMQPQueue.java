@@ -31,8 +31,7 @@ public class AMQPQueue {
         this.exchange = exchange;
     }
 
-    @Override
-    public String toString(){
+    public String toInputString(){
         return  "Create Dataflow AMQPIncomingDataFlow\n" +
                 "AMQPSource -> Outstream<"+ source +">\n" +
                 "{host: '" + host + "',\n" +
@@ -43,5 +42,18 @@ public class AMQPQueue {
                 "exchange: '" + exchange +"',\n" +
                 "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.AMQPToEvent'}}\n" +
                 "LogSink(Outstream){}";
+    }
+
+    public String toOutputString(){
+        return  "Create Dataflow AMQPOutcomingDataFlow\n" +
+                "EventBusSource -> outstream<"+ source +">{} \n" +
+                "AMQPSink(outstream) \n" +
+                "{host: '" + host + "',\n" +
+                "queueName: '" + queueName + "',\n" +
+                "declareDurable: " + durable + ",\n" +
+                "declareExclusive: " + exclusive + ",\n" +
+                "declareAutoDelete: " + autoDelete + ",\n" +
+                "exchange: '" + exchange +"',\n" +
+                "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.EventToAMQP'}}\n";
     }
 }

@@ -23,9 +23,11 @@ public class JsonApi {
     private static final Logger logger = Logger.getLogger(JsonApi.class);
 
     //here comes API
-    @RequestMapping(value = URIConstants.CREATE_DUMMY, method = RequestMethod.POST)
+    @RequestMapping(value = URIConstants.CREATE_DUMMY)
     String getDummy() {
         AMQPQueue testInputQueue = new AMQPQueue("myEventType","testQueue", "logs");
+
+        AMQPQueue testOutputQueue = new AMQPQueue("myEventType","testQueue", "sortedLogs");
 
         Map<String, Object> eventSchema = new HashMap<>();
         eventSchema.put("timestamp", "String");
@@ -41,10 +43,11 @@ public class JsonApi {
 
         EventSchema testSchema = new EventSchema("myEventType",eventSchema);
 
-        String statement = "select avg(p.value) from myEventType.win:length(8)";
+        String statement = "select * from myEventType where p.value >= 4652";
 
         esperService.setEventSchema(testSchema);
         esperService.setAMQPSource(testInputQueue);
+        esperService.setAMQPSink(testOutputQueue);
         esperService.setQuery(statement);
 
         return "Ready to consume events";
@@ -62,7 +65,7 @@ public class JsonApi {
     public
     @ResponseBody
     void deleteEventSchema() {
-        esperService.removeAMQPSource();
+        //delete schema?
     }
 
     @RequestMapping(value = URIConstants.CREATE_INPUT)

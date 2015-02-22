@@ -4,6 +4,7 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
+import com.espertech.esper.client.dataflow.EPDataFlowState;
 import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
 import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,9 @@ public class EsperServiceImpl implements EsperService {
     private static AMQPQueue source;
     private static EPDataFlowInstance sourceFlow;
     private static AMQPQueue sink;
+    private static EPDataFlowInstance sinkFlow;
     private static String eventName;
-    private static EPStatement result;
+    private static EPStatement statement;
     private static Map schema;
 
     @Override
@@ -37,33 +39,54 @@ public class EsperServiceImpl implements EsperService {
 
     @Override
     public void setQuery(String statement) {
-        result = esperServiceProvider.getEPAdministrator().createEPL(statement);
-        sourceFlow.start();
+        if(sourceFlow == null){
+            return;
+        }
+        EsperServiceImpl.statement = esperServiceProvider.getEPAdministrator().createEPL(statement);
+        if(sourceFlow.getState()!= EPDataFlowState.RUNNING){
+            sourceFlow.start();
+        }
     }
 
     @Override
     public void removeQuery() {
-
+        EsperServiceImpl.statement.stop();
     }
 
     @Override
     public AMQPQueue setAMQPSource(AMQPQueue source) {
-        if (EsperServiceImpl.source == source){
+        if ((EsperServiceImpl.source != null)
+                && (EsperServiceImpl.source.toInputString().equalsIgnoreCase(source.toInputString()))){
             return null;
         }
-        esperServiceProvider.getEPAdministrator().createEPL(source.toString());
+        esperServiceProvider.getEPAdministrator().createEPL(source.toInputString());
         sourceFlow = esperServiceProvider.getEPRuntime().getDataFlowRuntime().instantiate("AMQPIncomingDataFlow");
+        EsperServiceImpl.source = source;
         return source;
     }
 
     @Override
+    public void removeAMQPSource() {
+        EsperServiceImpl.sourceFlow.cancel();
+        EsperServiceImpl.source = null;
+    }
+
+    @Override
     public AMQPQueue setAMQPSink(AMQPQueue sink) {
-        if (EsperServiceImpl.sink == sink){
+        if ((EsperServiceImpl.sink != null)
+                && (EsperServiceImpl.sink.toOutputString().equalsIgnoreCase(sink.toOutputString()))){
             return null;
         }
-        esperServiceProvider.getEPAdministrator().createEPL(sink.toString());
-        esperServiceProvider.getEPRuntime().getDataFlowRuntime().instantiate("AMQPOutcomingDataFlow");
+        esperServiceProvider.getEPAdministrator().createEPL(sink.toOutputString());
+        sinkFlow = esperServiceProvider.getEPRuntime().getDataFlowRuntime().instantiate("AMQPOutcomingDataFlow");
+        EsperServiceImpl.sink = sink;
         return sink;
+    }
+
+    @Override
+    public void removeAMQPSink() {
+        EsperServiceImpl.sinkFlow.cancel();
+        EsperServiceImpl.sink = null;
     }
 
     @Override
@@ -72,14 +95,5 @@ public class EsperServiceImpl implements EsperService {
         esperServiceProvider.getEPAdministrator().createEPL("create schema " + eventName
                 + "(" + input.getEventSchema()+ ")");
         EsperServiceImpl.schema = input.getEventSchemaAsMap();
-    }
-
-    @Override
-    public void removeAMQPSource() {
-    }
-
-    @Override
-    public void removeAMQPSink() {
-
     }
 }
