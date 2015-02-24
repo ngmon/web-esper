@@ -5,7 +5,7 @@ package cz.muni.fgdovin.bachelorthesis.support;
  */
 public class AMQPQueue {
     private String name;
-    private String source;                      //Outstream<test>
+    private String eventType;                      //Outstream<test>
     private String host = "localhost";
     private String queueName;                   //queueName
     private boolean durable = true;
@@ -13,12 +13,12 @@ public class AMQPQueue {
     private boolean autoDelete = true;
     private String exchange;                    //exchangeName
 
-    public AMQPQueue(String name, String source, String host,
+    public AMQPQueue(String name, String eventType, String host,
                      String queueName, boolean durable,
                      boolean exclusive, boolean autoDelete,
                      String exchange) {
         this.name = name;
-        this.source = source;
+        this.eventType = eventType;
         this.host = host;
         this.queueName = queueName;
         this.durable = durable;
@@ -27,16 +27,16 @@ public class AMQPQueue {
         this.exchange = exchange;
     }
 
-    public AMQPQueue(String name, String source, String queueName, String exchange) {
+    public AMQPQueue(String name, String eventType, String queueName, String exchange) {
         this.name = name;
-        this.source = source;
+        this.eventType = eventType;
         this.queueName = queueName;
         this.exchange = exchange;
     }
 
     public String toInputString(){
         return  "Create Dataflow " + name + "\n" +
-                "AMQPSource -> Outstream<"+ source +">\n" +
+                "AMQPSource -> Outstream<"+ eventType +">\n" +
                 "{host: '" + host + "',\n" +
                 "queueName: '" + queueName + "',\n" +
                 "declareDurable: " + durable + ",\n" +
@@ -49,7 +49,7 @@ public class AMQPQueue {
 
     public String toOutputString(){
         return  "Create Dataflow " + name + "\n" +
-                "EventBusSource -> outstream<"+ source +">{} \n" +
+                "EventBusSource -> outstream<"+ eventType +">{} \n" +
                 "AMQPSink(outstream) \n" +
                 "{host: '" + host + "',\n" +
                 "queueName: '" + queueName + "',\n" +

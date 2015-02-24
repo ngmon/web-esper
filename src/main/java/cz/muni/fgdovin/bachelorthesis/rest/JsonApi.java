@@ -4,7 +4,9 @@ import cz.muni.fgdovin.bachelorthesis.core.EsperService;
 import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
 import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
 import cz.muni.fgdovin.bachelorthesis.support.Statement;
+
 import org.apache.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,6 +28,7 @@ public class JsonApi {
     //here comes API
     @RequestMapping(value = URIConstants.CREATE_DUMMY)
     String getDummy() {
+        logger.info("Dummy request:");
         AMQPQueue testInputQueue = new AMQPQueue("AMQPIncomingStream","myEventType","testQueue", "logs");
 
         AMQPQueue testOutputQueue = new AMQPQueue("AMQPOutcomingStream","myEventType","testQueue", "sortedLogs");
@@ -46,9 +49,13 @@ public class JsonApi {
 
         String statement = "select * from myEventType where p.value >= 4652";
 
+        logger.info("setting schema...");
         esperService.setEventSchema(testSchema);
-        esperService.setAMQPSource(testInputQueue);
+        System.out.println("setting input AMQP stream...");
+        esperService.setAMQPSource(testInputQueue); //logger after I debug it
+        System.out.println("setting output AMQP stream...");
         esperService.setAMQPSink(testOutputQueue);
+        System.out.println("setting query...");
         esperService.setQuery(new Statement("myTestStat", statement));
 
         return "Ready to consume events";

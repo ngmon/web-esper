@@ -1,5 +1,6 @@
 package cz.muni.fgdovin.bachelorthesis.core;
 
+import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
@@ -10,6 +11,9 @@ import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
 import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
 
 import cz.muni.fgdovin.bachelorthesis.support.Statement;
+
+import org.apache.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EsperServiceImpl implements EsperService {
+
+    private static final Logger logger = Logger.getLogger(EsperServiceImpl.class);
 
     @Autowired
     EPServiceProvider esperServiceProvider;
@@ -37,7 +43,14 @@ public class EsperServiceImpl implements EsperService {
 
     @Override
     public void setQuery(Statement statement) {
-        EPStatement query = esperServiceProvider.getEPAdministrator().createEPL(statement.getName(), statement.getQuery());
+        EPStatement query = null;
+        try{
+            query = esperServiceProvider.getEPAdministrator().createEPL(statement.getQuery(), statement.getName());
+        }
+        catch(EPException ex){
+            logger.warn(ex);
+            return;
+        }
         query.start();
     }
 
@@ -48,7 +61,14 @@ public class EsperServiceImpl implements EsperService {
 
     @Override
     public AMQPQueue setAMQPSource(AMQPQueue source) {
-        esperServiceProvider.getEPAdministrator().createEPL(source.toInputString());
+        try{
+            esperServiceProvider.getEPAdministrator().createEPL(source.toInputString());
+        }
+        catch(EPException ex){
+            logger.warn(ex);
+            return source;
+        }
+
         EPDataFlowInstance sourceInstance = esperDataFlowRuntime.instantiate(source.getName());
         sourceInstance.start();
         return source;
@@ -61,9 +81,16 @@ public class EsperServiceImpl implements EsperService {
 
     @Override
     public AMQPQueue setAMQPSink(AMQPQueue sink) {
-        esperServiceProvider.getEPAdministrator().createEPL(sink.toOutputString());
-        EPDataFlowInstance sourceInstance = esperDataFlowRuntime.instantiate(sink.getName());
-        sourceInstance.start();
+        try{
+            esperServiceProvider.getEPAdministrator().createEPL(sink.toOutputString());
+        }
+        catch(EPException ex){
+            logger.warn(ex);
+            return sink;
+        }
+
+        EPDataFlowInstance sinkInstance = esperDataFlowRuntime.instantiate(sink.getName());
+        sinkInstance.start();
         return sink;
     }
 
