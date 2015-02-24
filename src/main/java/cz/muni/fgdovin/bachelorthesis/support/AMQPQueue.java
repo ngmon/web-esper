@@ -4,6 +4,7 @@ package cz.muni.fgdovin.bachelorthesis.support;
  * Created by Filip Gdovin on 10. 2. 2015.
  */
 public class AMQPQueue {
+    private String name;
     private String source;                      //Outstream<test>
     private String host = "localhost";
     private String queueName;                   //queueName
@@ -12,10 +13,11 @@ public class AMQPQueue {
     private boolean autoDelete = true;
     private String exchange;                    //exchangeName
 
-    public AMQPQueue(String source, String host,
+    public AMQPQueue(String name, String source, String host,
                      String queueName, boolean durable,
                      boolean exclusive, boolean autoDelete,
                      String exchange) {
+        this.name = name;
         this.source = source;
         this.host = host;
         this.queueName = queueName;
@@ -25,14 +27,15 @@ public class AMQPQueue {
         this.exchange = exchange;
     }
 
-    public AMQPQueue(String source, String queueName, String exchange) {
+    public AMQPQueue(String name, String source, String queueName, String exchange) {
+        this.name = name;
         this.source = source;
         this.queueName = queueName;
         this.exchange = exchange;
     }
 
     public String toInputString(){
-        return  "Create Dataflow AMQPIncomingDataFlow\n" +
+        return  "Create Dataflow " + name + "\n" +
                 "AMQPSource -> Outstream<"+ source +">\n" +
                 "{host: '" + host + "',\n" +
                 "queueName: '" + queueName + "',\n" +
@@ -45,7 +48,7 @@ public class AMQPQueue {
     }
 
     public String toOutputString(){
-        return  "Create Dataflow AMQPOutcomingDataFlow\n" +
+        return  "Create Dataflow " + name + "\n" +
                 "EventBusSource -> outstream<"+ source +">{} \n" +
                 "AMQPSink(outstream) \n" +
                 "{host: '" + host + "',\n" +
@@ -55,5 +58,9 @@ public class AMQPQueue {
                 "declareAutoDelete: " + autoDelete + ",\n" +
                 "exchange: '" + exchange +"',\n" +
                 "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.EventToAMQP'}}\n";
+    }
+
+    public String getName(){
+        return this.name;
     }
 }

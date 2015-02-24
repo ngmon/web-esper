@@ -4,6 +4,7 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 
+import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
@@ -30,6 +31,11 @@ public class Application {
     @Bean
     public EPRuntime epRuntime() {
         return EPServiceProviderManager.getDefaultProvider().getEPRuntime();
+    }
+
+    @Bean
+    public EPDataFlowRuntime epdataFlowRuntime() {
+        return EPServiceProviderManager.getDefaultProvider().getEPRuntime().getDataFlowRuntime();
     }
 
     public static void main(String[] args) {

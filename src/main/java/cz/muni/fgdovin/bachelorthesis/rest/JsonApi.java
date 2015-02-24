@@ -3,6 +3,7 @@ package cz.muni.fgdovin.bachelorthesis.rest;
 import cz.muni.fgdovin.bachelorthesis.core.EsperService;
 import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
 import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
+import cz.muni.fgdovin.bachelorthesis.support.Statement;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +26,9 @@ public class JsonApi {
     //here comes API
     @RequestMapping(value = URIConstants.CREATE_DUMMY)
     String getDummy() {
-        AMQPQueue testInputQueue = new AMQPQueue("myEventType","testQueue", "logs");
+        AMQPQueue testInputQueue = new AMQPQueue("AMQPIncomingStream","myEventType","testQueue", "logs");
 
-        AMQPQueue testOutputQueue = new AMQPQueue("myEventType","testQueue", "sortedLogs");
+        AMQPQueue testOutputQueue = new AMQPQueue("AMQPOutcomingStream","myEventType","testQueue", "sortedLogs");
 
         Map<String, Object> eventSchema = new HashMap<>();
         eventSchema.put("timestamp", "String");
@@ -48,7 +49,7 @@ public class JsonApi {
         esperService.setEventSchema(testSchema);
         esperService.setAMQPSource(testInputQueue);
         esperService.setAMQPSink(testOutputQueue);
-        esperService.setQuery(statement);
+        esperService.setQuery(new Statement("myTestStat", statement));
 
         return "Ready to consume events";
     }
@@ -79,7 +80,7 @@ public class JsonApi {
     public
     @ResponseBody
     void deleteSource() {
-        esperService.removeAMQPSource();
+        esperService.removeAMQPSource("AMQPIncomingStream");
     }
 
     @RequestMapping(value = URIConstants.CREATE_OUTPUT)
@@ -93,7 +94,7 @@ public class JsonApi {
     public
     @ResponseBody
     void deleteSink() {
-        esperService.removeAMQPSink();
+        esperService.removeAMQPSink("AMQPOutcomingStream");
     }
 
     @RequestMapping(value = URIConstants.CREATE_STAT)
@@ -107,6 +108,6 @@ public class JsonApi {
     public
     @ResponseBody
     void deleteStatement() {
-        esperService.removeQuery();
+        esperService.removeQuery("myTestStat");
     }
 }
