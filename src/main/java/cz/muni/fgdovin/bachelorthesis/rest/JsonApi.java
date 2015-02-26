@@ -29,9 +29,9 @@ public class JsonApi {
     @RequestMapping(value = URIConstants.CREATE_DUMMY)
     String getDummy() {
         logger.info("Dummy request:");
-        AMQPQueue testInputQueue = new AMQPQueue("AMQPIncomingStream","myEventType","testQueue", "logs");
+        AMQPQueue testInputQueue = new AMQPQueue("AMQPIncomingStream","myEventType","esperQueue", "logs");
 
-        AMQPQueue testOutputQueue = new AMQPQueue("AMQPOutcomingStream","myEventType","testQueue", "sortedLogs");
+        AMQPQueue testOutputQueue = new AMQPQueue("AMQPOutcomingStream","myEventType","esperOutputQueue", "sortedLogs");
 
         Map<String, Object> eventSchema = new HashMap<>();
         eventSchema.put("timestamp", "String");
@@ -47,14 +47,14 @@ public class JsonApi {
 
         EventSchema testSchema = new EventSchema("myEventType",eventSchema);
 
-        String statement = "select * from myEventType where p.value >= 4652";
+        String statement = "Select * from myEventType where p.value > 4652";
 
         logger.info("setting schema...");
-        esperService.setEventSchema(testSchema);
+        esperService.setEventSchema(testSchema);;
         System.out.println("setting input AMQP stream...");
         esperService.setAMQPSource(testInputQueue); //logger after I debug it
-        System.out.println("setting output AMQP stream...");
-        esperService.setAMQPSink(testOutputQueue);
+        /*System.out.println("setting output AMQP stream...");
+        esperService.setAMQPSink(testOutputQueue);*/
         System.out.println("setting query...");
         esperService.setQuery(new Statement("myTestStat", statement));
 

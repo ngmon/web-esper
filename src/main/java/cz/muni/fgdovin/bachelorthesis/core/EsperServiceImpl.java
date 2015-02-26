@@ -51,6 +51,7 @@ public class EsperServiceImpl implements EsperService {
             logger.warn(ex);
             return;
         }
+        System.out.println("Query is: " + esperServiceProvider.getEPAdministrator().getStatement(statement.getName()).getText());
         query.start();
     }
 
@@ -70,7 +71,10 @@ public class EsperServiceImpl implements EsperService {
         }
 
         EPDataFlowInstance sourceInstance = esperDataFlowRuntime.instantiate(source.getName());
+        esperDataFlowRuntime.saveInstance(source.getName(), sourceInstance);
+
         sourceInstance.start();
+
         return source;
     }
 
@@ -90,6 +94,8 @@ public class EsperServiceImpl implements EsperService {
         }
 
         EPDataFlowInstance sinkInstance = esperDataFlowRuntime.instantiate(sink.getName());
+        esperDataFlowRuntime.saveInstance(sink.getName(),sinkInstance);
+
         sinkInstance.start();
         return sink;
     }

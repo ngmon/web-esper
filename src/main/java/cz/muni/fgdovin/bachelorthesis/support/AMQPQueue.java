@@ -1,5 +1,7 @@
 package cz.muni.fgdovin.bachelorthesis.support;
 
+import com.espertech.esper.dataflow.ops.LogSink;
+
 /**
  * Created by Filip Gdovin on 10. 2. 2015.
  */
@@ -8,9 +10,9 @@ public class AMQPQueue {
     private String eventType;                      //Outstream<test>
     private String host = "localhost";
     private String queueName;                   //queueName
-    private boolean durable = true;
+    private boolean durable = false;
     private boolean exclusive = false;
-    private boolean autoDelete = true;
+    private boolean autoDelete = false;
     private String exchange;                    //exchangeName
 
     public AMQPQueue(String name, String eventType, String host,
@@ -36,28 +38,30 @@ public class AMQPQueue {
 
     public String toInputString(){
         return  "Create Dataflow " + name + "\n" +
-                "AMQPSource -> Outstream<"+ eventType +">\n" +
-                "{host: '" + host + "',\n" +
+                "AMQPSource -> instream<" + eventType + "> {\n" +
+                "host: '" + host + "',\n" +
                 "queueName: '" + queueName + "',\n" +
                 "declareDurable: " + durable + ",\n" +
                 "declareExclusive: " + exclusive + ",\n" +
                 "declareAutoDelete: " + autoDelete + ",\n" +
                 "exchange: '" + exchange +"',\n" +
-                "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.AMQPToEvent'}}\n" +
-                "LogSink(Outstream){}";
+                "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.AMQPToEvent'}\n" +
+                "}";
+//                "EventBusSink(instream) {}";
     }
 
     public String toOutputString(){
         return  "Create Dataflow " + name + "\n" +
-                "EventBusSource -> outstream<"+ eventType +">{} \n" +
-                "AMQPSink(outstream) \n" +
-                "{host: '" + host + "',\n" +
+                "AMQPSink(outstream) {\n" +
+                "host: '" + host + "',\n" +
                 "queueName: '" + queueName + "',\n" +
                 "declareDurable: " + durable + ",\n" +
                 "declareExclusive: " + exclusive + ",\n" +
                 "declareAutoDelete: " + autoDelete + ",\n" +
                 "exchange: '" + exchange +"',\n" +
-                "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.EventToAMQP'}}\n";
+                "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.EventToAMQP'}\n" +
+                "}";
+//                "EventBusSource -> outstream<" + eventType + "> {}";
     }
 
     public String getName(){
