@@ -18,24 +18,17 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     @Override
     public void collect(final AMQPToObjectCollectorContext context) {
         final byte[] input = context.getBytes();
-        final List<Map> received = this.extractMessage(input);
+        final Map received = this.extractMessage(input);
         final EPDataFlowEmitter emmiter = context.getEmitter();
 
-        for (final Map oneEvent : received) {
-            emmiter.submit(oneEvent);
-        }
+        emmiter.submit(received);
     }
 
-    List<Map> extractMessage(final byte[] input) {
-        final List<Map> list = new ArrayList<>(); //ak bude jedna sprava = jeden JSON, ani netreba list
-
+    Map extractMessage(final byte[] input) {
         String inputString = new String(input);
         String JSON = JsonFlattener.encode(inputString);
-
         Map oneEvent = this.receiveEventAsMap(JSON);
-        list.add(oneEvent);
-
-        return list;
+        return oneEvent;
     }
 
     Map receiveEventAsMap(String input) throws JSONException {

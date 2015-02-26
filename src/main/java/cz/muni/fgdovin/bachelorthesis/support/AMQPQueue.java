@@ -46,22 +46,22 @@ public class AMQPQueue {
                 "declareAutoDelete: " + autoDelete + ",\n" +
                 "exchange: '" + exchange +"',\n" +
                 "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.AMQPToEvent'}\n" +
-                "}";
-//                "EventBusSink(instream) {}";
+                "}" +
+                "EventBusSink(instream) {}";
     }
 
-    public String toOutputString(){
-        return  "Create Dataflow " + name + "\n" +
+    public String toOutputString() {
+        return "Create Dataflow " + name + "\n" +
                 "AMQPSink(outstream) {\n" +
                 "host: '" + host + "',\n" +
                 "queueName: '" + queueName + "',\n" +
                 "declareDurable: " + durable + ",\n" +
                 "declareExclusive: " + exclusive + ",\n" +
                 "declareAutoDelete: " + autoDelete + ",\n" +
-                "exchange: '" + exchange +"',\n" +
+                "exchange: '" + exchange + "',\n" +
                 "collector: {class: 'cz.muni.fgdovin.bachelorthesis.support.EventToAMQP'}\n" +
-                "}";
-//                "EventBusSource -> outstream<" + eventType + "> {}";
+                "}" +
+                "EventBusSource -> outstream<" + eventType + "> {}";
     }
 
     public String getName(){

@@ -31,7 +31,7 @@ public class JsonApi {
         logger.info("Dummy request:");
         AMQPQueue testInputQueue = new AMQPQueue("AMQPIncomingStream","myEventType","esperQueue", "logs");
 
-        AMQPQueue testOutputQueue = new AMQPQueue("AMQPOutcomingStream","myEventType","esperOutputQueue", "sortedLogs");
+        AMQPQueue testOutputQueue = new AMQPQueue("AMQPOutcomingStream","myOutputEventType","esperOutputQueue", "sortedLogs");
 
         Map<String, Object> eventSchema = new HashMap<>();
         eventSchema.put("timestamp", "String");
@@ -47,16 +47,16 @@ public class JsonApi {
 
         EventSchema testSchema = new EventSchema("myEventType",eventSchema);
 
-        String statement = "Select * from myEventType where p.value > 4652";
+        String statement = "@Audit insert into myOutputEventType select avg(p.value) from myEventType where p.value > 4652";
 
         logger.info("setting schema...");
         esperService.setEventSchema(testSchema);;
-        System.out.println("setting input AMQP stream...");
-        esperService.setAMQPSource(testInputQueue); //logger after I debug it
-        /*System.out.println("setting output AMQP stream...");
-        esperService.setAMQPSink(testOutputQueue);*/
         System.out.println("setting query...");
         esperService.setQuery(new Statement("myTestStat", statement));
+        System.out.println("setting input AMQP stream...");
+        esperService.setAMQPSource(testInputQueue); //logger after I debug it
+        System.out.println("setting output AMQP stream...");
+        esperService.setAMQPSink(testOutputQueue);
 
         return "Ready to consume events";
     }

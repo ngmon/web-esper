@@ -1,9 +1,6 @@
 package cz.muni.fgdovin.bachelorthesis.core;
 
-import com.espertech.esper.client.EPException;
-import com.espertech.esper.client.EPRuntime;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 
@@ -63,7 +60,7 @@ public class EsperServiceImpl implements EsperService {
     @Override
     public AMQPQueue setAMQPSource(AMQPQueue source) {
         try{
-            esperServiceProvider.getEPAdministrator().createEPL(source.toInputString());
+            esperServiceProvider.getEPAdministrator().createEPL("@Audit " + source.toInputString());
         }
         catch(EPException ex){
             logger.warn(ex);
@@ -108,7 +105,7 @@ public class EsperServiceImpl implements EsperService {
     @Override
     public void setEventSchema(EventSchema input) {
         EsperServiceImpl.eventName = input.getEventName();
-        esperServiceProvider.getEPAdministrator().createEPL("create schema " + eventName
+        esperServiceProvider.getEPAdministrator().createEPL("create map schema " + eventName
                 + "(" + input.getEventSchema()+ ")");
     }
 }
