@@ -1,9 +1,7 @@
 package cz.muni.fgdovin.bachelorthesis.rest;
 
 import cz.muni.fgdovin.bachelorthesis.core.EsperService;
-import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
-import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
-import cz.muni.fgdovin.bachelorthesis.support.Statement;
+import cz.muni.fgdovin.bachelorthesis.support.EPLHelper;
 
 import org.apache.log4j.Logger;
 
@@ -11,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
 
 /**
  * Created by Filip Gdovin on 28. 1. 2015.
@@ -29,92 +25,43 @@ public class JsonApi {
     @RequestMapping(value = URIConstants.CREATE_DUMMY)
     String getDummy() {
         logger.info("Dummy request:");
-        AMQPQueue testInputQueue = new AMQPQueue("AMQPIncomingStream","myEventType","esperQueue", "logs");
 
-        AMQPQueue testOutputQueue = new AMQPQueue("AMQPOutcomingStream","myOutputEventType","esperOutputQueue", "sortedLogs");
+        String testSchema = ("hostname String, application String, level Integer, p.value Integer, p.value2 String, type String, priority Integer, timestamp String");
+        String query = "select avg(p.value) from myEventType where p.value > 4652";
 
-        Map<String, Object> eventSchema = new HashMap<>();
-        eventSchema.put("timestamp", "String");
-        eventSchema.put("type", "String");
-        eventSchema.put("p.value", "Integer");
-        eventSchema.put("p.value2", "String");
-        eventSchema.put("hostname", "String");
-        eventSchema.put("application", "String");
-        eventSchema.put("process", "String");
-        eventSchema.put("processId", "Integer");
-        eventSchema.put("level", "Integer");
-        eventSchema.put("priority", "Integer");
+        String inputQueue = EPLHelper.createAMQP("AMQPIncomingStream", "myEventType", "(" + testSchema + ")", "esperQueue", "logs");
 
-        EventSchema testSchema = new EventSchema("myEventType",eventSchema);
-
-        String statement = "@Audit insert into myOutputEventType select avg(p.value) from myEventType where p.value > 4652";
-
-        logger.info("setting schema...");
-        esperService.setEventSchema(testSchema);;
-        System.out.println("setting query...");
-        esperService.setQuery(new Statement("myTestStat", statement));
-        System.out.println("setting input AMQP stream...");
-        esperService.setAMQPSource(testInputQueue); //logger after I debug it
-        System.out.println("setting output AMQP stream...");
-        esperService.setAMQPSink(testOutputQueue);
+        String statement = EPLHelper.createStatement("AMQPOutcomingStream", "myEventType", "(" + testSchema + ")", query, "esperOutputQueue", "sortedLogs");
 
         return "Ready to consume events";
     }
 
-    @RequestMapping(value = URIConstants.CREATE_SCHEMA)
+    @RequestMapping(value = URIConstants.CREATE_QUEUE)
     public
     @ResponseBody
-    String createEventSchema(@RequestBody EventSchema input) {
-        esperService.setEventSchema(input);
-        return input.toString();
+    String createAmqpSource(@RequestParam String queueName, String newQueue) {
+        return esperService.addAMQPSource(queueName, newQueue).getDataFlowName() + " successfully created.";
     }
 
-    @RequestMapping(value = URIConstants.DELETE_SCHEMA)
-    public
-    @ResponseBody
-    void deleteEventSchema() {
-        //delete schema?
-    }
-
-    @RequestMapping(value = URIConstants.CREATE_INPUT)
-    public
-    @ResponseBody
-    AMQPQueue createAmqpSource(@RequestBody AMQPQueue newQueue) {
-        return esperService.setAMQPSource(newQueue);
-    }
-
-    @RequestMapping(value = URIConstants.DELETE_INPUT)
+    @RequestMapping(value = URIConstants.DELETE_QUEUE)
     public
     @ResponseBody
     void deleteSource() {
         esperService.removeAMQPSource("AMQPIncomingStream");
     }
 
-    @RequestMapping(value = URIConstants.CREATE_OUTPUT)
+    @RequestMapping(value = URIConstants.CREATE_STATEMENT)
     public
     @ResponseBody
-    AMQPQueue createAmqpSink(@RequestBody AMQPQueue newQueue) {
-        return esperService.setAMQPSink(newQueue);
-    }
-
-    @RequestMapping(value = URIConstants.DELETE_OUTPUT)
-    public
-    @ResponseBody
-    void deleteSink() {
-        esperService.removeAMQPSink("AMQPOutcomingStream");
-    }
-
-    @RequestMapping(value = URIConstants.CREATE_STAT)
-    public
-    @ResponseBody
-    String createStatement(@RequestBody String statement) {
+    String createStatement(@RequestParam String statementName, String statement) {
+        esperService.addStatement(statementName, statement);
         return ("Executing " + statement);
     }
 
-    @RequestMapping(value = URIConstants.DELETE_STAT)
+    @RequestMapping(value = URIConstants.DELETE_STATEMENT)
     public
     @ResponseBody
     void deleteStatement() {
-        esperService.removeQuery("myTestStat");
+        esperService.removeStatement("myTestStat");
     }
 }

@@ -4,11 +4,6 @@ import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 
-import cz.muni.fgdovin.bachelorthesis.support.AMQPQueue;
-import cz.muni.fgdovin.bachelorthesis.support.EventSchema;
-
-import cz.muni.fgdovin.bachelorthesis.support.Statement;
-
 import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,81 +26,53 @@ public class EsperServiceImpl implements EsperService {
     @Autowired
     EPDataFlowRuntime esperDataFlowRuntime;
 
-    private static String eventName;
-
     @Override
-    public long returnTime() {
-        return esperRuntime.getCurrentTime();
-    }
-
-    @Override
-    public void setQuery(Statement statement) {
-        EPStatement query = null;
+    public String addStatement(String queryName, String query) {
+        EPStatement statement = null;
         try{
-            query = esperServiceProvider.getEPAdministrator().createEPL(statement.getQuery(), statement.getName());
+            statement = esperServiceProvider.getEPAdministrator().createEPL(query, queryName);
         }
         catch(EPException ex){
             logger.warn(ex);
-            return;
+            return null;
         }
-        System.out.println("Query is: " + esperServiceProvider.getEPAdministrator().getStatement(statement.getName()).getText());
-        query.start();
+        EPStatement savedQuery = esperServiceProvider.getEPAdministrator().getStatement(queryName);
+        System.out.println("Query is: " + savedQuery.getText());
+        savedQuery.start();
+        return savedQuery.getText();
     }
 
     @Override
-    public void removeQuery(String statName) {
+    public EPStatement removeStatement(String statName) {
         esperServiceProvider.getEPAdministrator().getStatement(statName).stop();
+        return esperServiceProvider.getEPAdministrator().getStatement(statName);
     }
 
     @Override
-    public AMQPQueue setAMQPSource(AMQPQueue source) {
+    public EPDataFlowInstance addAMQPSource(String queueName, String inputQueue) {
         try{
-            esperServiceProvider.getEPAdministrator().createEPL(source.toInputString());
+            esperServiceProvider.getEPAdministrator().createEPL(inputQueue);
         }
         catch(EPException ex){
             logger.warn(ex);
-            return source;
+            return null;
         }
 
-        EPDataFlowInstance sourceInstance = esperDataFlowRuntime.instantiate(source.getName());
-        esperDataFlowRuntime.saveInstance(source.getName(), sourceInstance);
+        EPDataFlowInstance sourceInstance = esperDataFlowRuntime.instantiate(queueName);
+        esperDataFlowRuntime.saveInstance(queueName, sourceInstance);
 
         sourceInstance.start();
 
-        return source;
+        return sourceInstance;
     }
 
     @Override
-    public void removeAMQPSource(String dataFlowName) {
-        esperDataFlowRuntime.getSavedInstance(dataFlowName).cancel();
-    }
-
-    @Override
-    public AMQPQueue setAMQPSink(AMQPQueue sink) {
-        try{
-            esperServiceProvider.getEPAdministrator().createEPL(sink.toOutputString());
+    public boolean removeAMQPSource(String dataFlowName) {
+        EPDataFlowInstance sinkInstance = esperDataFlowRuntime.getSavedInstance(dataFlowName);
+        if(sinkInstance == null){
+            return false;
         }
-        catch(EPException ex){
-            logger.warn(ex);
-            return sink;
-        }
-
-        EPDataFlowInstance sinkInstance = esperDataFlowRuntime.instantiate(sink.getName());
-        esperDataFlowRuntime.saveInstance(sink.getName(),sinkInstance);
-
-        sinkInstance.start();
-        return sink;
-    }
-
-    @Override
-    public void removeAMQPSink(String dataFlowName) {
-        esperDataFlowRuntime.getSavedInstance(dataFlowName).cancel();
-    }
-
-    @Override
-    public void setEventSchema(EventSchema input) {
-        EsperServiceImpl.eventName = input.getEventName();
-        esperServiceProvider.getEPAdministrator().createEPL("create map schema " + eventName
-                + "(" + input.getEventSchema()+ ")");
+        sinkInstance.cancel();
+        return true;
     }
 }

@@ -38,7 +38,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     }
 
     private static Map JSONtoMap(JSONObject object) throws JSONException {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<String, Object>();
 
         Iterator<String> keysItr = object.keys();
         while (keysItr.hasNext()) {
@@ -56,7 +56,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     }
 
     private static List toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<>();
+        List<Object> list = new ArrayList<Object>();
         for (int i = 0; i < array.length(); i++) {
             Object value = array.get(i);
             if (value instanceof JSONArray) {
