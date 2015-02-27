@@ -39,8 +39,8 @@ public class JsonApi {
     @RequestMapping(value = URIConstants.CREATE_QUEUE)
     public
     @ResponseBody
-    String createAmqpSource(@RequestParam String queueName, String newQueue) {
-        return esperService.addAMQPSource(queueName, newQueue).getDataFlowName() + " successfully created.";
+    String createAmqpSource(@RequestParam String newQueue) {
+        return esperService.addAMQPSource("AMQPIncomingStream", newQueue).getDataFlowName() + " successfully created.";
     }
 
     @RequestMapping(value = URIConstants.DELETE_QUEUE)
@@ -53,8 +53,8 @@ public class JsonApi {
     @RequestMapping(value = URIConstants.CREATE_STATEMENT)
     public
     @ResponseBody
-    String createStatement(@RequestParam String statementName, String statement) {
-        esperService.addStatement(statementName, statement);
+    String createStatement(@RequestParam String statement) {
+        esperService.addStatement("myTestStat", statement);
         return ("Executing " + statement);
     }
 

@@ -14,9 +14,9 @@ import org.apache.log4j.Logger;
  * Created by Filip Gdovin on 26. 2. 2015.
  */
 
-public class EsperTester {
+public class ManualEsperTester {
 
-    private static final Logger logger = Logger.getLogger(EsperTester.class);
+    private static final Logger logger = Logger.getLogger(ManualEsperTester.class);
 
     public static void main(String[] argc) {
         EPServiceProvider esperProvider = EPServiceProviderManager.getDefaultProvider();
@@ -34,7 +34,8 @@ public class EsperTester {
         String AMQPOutputQueueName = "AMQPOutcomingStream";
         String outputQueueName = "esperOutputQueue";
         String outputExchangeName = "sortedLogs";
-        String query = "select avg(p.value) from instream";
+//        String query = "select avg(p.value) from instream";
+        String query = "select * from instream";
 
         String AMQP = EPLHelper.createAMQP(AMQPQueueName, eventType, testSchema, inputQueueName, inputExchangeName);
 
