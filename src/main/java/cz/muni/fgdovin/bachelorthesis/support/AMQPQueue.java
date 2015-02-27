@@ -1,7 +1,5 @@
 package cz.muni.fgdovin.bachelorthesis.support;
 
-import com.espertech.esper.dataflow.ops.LogSink;
-
 /**
  * Created by Filip Gdovin on 10. 2. 2015.
  */

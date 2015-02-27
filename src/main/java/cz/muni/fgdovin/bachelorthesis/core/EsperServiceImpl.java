@@ -60,7 +60,7 @@ public class EsperServiceImpl implements EsperService {
     @Override
     public AMQPQueue setAMQPSource(AMQPQueue source) {
         try{
-            esperServiceProvider.getEPAdministrator().createEPL("@Audit " + source.toInputString());
+            esperServiceProvider.getEPAdministrator().createEPL(source.toInputString());
         }
         catch(EPException ex){
             logger.warn(ex);
