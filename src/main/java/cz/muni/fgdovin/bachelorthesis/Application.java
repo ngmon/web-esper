@@ -12,13 +12,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
 
 /**
  * Created by Filip Gdovin on 6. 2. 2015.
  */
-
 @SpringBootApplication
 public class Application {
 
@@ -41,6 +38,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(Application.class, args);
+        @SuppressWarnings("UnusedAssignment") ApplicationContext context = SpringApplication.run(Application.class, args);
     }
 }

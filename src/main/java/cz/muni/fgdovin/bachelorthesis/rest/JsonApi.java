@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by Filip Gdovin on 28. 1. 2015.
  */
-
 @RestController
 public class JsonApi {
 
@@ -29,10 +28,10 @@ public class JsonApi {
         String testSchema = ("hostname String, application String, level Integer, p.value Integer, p.value2 String, type String, priority Integer, timestamp String");
         String query = "select avg(p.value) from myEventType where p.value > 4652";
 
-        String inputQueue = EPLHelper.createAMQP("AMQPIncomingStream", "myEventType", "(" + testSchema + ")", "esperQueue", "logs");
+        /*String inputQueue = EPLHelper.createAMQP("AMQPIncomingStream", "myEventType", "(" + testSchema + ")", "esperQueue", "logs");
 
         String statement = EPLHelper.createStatement("AMQPOutcomingStream", "myEventType", "(" + testSchema + ")", query, "esperOutputQueue", "sortedLogs");
-
+        */
         return "Ready to consume events";
     }
 

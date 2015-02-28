@@ -17,6 +17,6 @@ public interface EsperService{
 
     public EPStatement addStatement(String statementName, String query);
     public EPStatementState removeStatement(String statementName);
-    public List<String> showStatements();
+    public List showStatements();
 
 }

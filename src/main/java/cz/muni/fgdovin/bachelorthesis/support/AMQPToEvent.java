@@ -26,8 +26,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
 
     Map extractMessage(final byte[] input) {
         String inputString = new String(input);
-        Map oneEvent = this.receiveEventAsMap(inputString);
-        return oneEvent;
+        return this.receiveEventAsMap(inputString);
     }
 
     Map receiveEventAsMap(String input) throws JSONException {
@@ -73,7 +72,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
 
     }
 
-    public static String encode(String json) throws JSONException {
+    private static String encode(String json) throws JSONException {
         JSONObject jo = new JSONObject(json);
         return encode(jo);
     }

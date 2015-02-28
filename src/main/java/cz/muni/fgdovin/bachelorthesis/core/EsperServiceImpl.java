@@ -65,9 +65,8 @@ public class EsperServiceImpl implements EsperService {
 
     @Override
     public EPStatement addStatement(String queryName, String query) {
-        EPStatement statement = null;
         try{
-            statement = esperServiceProvider.getEPAdministrator().createEPL(query, queryName);
+            esperServiceProvider.getEPAdministrator().createEPL(query, queryName);
         }
         catch(EPException ex){
             logger.warn(ex);
@@ -89,7 +88,7 @@ public class EsperServiceImpl implements EsperService {
         return result.getState();
     }
 
-    public List<String> showStatements(){
+    public List showStatements(){
         String[] allStats = esperServiceProvider.getEPAdministrator().getStatementNames();
         List diff = ListUtils.subtract(Arrays.asList(allStats), showAMQPSources()); //had to substract queues, as they are also statements
         System.out.println(diff);

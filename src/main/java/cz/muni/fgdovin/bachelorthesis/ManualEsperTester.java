@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 /**
  * Created by Filip Gdovin on 26. 2. 2015.
  */
-
+@SuppressWarnings("WeakerAccess")
 public class ManualEsperTester {
 
     private static final Logger logger = Logger.getLogger(ManualEsperTester.class);
