@@ -11,12 +11,12 @@ import java.util.List;
  * Created by Filip Gdovin on 9. 2. 2015.
  */
 public interface EsperService{
-    public EPDataFlowInstance addAMQPSource(String queryName, String query);
-    public EPDataFlowState removeAMQPSource(String queueName);
+    public EPDataFlowInstance addAMQPSource(String queueName, String queueProperties);
+    public boolean removeAMQPSource(String queueName);
     public List<String> showAMQPSources();
 
-    public EPStatement addStatement(String statementName, String query);
-    public EPStatementState removeStatement(String statementName);
-    public List showStatements();
+    public EPStatement addStatement(String statementName, String statement);
+    public boolean removeStatement(String statementName);
+    public List<String> showStatements();
 
 }

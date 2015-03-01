@@ -6,7 +6,6 @@ import com.espertech.esperio.amqp.ObjectToAMQPCollectorContext;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-@SuppressWarnings("WeakerAccess")
 public class EventToAMQP implements ObjectToAMQPCollector {
     final private static Gson gson = new GsonBuilder().create();
 

@@ -3,8 +3,8 @@ package cz.muni.fgdovin.bachelorthesis;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
-
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
+
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
@@ -38,6 +38,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        @SuppressWarnings("UnusedAssignment") ApplicationContext context = SpringApplication.run(Application.class, args);
+        ApplicationContext context = SpringApplication.run(Application.class, args);
     }
 }

@@ -1,10 +1,14 @@
 package cz.muni.fgdovin.bachelorthesis.core;
 
-import com.espertech.esper.client.*;
+import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.client.EPRuntime;
+import com.espertech.esper.client.EPException;
+import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.client.EPStatementState;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-
 import com.espertech.esper.client.dataflow.EPDataFlowState;
+
 import org.apache.commons.collections.ListUtils;
 import org.apache.log4j.Logger;
 
@@ -32,9 +36,9 @@ public class EsperServiceImpl implements EsperService {
     EPDataFlowRuntime esperDataFlowRuntime;
 
     @Override
-    public EPDataFlowInstance addAMQPSource(String queueName, String inputQueue) {
+    public EPDataFlowInstance addAMQPSource(String queueName, String queueProperties) {
         try{
-            esperServiceProvider.getEPAdministrator().createEPL(inputQueue, queueName);
+            esperServiceProvider.getEPAdministrator().createEPL(queueProperties, queueName);
         }
         catch(EPException ex){
             logger.warn(ex);
@@ -49,13 +53,24 @@ public class EsperServiceImpl implements EsperService {
     }
 
     @Override
-    public EPDataFlowState removeAMQPSource(String dataFlowName) {
-        EPDataFlowInstance sourceInstance = esperDataFlowRuntime.getSavedInstance(dataFlowName);
-        if(sourceInstance == null){
-            return null;
+    public boolean removeAMQPSource(String queueName) {
+        EPDataFlowInstance sourceInstance = esperDataFlowRuntime.getSavedInstance(queueName);
+        EPStatement creatingStatement = esperServiceProvider.getEPAdministrator().getStatement(queueName);
+
+        if(sourceInstance != null){
+            sourceInstance.cancel();
+            esperDataFlowRuntime.removeSavedInstance(queueName);
+        } else {
+            return false;
         }
-        sourceInstance.cancel();
-        return sourceInstance.getState();
+
+        if (creatingStatement == null) {
+            return true;
+        }
+
+        creatingStatement.destroy();
+
+        return true;
     }
 
     @Override
@@ -64,34 +79,32 @@ public class EsperServiceImpl implements EsperService {
     }
 
     @Override
-    public EPStatement addStatement(String queryName, String query) {
+    public EPStatement addStatement(String statementName, String statement) {
         try{
-            esperServiceProvider.getEPAdministrator().createEPL(query, queryName);
+            esperServiceProvider.getEPAdministrator().createEPL(statement, statementName);
         }
         catch(EPException ex){
             logger.warn(ex);
             return null;
         }
-        EPStatement savedQuery = esperServiceProvider.getEPAdministrator().getStatement(queryName);
+        EPStatement savedQuery = esperServiceProvider.getEPAdministrator().getStatement(statementName);
         savedQuery.start();
         return savedQuery;
     }
 
     @Override
-    public EPStatementState removeStatement(String statName) {
-        EPStatement result = esperServiceProvider.getEPAdministrator().getStatement(statName);
-        if(result == null){
-            return null;
+    public boolean removeStatement(String statementName) {
+        EPStatement result = esperServiceProvider.getEPAdministrator().getStatement(statementName);
+        if(result != null){
+            result.destroy();
+            return  true;
         }
-        result.stop();
-        result.destroy();
-        return result.getState();
+        return false;
     }
 
-    public List showStatements(){
+    public List<String> showStatements(){
         String[] allStats = esperServiceProvider.getEPAdministrator().getStatementNames();
         List diff = ListUtils.subtract(Arrays.asList(allStats), showAMQPSources()); //had to substract queues, as they are also statements
-        System.out.println(diff);
         return diff;
     }
 
