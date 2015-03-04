@@ -1,10 +1,9 @@
 package cz.muni.fgdovin.bachelorthesis;
 
-import com.espertech.esper.client.EPRuntime;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPServiceProviderManager;
+import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 
+import com.espertech.esper.core.service.ConfigurationOperationsImpl;
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
@@ -28,6 +27,11 @@ public class Application {
     }
 
     @Bean
+    public EPAdministrator epAdministrator() {
+        return epServiceProvider().getEPAdministrator();
+    }
+
+    @Bean
     public EPRuntime epRuntime() {
         return EPServiceProviderManager.getDefaultProvider().getEPRuntime();
     }
@@ -35,6 +39,11 @@ public class Application {
     @Bean
     public EPDataFlowRuntime epdataFlowRuntime() {
         return EPServiceProviderManager.getDefaultProvider().getEPRuntime().getDataFlowRuntime();
+    }
+
+    @Bean
+    public ConfigurationOperations configurationOperations() {
+        return EPServiceProviderManager.getDefaultProvider().getEPAdministrator().getConfiguration();
     }
 
     public static void main(String[] args) {

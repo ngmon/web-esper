@@ -19,7 +19,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +38,7 @@ public class EsperServiceTest {
     String eventType = "myEventType";
     String inputQueueName = "esperQueue";
     String inputExchangeName = "logs";
-    String testSchema = ("hostname String, application String, level Integer, p.value Integer, p.value2 String, type String, priority Integer, timestamp String");
+    static Map<String, Object> schema = null;
 
     String statementName = "myTestStat";
     String statementName2 = "myTestStat2";
@@ -48,48 +50,96 @@ public class EsperServiceTest {
     @BeforeClass
     public static void setUp() throws Exception {
         context = SpringApplication.run(Application.class);
+        schema = new HashMap<String, Object>();
+        schema.put("hostname", String.class);
+        schema.put("application", String.class);
+        schema.put("level", Integer.class);
+        schema.put("p.value", Integer.class);
+        schema.put("p.value2", String.class);
+        schema.put("type", String.class);
+        schema.put("priority", Integer.class);
+        schema.put("timestamp", String.class);
     }
 
     @Test
     public void testAddAMQPSource() throws Exception {
+        esperService.setSchema(eventType, schema);
         String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
-                testSchema, inputQueueName, inputExchangeName);
+                inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addAMQPSource(AMQPQueueName, inputQueue);
         assertEquals(result.getState(), EPDataFlowState.RUNNING);
         assertEquals(result.getDataFlowName(), AMQPQueueName);
+        assertTrue(esperService.removeAMQPSource(AMQPQueueName));
     }
 
     @Test
     public void testReAddAMQPSource() throws Exception {
+        String savedSchema = esperService.showSchema(eventType);
+        if(savedSchema==null) {
+            esperService.setSchema(eventType, schema);
+        }
+        if(esperService.showAMQPSource(AMQPQueueName) != null) {
+            esperService.removeAMQPSource(AMQPQueueName);
+        }
         String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
-                testSchema, inputQueueName, inputExchangeName);
+                inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addAMQPSource(AMQPQueueName, inputQueue);
-        assertNull(result);
+        assertEquals(result.getState(), EPDataFlowState.RUNNING);
+        assertEquals(result.getDataFlowName(), AMQPQueueName);
+
+        String inputQueue2 = EPLHelper.createAMQP(AMQPQueueName, eventType,
+                inputQueueName, inputExchangeName);
+        EPDataFlowInstance result2 = esperService.addAMQPSource(AMQPQueueName, inputQueue2);
+        assertNull(result2);
+
+        assertTrue(esperService.removeAMQPSource(AMQPQueueName));
     }
 
     @Test
     public void testAddDiffAMQPSourceWithSameName() throws Exception {
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType+"2",
-                testSchema + ", madeUpParam String", inputQueueName, inputExchangeName);
+        String savedSchema = esperService.showSchema(eventType);
+        if(savedSchema==null) {
+            esperService.setSchema(eventType, schema);
+        }
+        if(esperService.showAMQPSource(AMQPQueueName) != null) {
+            esperService.removeAMQPSource(AMQPQueueName);
+        }
+        String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
+                inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addAMQPSource(AMQPQueueName, inputQueue);
-        assertNull(result);
+        assertEquals(result.getState(), EPDataFlowState.RUNNING);
+        assertEquals(result.getDataFlowName(), AMQPQueueName);
+
+        String inputQueue2 = EPLHelper.createAMQP(AMQPQueueName, eventType+"2",
+                inputQueueName, inputExchangeName);
+        EPDataFlowInstance result2 = esperService.addAMQPSource(AMQPQueueName, inputQueue2);
+        assertNull(result2);
+        assertTrue(esperService.removeAMQPSource(AMQPQueueName));
     }
 
     @Test
     public void testAddSameAMQPSourceWithDiffName() throws Exception {
-        if(esperService.showAMQPSources().contains(AMQPQueueName+"WithDiffName")){
-            testRemoveExistingAMQPSource();
+        String savedSchema = esperService.showSchema(eventType);
+        if(savedSchema==null) {
+            esperService.setSchema(eventType, schema);
         }
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName+"WithDiffName", eventType, testSchema, inputQueueName, inputExchangeName);
+        if(esperService.showAMQPSource(AMQPQueueName+"WithDiffName") != null){
+            assertTrue(esperService.removeAMQPSource(AMQPQueueName+"WithDiffName"));
+        }
+        String inputQueue = EPLHelper.createAMQP(AMQPQueueName+"WithDiffName", eventType, inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addAMQPSource(AMQPQueueName+"WithDiffName", inputQueue);
         assertEquals(result.getState(), EPDataFlowState.RUNNING);
         assertEquals(result.getDataFlowName(), AMQPQueueName+"WithDiffName");
+        assertTrue(esperService.removeAMQPSource(AMQPQueueName + "WithDiffName"));
     }
 
     @Test
     public void testRemoveExistingAMQPSource() throws Exception {
-        if(!(esperService.showAMQPSources().contains(AMQPQueueName+"WithDiffName"))){
-            testAddSameAMQPSourceWithDiffName();
+        if(esperService.showAMQPSource(AMQPQueueName+"WithDiffName") == null){
+            String inputQueue = EPLHelper.createAMQP(AMQPQueueName+"WithDiffName", eventType, inputQueueName, inputExchangeName);
+            EPDataFlowInstance result = esperService.addAMQPSource(AMQPQueueName+"WithDiffName", inputQueue);
+            assertEquals(result.getState(), EPDataFlowState.RUNNING);
+            assertEquals(result.getDataFlowName(), AMQPQueueName + "WithDiffName");
         }
         assertTrue(esperService.removeAMQPSource(AMQPQueueName+"WithDiffName"));
     }
@@ -100,19 +150,10 @@ public class EsperServiceTest {
     }
 
     @Test
-    public void testShowAMQPSources() throws Exception {
-        List<String> result = esperService.showAMQPSources();
-        assertEquals(1, result.size());
-        assertEquals(AMQPQueueName, result.get(0));
-    }
-
-    @Test
     public void testAddStatement1() throws Exception {
-        if(esperService.showStatements().contains(statementName)) {
-            esperService.removeStatement(statementName);
-        }
+        esperService.removeStatement(statementName);
         String statement = EPLHelper.createStatement(statementName, eventType,
-                testSchema, query, outputQueueName, outputExchangeName);
+                query, outputQueueName, outputExchangeName);
         EPStatement result = esperService.addStatement(statementName, statement);
         assertEquals(EPStatementState.STARTED, result.getState());
         assertEquals(statementName, result.getName());
@@ -121,7 +162,7 @@ public class EsperServiceTest {
     @Test
     public void testAddStatement2() throws Exception {
         String statement = EPLHelper.createStatement(statementName2, eventType,
-                testSchema, query2, outputQueueName, outputExchangeName);
+                query2, outputQueueName, outputExchangeName);
         EPStatement result = esperService.addStatement(statementName2, statement);
         assertEquals(EPStatementState.STARTED, result.getState());
         assertEquals(statementName2, result.getName());
@@ -129,17 +170,20 @@ public class EsperServiceTest {
 
     @Test
     public void testRemoveStatement2() throws Exception {
-        if(!(esperService.showStatements().contains(statementName2))) {
-            testAddStatement2();
-        }
-        boolean result = esperService.removeStatement(statementName2);
-        assertTrue(result);
+        String statement = EPLHelper.createStatement(statementName2, eventType,
+                query2, outputQueueName, outputExchangeName);
+        EPStatement result = esperService.addStatement(statementName2, statement);
+        assertEquals(EPStatementState.STARTED, result.getState());
+
+        assertEquals(statementName2, result.getName());
+        boolean result2 = esperService.removeStatement(statementName2);
+        assertTrue(result2);
     }
 
     @Test
     public void testAddSameStatementWithDiffName() throws Exception {
         String statement = EPLHelper.createStatement(statementName + "WithDiffName", eventType,
-                testSchema, query, outputQueueName, outputExchangeName);
+                query, outputQueueName, outputExchangeName);
         EPStatement result = esperService.addStatement(statementName + "WithDiffName", statement);
         assertEquals(EPStatementState.STARTED, result.getState());
         assertEquals(statementName + "WithDiffName", result.getName());
@@ -153,16 +197,21 @@ public class EsperServiceTest {
 
     @Test
     public void testShowStatements() throws Exception {
+        String statement = EPLHelper.createStatement(statementName, eventType,
+                query, outputQueueName, outputExchangeName);
+        EPStatement result = esperService.addStatement(statementName, statement);
+        assertNotNull(result);
+        assertEquals(EPStatementState.STARTED, result.getState());
+        assertEquals(statementName, result.getName());
+
         List<String> existingStatements = esperService.showStatements();
+        assertNotNull(existingStatements);
         if(existingStatements.size() > 0) {
             for(int i = 0; i < existingStatements.size(); i++) {
                 esperService.removeStatement(existingStatements.get(i));
             }
         }
-        testAddStatement1();
-
         List<String> result2 = esperService.showStatements();
-        assertEquals(1, result2.size());
-        assertEquals(statementName, result2.get(0));
+        assertNull(result2);
     }
 }
