@@ -1,22 +1,26 @@
-package cz.muni.fgdovin.bachelorthesis;
+package cz.muni.fgdovin.bachelorthesis.web;
 
 import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
 
 /**
- * Created by Filip Gdovin on 6. 2. 2015.
+ * Created by Filip Gdovin on 4. 3. 2015.
  */
-//for beans definitions needed by Demo
-@SpringBootApplication
-public class Application {
+@Configuration
+@ComponentScan
+@EnableWebMvc
+public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public EPServiceProvider epServiceProvider() {
@@ -46,7 +50,11 @@ public class Application {
         return EPServiceProviderManager.getDefaultProvider().getEPAdministrator().getConfiguration();
     }
 
-    public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(Application.class, args);
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/WEB-INF/views/");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
     }
 }

@@ -18,7 +18,6 @@ public class JSONFlattener {
 
     private static String encode(JSONObject jo) throws JSONException {
         return "{" + encode(null, jo) + "}";
-
     }
 
     private static String encode(String parent, Object val)
