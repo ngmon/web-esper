@@ -1,11 +1,11 @@
-<html>
+<%--<html>
 <head>
     <title>Esper Continuous Query Engine</title>
     <style type="text/css">
     </style>
 </head>
     <body>
-        <%--<br>
+        <br>
         <div align='center'>
         <h2>
             Possible commands are:<br> <br>
@@ -25,6 +25,35 @@
         <h3>
             <a href="alldataflows.html">List all dataflows currently present in Esper engine</a>
         </h3>
-    </div>--%>
+    </div>
+</body>
+</html>
+--%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<html>
+<head>
+    <title>Esper Continuous Query Engine</title>
+</head>
+<body>
+<h2>Esper Continuous Query Engine</h2>
+<p>Select your action:</p>
+<form:form method="GET" action="/addschema">
+    <table>
+        <tr>
+            <td>
+                <input type="submit" value="Add schema"/>
+            </td>
+        </tr>
+    </table>
+</form:form>
+<form:form method="GET" action="/adddataflow">
+    <table>
+        <tr>
+            <td>
+                <input type="submit" value="Add dataflow"/>
+            </td>
+        </tr>
+    </table>
+</form:form>
 </body>
 </html>

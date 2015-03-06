@@ -6,6 +6,7 @@ import cz.muni.fgdovin.bachelorthesis.support.EPLHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,10 +54,9 @@ public class WebApi {
 
     String query = "select avg(p.value) from instream where p.value > 4652";
 
-    @RequestMapping()
-    @ResponseBody
-    public String welcome() {
-        return "index";
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView index(Model model) {
+        return new ModelAndView("index");
     }
 
     @RequestMapping("/adddataflow")
