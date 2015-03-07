@@ -7,11 +7,12 @@ import cz.muni.fgdovin.bachelorthesis.support.EPLHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,9 +60,25 @@ public class WebApi {
         return new ModelAndView("index");
     }
 
-    @RequestMapping("/adddataflow")
-    public ModelAndView addDataflow() {
-        return new ModelAndView("dataflow");
+    @RequestMapping(value="/adddataflow", method=RequestMethod.GET)
+    public String addDataflowForm(Model model) {
+        model.addAttribute("dataflowName", new String());
+        model.addAttribute("eventType", new String());
+        model.addAttribute("queueName", new String());
+        model.addAttribute("exchangeName", new String());
+        return "dataflow";
+    }
+
+    @RequestMapping(value = "/adddataflow", method=RequestMethod.POST)
+    public String addDataflowResult(@RequestParam("dataflowName") String dataflowName,
+                              @RequestParam("eventType") String eventType,
+                              @RequestParam("queueName") String queueName,
+                              @RequestParam("exchangeName") String exchangeName,
+                              ModelMap model) {
+        String dataflow = EPLHelper.createAMQP(dataflowName, eventType, queueName, exchangeName);
+        EPDataFlowInstance result = esperService.addDataflow(dataflowName, dataflow);
+        model.addAttribute("dataflow", esperService.showDataflow(dataflowName));
+        return "dataflowResult";
     }
 
     @RequestMapping(value = "/addschema")

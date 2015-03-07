@@ -4,6 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -29,8 +32,14 @@ public class JSONFlattener {
                 String key = i.next();
                 String hkey = (parent == null) ? key : parent + "." + key;
                 Object jval = jo.get(key);
-                String json = encode(hkey, jval);
-                sb.append(json);
+                if(key.contains("timestamp")) {
+                    sb.append("\"").append(key).append("\"").append(":");
+                    Long longNumber = parseDate((String) jval);
+                    sb.append(longNumber);
+                } else {
+                    String json = encode(hkey, jval);
+                    sb.append(json);
+                }
                 if (i.hasNext()) {
                     sb.append(",");
                 }
@@ -46,7 +55,8 @@ public class JSONFlattener {
                     sb.append(",");
                 }
             }
-        } else if (val instanceof String) {
+        }
+        else if (val instanceof String) {
             sb.append("\"").append(parent).append("\"").append(":");
             String s = (String) val;
             sb.append(JSONObject.quote(s));
@@ -55,7 +65,17 @@ public class JSONFlattener {
             Integer integer = (Integer) val;
             sb.append(integer);
         }
-
         return sb.toString();
+    }
+
+    private static Long parseDate(String input) {
+        SimpleDateFormat f = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");  //must be hardcoded
+        Date d = null;
+        try {
+            d = f.parse(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return d.getTime();
     }
 }

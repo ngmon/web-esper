@@ -6,30 +6,13 @@
 <body>
 
 <h2>Dataflow Information</h2>
-<form:form method="POST" action="/adddataflow">
-    <table>
-        <tr>
-            <td><form:label path="dataflowName">Dataflow name</form:label></td>
-            <td><form:input path="dataflowName" /></td>
-        </tr>
-        <tr>
-            <td><form:label path="eventType">Event type</form:label></td>
-            <td><form:input path="eventType" /></td>
-        </tr>
-        <tr>
-            <td><form:label path="queueName">Queue name</form:label></td>
-            <td><form:input path="queueName" /></td>
-        </tr>
-        <tr>
-            <td><form:label path="exchangeName">Exchange name</form:label></td>
-            <td><form:input path="exchangeName" /></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input type="submit" value="Add dataflow"/>
-            </td>
-        </tr>
-    </table>
-</form:form>
+<h1>Form</h1>
+<form action="#" th:action="@{/adddataflow}" method="post">
+    <p>Dataflow name: <input type="text" th:field="*{dataflowName}" /></p>
+    <p>Event type: <input type="text" th:field="*{eventType}" /></p>
+    <p>Queue name: <input type="text" th:field="*{queueName}" /></p>
+    <p>Exchange name: <input type="text" th:field="*{exchangeName}" /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
 </body>
 </html>
