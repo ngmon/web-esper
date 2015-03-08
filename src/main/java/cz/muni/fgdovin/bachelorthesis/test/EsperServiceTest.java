@@ -61,7 +61,7 @@ public class EsperServiceTest {
     @Test
     public void testAddAMQPSource() throws Exception {
         esperService.addSchema(eventType, schema);
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
+        String inputQueue = EPLHelper.toString(AMQPQueueName, eventType, "null",
                 inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addDataflow(AMQPQueueName, inputQueue);
         assertEquals(result.getState(), EPDataFlowState.RUNNING);
@@ -78,13 +78,13 @@ public class EsperServiceTest {
         if(esperService.showDataflow(AMQPQueueName) != null) {
             esperService.removeDataflow(AMQPQueueName);
         }
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
+        String inputQueue = EPLHelper.toString(AMQPQueueName, eventType, "null",
                 inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addDataflow(AMQPQueueName, inputQueue);
         assertEquals(result.getState(), EPDataFlowState.RUNNING);
         assertEquals(result.getDataFlowName(), AMQPQueueName);
 
-        String inputQueue2 = EPLHelper.createAMQP(AMQPQueueName, eventType,
+        String inputQueue2 = EPLHelper.toString(AMQPQueueName, eventType, "null",
                 inputQueueName, inputExchangeName);
         EPDataFlowInstance result2 = esperService.addDataflow(AMQPQueueName, inputQueue2);
         assertNull(result2);
@@ -101,13 +101,13 @@ public class EsperServiceTest {
         if(esperService.showDataflow(AMQPQueueName) != null) {
             esperService.removeDataflow(AMQPQueueName);
         }
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
+        String inputQueue = EPLHelper.toString(AMQPQueueName, eventType, "null",
                 inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addDataflow(AMQPQueueName, inputQueue);
         assertEquals(result.getState(), EPDataFlowState.RUNNING);
         assertEquals(result.getDataFlowName(), AMQPQueueName);
 
-        String inputQueue2 = EPLHelper.createAMQP(AMQPQueueName, eventType+"2",
+        String inputQueue2 = EPLHelper.toString(AMQPQueueName, eventType + "2", "null",
                 inputQueueName, inputExchangeName);
         EPDataFlowInstance result2 = esperService.addDataflow(AMQPQueueName, inputQueue2);
         assertNull(result2);
@@ -123,7 +123,8 @@ public class EsperServiceTest {
         if(esperService.showDataflow(AMQPQueueName + "WithDiffName") != null){
             assertTrue(esperService.removeDataflow(AMQPQueueName + "WithDiffName"));
         }
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName+"WithDiffName", eventType, inputQueueName, inputExchangeName);
+        String inputQueue = EPLHelper.toString(AMQPQueueName + "WithDiffName", eventType, "null",
+                inputQueueName, inputExchangeName);
         EPDataFlowInstance result = esperService.addDataflow(AMQPQueueName + "WithDiffName", inputQueue);
         assertEquals(result.getState(), EPDataFlowState.RUNNING);
         assertEquals(result.getDataFlowName(), AMQPQueueName+"WithDiffName");
@@ -133,7 +134,8 @@ public class EsperServiceTest {
     @Test
     public void testRemoveExistingAMQPSource() throws Exception {
         if(esperService.showDataflow(AMQPQueueName + "WithDiffName") == null){
-            String inputQueue = EPLHelper.createAMQP(AMQPQueueName+"WithDiffName", eventType, inputQueueName, inputExchangeName);
+            String inputQueue = EPLHelper.toString(AMQPQueueName + "WithDiffName", eventType, "null",
+                    inputQueueName, inputExchangeName);
             EPDataFlowInstance result = esperService.addDataflow(AMQPQueueName + "WithDiffName", inputQueue);
             assertEquals(result.getState(), EPDataFlowState.RUNNING);
             assertEquals(result.getDataFlowName(), AMQPQueueName + "WithDiffName");

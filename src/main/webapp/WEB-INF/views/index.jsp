@@ -37,7 +37,7 @@
 <body>
 <h2>Esper Continuous Query Engine</h2>
 <p>Select your action:</p>
-<form:form method="GET" action="/addschema">
+<form:form method="GET" action="/addSchema">
     <table>
         <tr>
             <td>
@@ -46,11 +46,29 @@
         </tr>
     </table>
 </form:form>
-<form:form method="GET" action="/adddataflow">
+<form:form method="GET" action="/addDataflow">
     <table>
         <tr>
             <td>
                 <input type="submit" value="Add dataflow"/>
+            </td>
+        </tr>
+    </table>
+</form:form>
+<form:form method="GET" action="/removeSchema">
+    <table>
+        <tr>
+            <td>
+                <input type="submit" value="Remove schema"/>
+            </td>
+        </tr>
+    </table>
+</form:form>
+<form:form method="GET" action="/removeDataflow">
+    <table>
+        <tr>
+            <td>
+                <input type="submit" value="Remove dataflow"/>
             </td>
         </tr>
     </table>

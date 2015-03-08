@@ -1,22 +1,18 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import cz.muni.fgdovin.bachelorthesis.core.EsperService;
 import cz.muni.fgdovin.bachelorthesis.support.EPLHelper;
 
+import cz.muni.fgdovin.bachelorthesis.support.SchemaHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -30,106 +26,97 @@ public class WebApi {
     @Autowired
     private EsperService esperService;
 
-    String AMQPQueueName = "AMQPIncomingStream";
-    String inputQueueName = "esperQueue";
-    String inputExchangeName = "logs";
-
-    String outputQueueName = "esperOutputQueue";
-    String outputExchangeName = "sortedLogs";
-
-    String eventType = "myEventType";
-    static Map<String, Object> schema;
-    static {
-        schema = new HashMap<String, Object>();
-        schema.put("hostname", String.class);
-        schema.put("application", String.class);
-        schema.put("level", Integer.class);
-        schema.put("p.value", Integer.class);
-        schema.put("p.value2", String.class);
-        schema.put("type", String.class);
-        schema.put("priority", Integer.class);
-        schema.put("timestamp", String.class);
-    }
-
-    String statementName = "myTestStat";
-
-    String query = "select avg(p.value) from instream where p.value > 4652";
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(Model model) {
         return new ModelAndView("index");
     }
 
-    @RequestMapping(value="/adddataflow", method=RequestMethod.GET)
-    public String addDataflowForm(Model model) {
-        model.addAttribute("dataflowName", new String());
-        model.addAttribute("eventType", new String());
-        model.addAttribute("queueName", new String());
-        model.addAttribute("exchangeName", new String());
-        return "dataflow";
+    @RequestMapping(value = "/addDataflow", method = RequestMethod.GET)
+    public ModelAndView dataflowForm() {
+        return new ModelAndView("addDataflow", "EPLHelper", new EPLHelper());
     }
 
-    @RequestMapping(value = "/adddataflow", method=RequestMethod.POST)
-    public String addDataflowResult(@RequestParam("dataflowName") String dataflowName,
-                              @RequestParam("eventType") String eventType,
-                              @RequestParam("queueName") String queueName,
-                              @RequestParam("exchangeName") String exchangeName,
-                              ModelMap model) {
-        String dataflow = EPLHelper.createAMQP(dataflowName, eventType, queueName, exchangeName);
-        EPDataFlowInstance result = esperService.addDataflow(dataflowName, dataflow);
-        model.addAttribute("dataflow", esperService.showDataflow(dataflowName));
-        return "dataflowResult";
-    }
-
-    @RequestMapping(value = "/addschema")
-    @ResponseBody
-    public String addSchema() {
-        esperService.addSchema(eventType, schema);
-        return esperService.showSchema(eventType);
-    }
-
-    @RequestMapping(value = "/addinputdataflow")
-    @ResponseBody
-    public String addInputDataflow() {
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
-                inputQueueName, inputExchangeName);
-        EPDataFlowInstance result = esperService.addDataflow(AMQPQueueName, inputQueue);
-        if(result == null) {
-            return "Already defined!";
+    @RequestMapping(value = "/addDataflow", method = RequestMethod.POST)
+    public String submitDataflowForm(@Valid @ModelAttribute("EPLHelper")EPLHelper EPLHelper,
+                         BindingResult result, ModelMap model) {
+        if (result.hasErrors()) {
+            return "error";
         }
-        return result.getDataFlowName();
+        String dataflowName = EPLHelper.getDataflowName();
+        String eventType = EPLHelper.getEventType();
+        String query = EPLHelper.getQuery();
+        String queueName = EPLHelper.getQueueName();
+        String exchangeName = EPLHelper.getExchangeName();
+
+        model.addAttribute("dataflowName", dataflowName);
+        model.addAttribute("eventType", eventType);
+        model.addAttribute("query", query);
+        model.addAttribute("queueName", queueName);
+        model.addAttribute("exchangeName", exchangeName);
+
+        String queueParams = EPLHelper.toString(dataflowName, eventType, query, queueName, exchangeName);
+            esperService.addDataflow(dataflowName, queueParams);
+
+        return "addDataflowResult";
     }
 
-    @RequestMapping(value = "/addoutputdataflow")
-    @ResponseBody
-    public String addOutputDataflow() {
-        String outputQueue = EPLHelper.createStatement(statementName, eventType, query,
-                outputQueueName, outputExchangeName);
-        EPDataFlowInstance result = esperService.addDataflow(statementName, outputQueue);
-        if(result == null) {
-            return "Already defined!";
-        }
-        return result.getDataFlowName();
+    @RequestMapping(value = "/removeDataflow", method = RequestMethod.GET)
+    public ModelAndView removeDataflowForm() {
+        return new ModelAndView("removeDataflow", "EPLHelper", new EPLHelper());
     }
 
-    @RequestMapping(value = "/removedataflow")
-    @ResponseBody
-    public String removeDataflow() {
-        if(esperService.removeDataflow(statementName)) {
-            return "Successfully removed dataflow " + statementName;
+    @RequestMapping(value = "/removeDataflow", method = RequestMethod.POST)
+    public String submitRemoveDataflowForm(@Valid @ModelAttribute("EPLHelper")EPLHelper myHelper,
+                                         BindingResult result, ModelMap model) {
+        if (result.hasErrors()) {
+            return "error";
         }
-        return "No dataflow with name \"" + statementName + "\" present.";
+        model.addAttribute("dataflowName", myHelper.getDataflowName());
+        if (esperService.removeDataflow(myHelper.getDataflowName())) {
+            model.addAttribute("eventType", "Dataflow with given name removed successfully.");
+        } else {
+
+            model.addAttribute("eventType", "Dataflow with this name was not found, or its removal failed.");
+        }
+        return "removeDataflowResult";
     }
 
-    @RequestMapping(value = "/alldataflows")
-    @ResponseBody
-    public List<String> showDataflows() {
-        List<String> result = esperService.showDataflows();
-        if(result == null) {
-            result = new ArrayList<String>();
-            result.add("No dataflows defined!");
-            return result;
+    @RequestMapping(value = "/addSchema", method = RequestMethod.GET)
+    public ModelAndView schemaForm() {
+        return new ModelAndView("addSchema", "SchemaHelper", new SchemaHelper());
+    }
+
+    @RequestMapping(value = "/addSchema", method = RequestMethod.POST)
+    public String submitSchemaForm(@Valid @ModelAttribute("SchemaHelper")SchemaHelper myHelper,
+                                     BindingResult result, ModelMap model) {
+        if (result.hasErrors()) {
+            return "error";
         }
-        return result;
+        model.addAttribute("eventType", myHelper.getEventType());
+        model.addAttribute("properties", myHelper.getProperties());
+        Map<String, Object> properties = SchemaHelper.toMap(myHelper.getProperties());
+        esperService.addSchema(myHelper.getEventType(), properties);
+        return "addSchemaResult";
+    }
+
+    @RequestMapping(value = "/removeSchema", method = RequestMethod.GET)
+    public ModelAndView removeSchemaForm() {
+        return new ModelAndView("removeSchema", "SchemaHelper", new SchemaHelper());
+    }
+
+    @RequestMapping(value = "/removeSchema", method = RequestMethod.POST)
+    public String submitRemoveSchemaForm(@Valid @ModelAttribute("SchemaHelper")SchemaHelper myHelper,
+                                   BindingResult result, ModelMap model) {
+        if (result.hasErrors()) {
+            return "error";
+        }
+        model.addAttribute("eventType", myHelper.getEventType());
+        if (esperService.removeSchema(myHelper.getEventType())) {
+            model.addAttribute("properties", "No statements rely on this event type, schema removed successfully.");
+        } else {
+
+            model.addAttribute("properties", "Event schema with this name was not found, or is still in use and was not removed.");
+        }
+        return "removeSchemaResult";
     }
 }

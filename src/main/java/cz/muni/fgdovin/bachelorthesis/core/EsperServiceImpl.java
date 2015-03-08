@@ -48,14 +48,15 @@ public class EsperServiceImpl implements EsperService {
 
     @Override
     public boolean removeSchema(String eventName) {
+        boolean result;
         try{
-            configurationOperations.removeEventType(eventName, false);
+            result = configurationOperations.removeEventType(eventName, false);
         }
         catch(ConfigurationException ex) {
             logger.warn(ex);
             return false;
         }
-        return true;
+        return result;
     }
 
     @Override

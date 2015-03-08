@@ -3,6 +3,7 @@ package cz.muni.fgdovin.bachelorthesis;
 import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 
+import com.espertech.esper.client.time.CurrentTimeEvent;
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
@@ -21,7 +22,9 @@ public class Application {
 
     @Bean
     public EPServiceProvider epServiceProvider() {
-        EPServiceProvider esperProvider = EPServiceProviderManager.getDefaultProvider();
+        Configuration config = new Configuration();
+        config.getEngineDefaults().getThreading().setInternalTimerEnabled(false); //getting time from events enabled
+        EPServiceProvider esperProvider = EPServiceProviderManager.getDefaultProvider(config);
         esperProvider.getEPAdministrator().getConfiguration().addImport(AMQPSource.class.getPackage().getName() + ".*");
         esperProvider.getEPAdministrator().getConfiguration().addImport(AMQPSink.class.getPackage().getName() + ".*");
         return esperProvider;
@@ -34,7 +37,11 @@ public class Application {
 
     @Bean
     public EPRuntime epRuntime() {
-        return EPServiceProviderManager.getDefaultProvider().getEPRuntime();
+        EPRuntime myRuntime = EPServiceProviderManager.getDefaultProvider().getEPRuntime();
+        long timeInMillis = System.currentTimeMillis(); //set time for engine because we want to manage it from events later
+        CurrentTimeEvent timeEvent = new CurrentTimeEvent(timeInMillis);
+        myRuntime.sendEvent(timeEvent);
+        return myRuntime;
     }
 
     @Bean

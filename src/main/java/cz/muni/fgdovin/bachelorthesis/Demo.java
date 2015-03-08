@@ -69,7 +69,7 @@ public class Demo {
         esperService.addSchema(eventType, schema);
 
         //AMQP source
-        String inputQueue = EPLHelper.createAMQP(AMQPQueueName, eventType,
+        String inputQueue = EPLHelper.toString(AMQPQueueName, eventType, "null",
                 inputQueueName, inputExchangeName);
         esperService.addDataflow(AMQPQueueName, inputQueue);
 
@@ -79,7 +79,7 @@ public class Demo {
         esperService.addDataflow(statementName, statement);*/
 
         //Statement2
-        String statement2 = EPLHelper.createStatement(statementName2, eventType,
+        String statement2 = EPLHelper.toString(statementName2, eventType,
                 query2, outputQueueName, outputExchangeName);
         esperService.addDataflow(statementName2, statement2);
 

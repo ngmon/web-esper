@@ -34,7 +34,12 @@ public class JSONFlattener {
                 Object jval = jo.get(key);
                 if(key.contains("timestamp")) {
                     sb.append("\"").append(key).append("\"").append(":");
-                    Long longNumber = parseDate((String) jval);
+                    Long longNumber;
+                    if(jval instanceof Long) {
+                        longNumber = (Long) jval;
+                    } else {
+                        longNumber = parseDate((String) jval);
+                    }
                     sb.append(longNumber);
                 } else {
                     String json = encode(hkey, jval);
