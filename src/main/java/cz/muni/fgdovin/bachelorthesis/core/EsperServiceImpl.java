@@ -12,7 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * Created by Filip Gdovin on 9. 2. 2015.
+ * This class implements basic control of dataflows and event schemas,
+ * using AMQP IO adapter.
+ *
+ * @author Filip Gdovin
+ * @version 9. 2. 2015
  */
 @Service
 public class EsperServiceImpl implements EsperService {
@@ -34,6 +38,9 @@ public class EsperServiceImpl implements EsperService {
     @Autowired
     ConfigurationOperations configurationOperations;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean addSchema(String eventName, Map<String, Object> schema) {
         try{
@@ -46,6 +53,9 @@ public class EsperServiceImpl implements EsperService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean removeSchema(String eventName) {
         boolean result;
@@ -59,6 +69,9 @@ public class EsperServiceImpl implements EsperService {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String showSchema(String eventName) {
         EventType myEvent = configurationOperations.getEventType(eventName);
@@ -68,6 +81,9 @@ public class EsperServiceImpl implements EsperService {
         return myEvent.getName() + ":" + myEvent.getPropertyNames();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> showSchemas() {
         EventType[] allEvents = configurationOperations.getEventTypes();
@@ -81,6 +97,9 @@ public class EsperServiceImpl implements EsperService {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public EPDataFlowInstance addDataflow(String queueName, String queueProperties) {
         if(esperDataFlowRuntime.getSavedInstance(queueName) != null) {
@@ -101,6 +120,9 @@ public class EsperServiceImpl implements EsperService {
         return sourceInstance;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean removeDataflow(String queueName) {
         EPDataFlowInstance sourceInstance = esperDataFlowRuntime.getSavedInstance(queueName);
@@ -121,6 +143,9 @@ public class EsperServiceImpl implements EsperService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String showDataflow(String queueName){
         EPStatement myStatement = esperAdministrator.getStatement(queueName);
@@ -130,7 +155,9 @@ public class EsperServiceImpl implements EsperService {
         return myStatement.getName() + "[" + myStatement.getState() + "]:\n\"" + myStatement.getText() + "\"\n";
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> showDataflows(){
         String[] allDataFlows = esperDataFlowRuntime.getSavedInstances();
