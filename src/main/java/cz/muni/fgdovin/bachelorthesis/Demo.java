@@ -36,7 +36,7 @@ public class Demo {
     String statementName = "myTestStat";
     String statementName2 = "myTestStat2";
 
-    String query = "select avg(p.value) from instream where p.value > 4652";
+    String query = "select sum(p.value) from instream";
     String query2 = "select * from instream.win:ext_timed(timestamp, 1 hour)";
 
     public static void main(String[] argc) throws Exception {
@@ -74,7 +74,7 @@ public class Demo {
         esperService.addDataflow(AMQPQueueName, inputQueue);
 
         /*//Statement1
-        String statement = EPLHelper.createStatement(statementName, eventType,
+        String statement = EPLHelper.toString(statementName, eventType,
                 query, outputQueueName, outputExchangeName);
         esperService.addDataflow(statementName, statement);*/
 

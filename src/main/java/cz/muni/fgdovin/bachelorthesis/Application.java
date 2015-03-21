@@ -7,6 +7,7 @@ import com.espertech.esper.client.time.CurrentTimeEvent;
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
+import cz.muni.fgdovin.bachelorthesis.support.JSONFlattener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -20,14 +21,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class Application {
 
+    private EPServiceProvider epServiceProvider;
+    private EPRuntime epRuntime;
+
     @Bean
     public EPServiceProvider epServiceProvider() {
-        Configuration config = new Configuration();
-        config.getEngineDefaults().getThreading().setInternalTimerEnabled(false); //getting time from events enabled
-        EPServiceProvider esperProvider = EPServiceProviderManager.getDefaultProvider(config);
-        esperProvider.getEPAdministrator().getConfiguration().addImport(AMQPSource.class.getPackage().getName() + ".*");
-        esperProvider.getEPAdministrator().getConfiguration().addImport(AMQPSink.class.getPackage().getName() + ".*");
-        return esperProvider;
+        if(this.epServiceProvider==null) {
+            Configuration config = new Configuration();
+            config.getEngineDefaults().getThreading().setInternalTimerEnabled(false); //getting time from events enabled
+            this.epServiceProvider = EPServiceProviderManager.getDefaultProvider(config);
+            this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSource.class.getPackage().getName() + ".*");
+            this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSink.class.getPackage().getName() + ".*");
+        }
+        return this.epServiceProvider;
     }
 
     @Bean
@@ -37,16 +43,18 @@ public class Application {
 
     @Bean
     public EPRuntime epRuntime() {
-        EPRuntime myRuntime = EPServiceProviderManager.getDefaultProvider().getEPRuntime();
-        long timeInMillis = System.currentTimeMillis(); //set time for engine because we want to manage it from events later
-        CurrentTimeEvent timeEvent = new CurrentTimeEvent(timeInMillis);
-        myRuntime.sendEvent(timeEvent);
-        return myRuntime;
+        if(this.epRuntime==null) {
+            this.epRuntime = EPServiceProviderManager.getDefaultProvider().getEPRuntime();
+            long timeInMillis = JSONFlattener.parseDate("2015-03-21T08:05:00.000"); //set time for engine because we want to manage it from events later
+            CurrentTimeEvent timeEvent = new CurrentTimeEvent(timeInMillis);
+            this.epRuntime.sendEvent(timeEvent);
+        }
+        return this.epRuntime;
     }
 
     @Bean
     public EPDataFlowRuntime epdataFlowRuntime() {
-        return EPServiceProviderManager.getDefaultProvider().getEPRuntime().getDataFlowRuntime();
+        return epRuntime().getDataFlowRuntime();
     }
 
     @Bean
