@@ -4,10 +4,8 @@ import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 
-import org.apache.log4j.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -18,10 +16,9 @@ import java.util.*;
  * @author Filip Gdovin
  * @version 9. 2. 2015
  */
-@Service
-public class EsperServiceImpl implements EsperService {
 
-    private static final Logger logger = Logger.getLogger(EsperServiceImpl.class);
+@Component
+public class EsperServiceImpl implements EsperService {
 
     @Autowired
     EPServiceProvider esperServiceProvider;
@@ -42,135 +39,79 @@ public class EsperServiceImpl implements EsperService {
      * {@inheritDoc}
      */
     @Override
-    public boolean addSchema(String eventName, Map<String, Object> schema) {
-        try{
-            configurationOperations.addEventType(eventName, schema);
-        }
-        catch(ConfigurationException ex){
-            logger.warn(ex);
-            return false;
-        }
-        return true;
+    public void addEventType(String eventName, Map<String, Object> schema) throws ConfigurationException {
+        this.configurationOperations.addEventType(eventName, schema);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean removeSchema(String eventName) {
-        boolean result;
-        try{
-            result = configurationOperations.removeEventType(eventName, false);
-        }
-        catch(ConfigurationException ex) {
-            logger.warn(ex);
-            return false;
-        }
-        return result;
+    public void removeEventType(String eventName) throws ConfigurationException{
+        this.configurationOperations.removeEventType(eventName, false);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String showSchema(String eventName) {
-        EventType myEvent = configurationOperations.getEventType(eventName);
-        if(myEvent == null) {
-            return null;
-        }
-        return myEvent.getName() + ":" + myEvent.getPropertyNames();
+    public EventType showEventType(String eventName) throws NullPointerException{
+        return this.configurationOperations.getEventType(eventName);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> showSchemas() {
-        EventType[] allEvents = configurationOperations.getEventTypes();
-        if((allEvents == null) || (allEvents.length == 0)) {
-            return null;
-        }
-        List<String> result = new ArrayList<String>();
-        for(int i = 0; i < allEvents.length; i++) {
-            result.add(showSchema(allEvents[i].getName()));
-        }
-        return result;
+    public EventType[] showEventTypes() {
+        return this.configurationOperations.getEventTypes();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public EPDataFlowInstance addDataflow(String queueName, String queueProperties) {
-        if(esperDataFlowRuntime.getSavedInstance(queueName) != null) {
-            return null;
+    public void addDataflow(String queueName, String queueProperties) throws NullPointerException, EPException, IllegalStateException {
+        if(this.esperDataFlowRuntime.getSavedInstance(queueName) != null) {
+            throw new NullPointerException("Dataflow with this name is already defined!");
         }
-        try{
-            esperAdministrator.createEPL(queueProperties, queueName);
-        }
-        catch(EPException ex){
-            logger.warn(ex);
-            return null;
-        }
-        EPDataFlowInstance sourceInstance = esperDataFlowRuntime.instantiate(queueName);
-        esperDataFlowRuntime.saveInstance(queueName, sourceInstance);
-
+        this.esperAdministrator.createEPL(queueProperties, queueName);
+        EPDataFlowInstance sourceInstance = this.esperDataFlowRuntime.instantiate(queueName);
+        this.esperDataFlowRuntime.saveInstance(queueName, sourceInstance);
         sourceInstance.start();
-
-        return sourceInstance;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean removeDataflow(String queueName) {
-        EPDataFlowInstance sourceInstance = esperDataFlowRuntime.getSavedInstance(queueName);
-        EPStatement creatingStatement = esperAdministrator.getStatement(queueName);
-
-        if(sourceInstance != null){
-            sourceInstance.cancel();
-            esperDataFlowRuntime.removeSavedInstance(queueName);
-        } else {
-            return false;
+    public void removeDataflow(String queueName) throws NullPointerException {
+        EPDataFlowInstance sourceInstance = this.esperDataFlowRuntime.getSavedInstance(queueName);
+        EPStatement creatingStatement = this.esperAdministrator.getStatement(queueName);
+        if(sourceInstance == null) {
+            throw new NullPointerException("No dataflow instance with given name found.");
         }
+        sourceInstance.cancel();
+        this.esperDataFlowRuntime.removeSavedInstance(queueName);
 
-        if (creatingStatement == null) {
-            return true;
+        if (creatingStatement != null) {
+            creatingStatement.destroy();
         }
-        creatingStatement.destroy();
-
-        return true;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String showDataflow(String queueName){
-        EPStatement myStatement = esperAdministrator.getStatement(queueName);
-        if(myStatement == null) {
-            return null;
-        }
-        return myStatement.getName() + "[" + myStatement.getState() + "]:\n\"" + myStatement.getText() + "\"\n";
+    public EPStatement showDataflow(String queueName){
+        return this.esperAdministrator.getStatement(queueName);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> showDataflows(){
-        String[] allDataFlows = esperDataFlowRuntime.getSavedInstances();
-
-        if((allDataFlows == null) || (allDataFlows.length == 0)) {
-            return null;
-        }
-
-        //in case we would like to receive more detailed info sometimes
-        List<String> result = new ArrayList<String>();
-        for(int i = 0; i < allDataFlows.length; i++) {
-            result.add(showDataflow(allDataFlows[i]));
-        }
-        return result;
+    public String[] showDataflows(){
+        return this.esperDataFlowRuntime.getSavedInstances();
     }
 }

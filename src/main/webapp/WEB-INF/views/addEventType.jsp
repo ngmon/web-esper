@@ -3,12 +3,12 @@
 <head>
 </head>
 <body>
-<h3>Enter schema information</h3>
+<h3>Enter event type information</h3>
 <div align="center">
-    <form:form action="/addSchema" method="POST" modelAttribute="SchemaHelper">
+    <form:form action="/addEventType" method="POST" modelAttribute="EventTypeModel">
         <table border="0">
             <tr>
-                <td><form:label path="eventType">Event type:</form:label></td>
+                <td><form:label path="eventType">Event type name:</form:label></td>
                 <td><form:input path="eventType" /></td>
             </tr>
             <tr>

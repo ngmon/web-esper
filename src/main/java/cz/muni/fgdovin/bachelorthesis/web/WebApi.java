@@ -1,8 +1,8 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import cz.muni.fgdovin.bachelorthesis.core.EsperService;
-import cz.muni.fgdovin.bachelorthesis.support.EPLHelper;
-import cz.muni.fgdovin.bachelorthesis.support.SchemaHelper;
+import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
+import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,7 +10,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -28,7 +27,7 @@ import java.util.Map;
 public class WebApi {
 
     @Autowired
-    private EsperService esperService;
+    private EsperUserFriendlyService esperService;
 
     /**
      * This method is bound to "/" mapping and displays welcome page.
@@ -47,32 +46,32 @@ public class WebApi {
      */
     @RequestMapping(value = "/addDataflow", method = RequestMethod.GET)
     public ModelAndView dataflowForm() {
-        return new ModelAndView("addDataflow", "EPLHelper", new EPLHelper());
+        return new ModelAndView("addDataflow", "DataflowModel", new DataflowModel());
     }
 
     /**
      * This method is called when user completes a form, it POSTs form contents
      * so that new dataflow can be created.
      *
-     * @param EPLHelper Model class representing fields in form, form contents are mapped to instance of this class.
-     * @param model ModelMap containing dataflow information, it will be displayed as confirmation of creation.
+     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
+     * @param resultModel ModelMap containing dataflow information, it will be displayed as confirmation of creation.
      * @return Page displaying newly created dataflow.
      */
     @RequestMapping(value = "/addDataflow", method = RequestMethod.POST)
-    public String submitDataflowForm(@Valid @ModelAttribute("EPLHelper")EPLHelper EPLHelper, ModelMap model) {
-        String dataflowName = EPLHelper.getDataflowName();
-        String eventType = EPLHelper.getEventType();
-        String query = EPLHelper.getQuery();
-        String queueName = EPLHelper.getQueueName();
-        String exchangeName = EPLHelper.getExchangeName();
+    public String submitDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        String dataflowName = modelClass.getDataflowName();
+        String eventType = modelClass.getEventType();
+        String query = modelClass.getQuery();
+        String queueName = modelClass.getQueueName();
+        String exchangeName = modelClass.getExchangeName();
 
-        model.addAttribute("dataflowName", dataflowName);
-        model.addAttribute("eventType", eventType);
-        model.addAttribute("query", query);
-        model.addAttribute("queueName", queueName);
-        model.addAttribute("exchangeName", exchangeName);
+        resultModel.addAttribute("dataflowName", dataflowName);
+        resultModel.addAttribute("eventType", eventType);
+        resultModel.addAttribute("query", query);
+        resultModel.addAttribute("queueName", queueName);
+        resultModel.addAttribute("exchangeName", exchangeName);
 
-        String queueParams = EPLHelper.toString(dataflowName, eventType, query, queueName, exchangeName);
+        String queueParams = DataflowHelper.generateEPL(modelClass);
             esperService.addDataflow(dataflowName, queueParams);
 
         return "addDataflowResult";
@@ -85,83 +84,82 @@ public class WebApi {
      */
     @RequestMapping(value = "/removeDataflow", method = RequestMethod.GET)
     public ModelAndView removeDataflowForm() {
-        return new ModelAndView("removeDataflow", "EPLHelper", new EPLHelper());
+        return new ModelAndView("removeDataflow", "DataflowModel", new DataflowModel());
     }
 
     /**
      * This method is called when user submits dataflow deletion form, it finds dataflow
      * and deletes it if possible.
      *
-     * @param myHelper Model class used to get user input from form.
-     * @param model ModelMap containing result of dataflow deletion.
+     * @param modelClass Model class used to get user input from form.
+     * @param resultModel ModelMap containing result of dataflow deletion.
      * @return Web page informing user if the dataflow was successfully deleted.
      */
     @RequestMapping(value = "/removeDataflow", method = RequestMethod.POST)
-    public String submitRemoveDataflowForm(@ModelAttribute("EPLHelper")EPLHelper myHelper, ModelMap model) {
-        model.addAttribute("dataflowName", myHelper.getDataflowName());
-        if (esperService.removeDataflow(myHelper.getDataflowName())) {
-            model.addAttribute("eventType", "Dataflow with given name removed successfully.");
+    public String submitRemoveDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
+        if (esperService.removeDataflow(modelClass.getDataflowName())) {
+            resultModel.addAttribute("eventType", "Dataflow with given name removed successfully.");
         } else {
 
-            model.addAttribute("eventType", "Dataflow with this name was not found, or its removal failed.");
+            resultModel.addAttribute("eventType", "Dataflow with this name was not found, or its removal failed.");
         }
         return "removeDataflowResult";
     }
 
     /**
-     * This method is called when user decides to add new event schema.
+     * This method is called when user decides to add new event type.
      *
-     * @return Web page containing form for schema creation.
+     * @return Web page containing form for event type creation.
      */
-    @RequestMapping(value = "/addSchema", method = RequestMethod.GET)
-    public ModelAndView schemaForm() {
-        return new ModelAndView("addSchema", "SchemaHelper", new SchemaHelper());
+    @RequestMapping(value = "/addEventType", method = RequestMethod.GET)
+    public ModelAndView EventTypeForm() {
+        return new ModelAndView("addEventType", "EventTypeModel", new EventTypeModel());
     }
 
     /**
      * This method is called when user completes a form, it POSTs form contents
-     * so that new schema can be created.
+     * so that new event type can be created.
      *
-     * @param myHelper Model class representing fields in form, form contents are mapped to instance of this class.
-     * @param model ModelMap containing schema information, it will be displayed as confirmation of creation.
-     * @return Page displaying newly created schema.
+     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
+     * @param resultModel ModelMap containing event type information, it will be displayed as confirmation of creation.
+     * @return Page displaying newly created event type.
      */
-    @RequestMapping(value = "/addSchema", method = RequestMethod.POST)
-    public String submitSchemaForm(@ModelAttribute("SchemaHelper")SchemaHelper myHelper, ModelMap model) {
-        model.addAttribute("eventType", myHelper.getEventType());
-        model.addAttribute("properties", myHelper.getProperties());
-        Map<String, Object> properties = SchemaHelper.toMap(myHelper.getProperties());
-        esperService.addSchema(myHelper.getEventType(), properties);
-        return "addSchemaResult";
+    @RequestMapping(value = "/addEventType", method = RequestMethod.POST)
+    public String submitEventTypeForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
+        resultModel.addAttribute("eventType", modelClass.getEventType());
+        resultModel.addAttribute("properties", modelClass.getProperties());
+        Map<String, Object> properties = EventTypeHelper.toMap(modelClass.getProperties());
+        esperService.addEventType(modelClass.getEventType(), properties);
+        return "addEventTypeResult";
     }
 
     /**
-     * This method is called when user chooses to delete schema.
+     * This method is called when user chooses to delete event type.
      *
-     * @return Web page containing form to delete schema by its name.
+     * @return Web page containing form to delete event type by its name.
      */
-    @RequestMapping(value = "/removeSchema", method = RequestMethod.GET)
-    public ModelAndView removeSchemaForm() {
-        return new ModelAndView("removeSchema", "SchemaHelper", new SchemaHelper());
+    @RequestMapping(value = "/removeEventType", method = RequestMethod.GET)
+    public ModelAndView removeEventTypeForm() {
+        return new ModelAndView("removeEventType", "EventTypeModel", new EventTypeModel());
     }
 
     /**
-     * This method is called when user submits schema deletion form, it finds schema
+     * This method is called when user submits event type deletion form, it finds event type
      * and deletes it if possible.
      *
-     * @param myHelper Model class used to get user input from form.
-     * @param model ModelMap containing result of schema deletion.
-     * @return Web page informing user if the schema was successfully deleted.
+     * @param modelClass Model class used to get user input from form.
+     * @param resultModel ModelMap containing result of event type deletion.
+     * @return Web page informing user if the event type was successfully deleted.
      */
-    @RequestMapping(value = "/removeSchema", method = RequestMethod.POST)
-    public String submitRemoveSchemaForm(@ModelAttribute("SchemaHelper")SchemaHelper myHelper, ModelMap model) {
-        model.addAttribute("eventType", myHelper.getEventType());
-        if (esperService.removeSchema(myHelper.getEventType())) {
-            model.addAttribute("properties", "No statements rely on this event type, schema removed successfully.");
+    @RequestMapping(value = "/removeEventType", method = RequestMethod.POST)
+    public String submitRemoveEventTypeForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
+        resultModel.addAttribute("eventType", modelClass.getEventType());
+        if (esperService.removeEventType(modelClass.getEventType())) {
+            resultModel.addAttribute("properties", "No statements rely on this event type, event type removed successfully.");
         } else {
-
-            model.addAttribute("properties", "Event schema with this name was not found, or is still in use and was not removed.");
+            resultModel.addAttribute("properties", "Event type with this name was not found, or is still in use and was not removed.");
         }
-        return "removeSchemaResult";
+        return "removeEventTypeResult";
     }
 }

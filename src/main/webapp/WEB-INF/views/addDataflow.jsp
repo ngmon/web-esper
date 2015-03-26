@@ -5,7 +5,7 @@
     <body>
         <h3>Enter dataflow information</h3>
         <div align="center">
-            <form:form action="/addDataflow" method="POST" modelAttribute="EPLHelper">
+            <form:form action="/addDataflow" method="POST" modelAttribute="DataflowModel">
                 <table border="0">
                     <tr>
                     </tr>

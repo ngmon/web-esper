@@ -1,5 +1,5 @@
 <body>
-    <h3>Schema created:</h3>
+    <h3>Event type created:</h3>
     <div align="center">
         <table>
             <tr>
@@ -10,8 +10,9 @@
                 <td>Properties :</td>
                 <td>${properties}</td>
             </tr>
+            <td><a href="/addEventType">Create new event type</a></td>
+            <td><a href="/">Return</a></td>
         </table>
-        <td><a href="/addSchema">Create new schema</a></td>
-        <td><a href="/">Return</a></td>
+
     </div>
 </body>

@@ -1,9 +1,9 @@
 <body>
-<h3>Dataflow removed:</h3>
+<h3>Event type removed:</h3>
 <div align="center">
     <table>
         <tr>
-            <td>Event type :</td>
+            <td>Event type name :</td>
             <td>${eventType}</td>
         </tr>
         <tr>
@@ -11,7 +11,7 @@
             <td>${properties}</td>
         </tr>
     </table>
-    <td><a href="/removeSchema">Remove another schema</a></td>
+    <td><a href="/removeEventType">Remove another event type</a></td>
     <td><a href="/">Return</a></td>
 </div>
 </body>

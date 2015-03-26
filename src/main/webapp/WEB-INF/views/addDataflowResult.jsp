@@ -22,8 +22,9 @@
                 <td>Exchange name :</td>
                 <td>${exchangeName}</td>
             </tr>
+            <td><a href="/addDataflow">Create new dataflow</a></td>
+            <td><a href="/">Return</a></td>
         </table>
-        <td><a href="/addDataflow">Create new dataflow</a></td>
-        <td><a href="/">Return</a></td>
+
     </div>
 </body>

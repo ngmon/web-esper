@@ -5,7 +5,7 @@
 <body>
     <h3>Enter dataflow name</h3>
     <div align="center">
-        <form:form action="/removeDataflow" method="POST" modelAttribute="EPLHelper">
+        <form:form action="/removeDataflow" method="POST" modelAttribute="DataflowModel">
             <table border="0">
                 <tr>
                     <td><form:label path="dataflowName">Dataflow name:</form:label></td>

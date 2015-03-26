@@ -3,9 +3,9 @@
 <head>
 </head>
 <body>
-    <h3>Enter schema name</h3>
+    <h3>Enter event type name</h3>
     <div align="center">
-        <form:form action="/removeSchema" method="POST" modelAttribute="SchemaHelper">
+        <form:form action="/removeEventType" method="POST" modelAttribute="EventTypeModel">
             <table border="0">
                 <tr>
                     <td><form:label path="eventType">Event type:</form:label></td>

@@ -1,28 +1,25 @@
 package cz.muni.fgdovin.bachelorthesis.core;
 
-import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventType;
-import com.espertech.esper.client.dataflow.EPDataFlowInstance;
-import org.springframework.context.annotation.Bean;
-
 import java.util.List;
 import java.util.Map;
 
 /**
- * This interface is used by other classes to communicate with Esper,
+ * Created by Filip Gdovin on 26. 3. 2015.
+ */
+
+/**
+ * This interface is used by API to communicate with Esper,
  * in particular to:
  * add/remove/show(by name)/show all dataflows
  * add/remove/show(by name)/show all event types
  *
- * It is possible to have more than one implementation,
- * as there are more ways to configure Esper,
- * depending on used IO adapters and/or
- * purpose of Engine itself.
+ * Provides convenient and mostly String-arguments-based
+ * methods and manages all possible exceptions thrown by
+ * lower layers.
  *
  * @author Filip Gdovin
  */
-
-public interface EsperService{
+public interface EsperUserFriendlyService {
 
     /**
      * Method used to add new event type to the Esper.
@@ -37,31 +34,37 @@ public interface EsperService{
      *               (e.g. avg(val1) expects 'val1' to be Number)
      *               Also, for the purpose of this thesis, property containing
      *               string "timestamp" with value of Long is expected and MUST be provided.
+     * @return Returns whether the event type was successfully added to the Esper.
      */
-    public void addEventType(String eventName, Map<String, Object> schema);
+    public boolean addEventType(String eventName, Map<String, Object> schema);
 
     /**
      * Method used to remove event type by providing its name.
      *
      * @param eventName String describing event type name.
+     * @return True if event event type with provided name was deleted,
+     * false if Esper doesn't contain event type with such name,
+     * or if event type was found, but wasn't deleted as there are
+     * running dataflows using this event type. Remove those first.
      */
-    public void removeEventType(String eventName);
+    public boolean removeEventType(String eventName);
 
     /**
      * Method used to show event type by providing its name.
      *
      * @param eventName String describing event type name.
-     * @return EventType matching given event type name,
+     * @return String containing event type in format 'eventTypeName:eventProperties',
      * or null if there is no event type with provided name present.
      */
-    public EventType showEventType(String eventName);
+    public String showEventType(String eventName);
 
     /**
      * Method used to show all event types known to Esper.
      *
-     * @return array of all present event types.
+     * @return List of all present event types in format 'eventTypeName:eventProperties',
+     * or null if there are no event types present.
      */
-    public EventType[] showEventTypes();
+    public List<String> showEventTypes();
 
     /**
      * Method used to add new dataflow to the Esper.
@@ -92,38 +95,43 @@ public interface EsperService{
      * AMQP queue will cause NullPointerException.
      *
      *
-     * @param dataflowName String describing name of dataflow.
-     * @param dataflowProperties String defining properties of the dataflow (see dataflow types above),
-     *                        for convenience there is a support class (DataflowModel), which takes dataflow
+     * @param queueName String describing name of dataflow.
+     * @param queueProperties String defining properties of the dataflow (see dataflow types above),
+     *                        for convenience there is a support class (EPLHelper), which takes dataflow
      *                        parameters and creates String defining the whole dataflow, adding static
      *                        parameters such as host, port, etc. Those properties, however, can be changed
      *                        in properties file 'config.properties', located under 'resources'.
+     * @return Returns created EPDataflowInstance if dataflow was successfully created,
+     *         or null otherwise.
      */
-    public void addDataflow(String dataflowName, String dataflowProperties);
+    public boolean addDataflow(String queueName, String queueProperties);
 
     /**
      * Method used to remove dataflow by providing its name.
      *
-     * @param dataflowName String describing dataflow name.
+     * @param queueName String describing dataflow name.
      * @return True if dataflow with provided name was deleted,
      * false if Esper doesn't contain dataflow with such name.
      *
      */
-    public void removeDataflow(String dataflowName);
+    public boolean removeDataflow(String queueName);
 
     /**
      * Method used to show dataflow by providing its name.
      *
-     * @param dataflowName String describing dataflow name.
-     * @return EPStatement containing dataflow with given name,
+     * @param queueName String describing dataflow name.
+     * @return String containing dataflow in format 'dataflowName[state]:dataflowParameters',
+     * (state can be only 'RUNNING', as there was no need to implement option to change
+     * state without deletion of such dataflow. however, creation of such method would be trivial.)
      * or null if there is no dataflow with provided name present (never created or already removed).
      */
-    public EPStatement showDataflow(String dataflowName);
+    public String showDataflow(String queueName);
 
     /**
      * Method used to show all dataflows known to Esper.
      *
-     * @return array of all present dataflows' names.
+     * @return List of all present(state='RUNNING') dataflows in format 'dataflowName[state]:dataflowParameters',
+     * or null if there are no dataflows present.
      */
-    public String[] showDataflows();
+    public List<String> showDataflows();
 }

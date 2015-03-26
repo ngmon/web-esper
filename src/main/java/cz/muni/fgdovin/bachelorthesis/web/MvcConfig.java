@@ -2,11 +2,14 @@ package cz.muni.fgdovin.bachelorthesis.web;
 
 import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-import com.espertech.esper.client.time.CurrentTimeEvent;
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
-import cz.muni.fgdovin.bachelorthesis.support.JSONFlattener;
+import cz.muni.fgdovin.bachelorthesis.core.EsperService;
+import cz.muni.fgdovin.bachelorthesis.core.EsperServiceImpl;
+import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyServiceImpl;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -48,9 +51,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public EPRuntime epRuntime() {
         if(this.epRuntime == null) {
             this.epRuntime = EPServiceProviderManager.getDefaultProvider().getEPRuntime();
-            long timeInMillis = JSONFlattener.parseDate("2015-03-21T08:05:00.000"); //set time for engine because we want to manage it from events later
-            CurrentTimeEvent timeEvent = new CurrentTimeEvent(timeInMillis);
-            this.epRuntime.sendEvent(timeEvent);
         }
         return this.epRuntime;
     }
@@ -71,5 +71,15 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         viewResolver.setPrefix("/WEB-INF/views/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
+    }
+
+    @Bean
+    public EsperService esperService() {
+        return new EsperServiceImpl();
+    }
+
+    @Bean
+    public EsperUserFriendlyService esperUserFriendlyService() {
+        return new EsperUserFriendlyServiceImpl();
     }
 }
