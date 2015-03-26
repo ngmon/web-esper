@@ -1,30 +1,43 @@
 <body>
-    <h3>Dataflow created:</h3>
     <div align="center">
-        <table>
+        <h3>Dataflow created:</h3>
+        <table style="border:2px solid black;">
             <tr>
-                <td>Dataflow name :</td>
-                <td>${dataflowName}</td>
+                <th>Dataflow name :</th>
             </tr>
             <tr>
-                <td>Event type :</td>
-                <td>${eventType}</td>
+                <th>${dataflowName}</th>
             </tr>
             <tr>
-                <td>Statement :</td>
-                <td>${query}</td>
+                <th>Event type :</th>
             </tr>
             <tr>
-                <td>Queue name :</td>
-                <td>${queueName}</td>
+                <th>${eventType}</th>
             </tr>
             <tr>
-                <td>Exchange name :</td>
-                <td>${exchangeName}</td>
+                <th>Statement :</th>
             </tr>
-            <td><a href="/addDataflow">Create new dataflow</a></td>
-            <td><a href="/">Return</a></td>
+            <tr>
+                <th>${query}</th>
+            </tr>
+            <tr>
+                <th>Queue name :</th>
+            </tr>
+            <tr>
+                <th>${queueName}</th>
+            </tr>
+            <tr>
+                <th>Exchange name :</th>
+            </tr>
+            <tr>
+                <th>${exchangeName}</th>
+            </tr>
         </table>
-
+        <form action="/addDataflow">
+            <input type="submit" value="Create new dataflow">
+        </form>
+        <form action="/">
+            <input type="submit" value="Return home">
+        </form>
     </div>
 </body>

@@ -1,18 +1,25 @@
 <body>
-    <h3>Event type created:</h3>
     <div align="center">
-        <table>
+        <h3>Event type created:</h3>
+        <table style="border:2px solid black;">
             <tr>
-                <td>Event type :</td>
-                <td>${eventType}</td>
+                <th>Event type :</th>
             </tr>
             <tr>
-                <td>Properties :</td>
-                <td>${properties}</td>
+                <th>${eventType}</th>
             </tr>
-            <td><a href="/addEventType">Create new event type</a></td>
-            <td><a href="/">Return</a></td>
+            <tr>
+                <th>Properties :</th>
+            </tr>
+            <tr>
+                <th>${properties}</th>
+            </tr>
         </table>
-
+        <form action="/addEventType">
+            <input type="submit" value="Create new event type">
+        </form>
+        <form action="/">
+            <input type="submit" value="Return home">
+        </form>
     </div>
 </body>

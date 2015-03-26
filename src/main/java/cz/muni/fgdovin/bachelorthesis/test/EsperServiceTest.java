@@ -29,18 +29,18 @@ public class EsperServiceTest {
 
     private static ApplicationContext context = null;
 
-    String AMQPQueueName = "AMQPIncomingStream";
-    String eventType = "myEventType";
-    String inputQueueName = "esperQueue";
-    String inputExchangeName = "logs";
-    static Map<String, Object> schema = null;
+    private final String AMQPQueueName = "AMQPIncomingStream";
+    private final String eventType = "myEventType";
+    private final String inputQueueName = "esperQueue";
+    private final String inputExchangeName = "logs";
+    private static Map<String, Object> schema = null;
 
-    String statementName = "myTestStat";
-    String statementName2 = "myTestStat2";
-    String outputQueueName = "esperOutputQueue";
-    String outputExchangeName = "sortedLogs";
-    String query = "select avg(p.value) from instream where p.value > 4652";
-    String query2 = "select * from instream";
+    private String statementName = "myTestStat";
+    private String statementName2 = "myTestStat2";
+    private String outputQueueName = "esperOutputQueue";
+    private String outputExchangeName = "sortedLogs";
+    private String query = "select avg(p.value) from instream where p.value > 4652";
+    private String query2 = "select * from instream";
 
     @BeforeClass
     public static void setUp() throws Exception {

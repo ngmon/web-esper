@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         try {
             this.esperService.removeEventType(eventName);
         } catch (ConfigurationException ex) {
-            logger.info("Error while removing event type!" ,ex);
+            logger.info("Error while removing event type!", ex);
             return false;
         }
         return true;
@@ -63,14 +64,14 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public String showEventType(String eventName) {
-        EventType myEvent = null;
+        EventType myEvent;
         try {
             myEvent = this.esperService.showEventType(eventName);
         } catch (NullPointerException ex) {
             logger.warn("No event type with given name["+ eventName+"] was found.", ex);
             return "";
         }
-        return myEvent.getName() + ":" + myEvent.getPropertyNames();
+        return myEvent.getName() + ":" + Arrays.toString(myEvent.getPropertyNames());
     }
 
     /**
@@ -83,8 +84,8 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
             return null;
         }
         List<String> result = new ArrayList<String>();
-        for(int i = 0; i < allEvents.length; i++) {
-            result.add(showEventType(allEvents[i].getName()));
+        for (EventType allEvent : allEvents) {
+            result.add(showEventType(allEvent.getName()));
         }
         return result;
     }
@@ -153,8 +154,8 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         }
 
         //in case we would like to receive more detailed info sometimes
-        for(int i = 0; i < allDataFlows.length; i++) {
-            result.add(showDataflow(allDataFlows[i]));
+        for (String allDataFlow : allDataFlows) {
+            result.add(showDataflow(allDataFlow));
         }
         return result;
     }

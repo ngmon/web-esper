@@ -2,10 +2,7 @@ package cz.muni.fgdovin.bachelorthesis.core;
 
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventType;
-import com.espertech.esper.client.dataflow.EPDataFlowInstance;
-import org.springframework.context.annotation.Bean;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -105,9 +102,6 @@ public interface EsperService{
      * Method used to remove dataflow by providing its name.
      *
      * @param dataflowName String describing dataflow name.
-     * @return True if dataflow with provided name was deleted,
-     * false if Esper doesn't contain dataflow with such name.
-     *
      */
     public void removeDataflow(String dataflowName);
 

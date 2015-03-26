@@ -1,13 +1,13 @@
 <html>
-    <head>
-    </head>
-
     <body>
-        <h3>Please enter the correct details</h3>
-        <table>
-            <tr>
-                <td><a href="addDataflow">Retry</a></td>
-            </tr>
-        </table>
+        <div align="center">
+            <h3>Please enter the correct details</h3>
+            <form action="/addDataflow">
+                <input type="submit" value="Retry">
+            </form>
+            <form action="/">
+                <input type="submit" value="Return home">
+            </form>
+        </div>
     </body>
 </html>

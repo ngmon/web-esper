@@ -1,17 +1,25 @@
 <body>
-<h3>Event type removed:</h3>
-<div align="center">
-    <table>
-        <tr>
-            <td>Event type name :</td>
-            <td>${eventType}</td>
-        </tr>
-        <tr>
-            <td>Result :</td>
-            <td>${properties}</td>
-        </tr>
-    </table>
-    <td><a href="/removeEventType">Remove another event type</a></td>
-    <td><a href="/">Return</a></td>
-</div>
+    <div align="center">
+        <h3>Event type removed:</h3>
+        <table>
+            <tr>
+                <th>Event type name :</th>
+            </tr>
+            <tr>
+                <th>${eventType}</th>
+            </tr>
+            <tr>
+                <th>Result :</th>
+            </tr>
+            <tr>
+                <th>${properties}</th>
+            </tr>
+        </table>
+        <form action="/removeEventType">
+            <input type="submit" value="Remove another event type">
+        </form>
+        <form action="/">
+            <input type="submit" value="Return home">
+        </form>
+    </div>
 </body>

@@ -1,22 +1,23 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
-<head>
-</head>
 <body>
-    <h3>Enter event type name</h3>
     <div align="center">
-        <form:form action="/removeEventType" method="POST" modelAttribute="EventTypeModel">
-            <table border="0">
+        <h3>Enter event type name</h3>
+        <form:form action="/removeEventType" method="POST" modelAttribute="EventTypeModel" >
+            <table style="border:2px solid black;">
                 <tr>
-                    <td><form:label path="eventType">Event type:</form:label></td>
-                    <td><form:input path="eventType" /></td>
+                    <th><form:label path="eventType">Event type:</form:label></th>
+                    <th><form:input path="eventType" /></th>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center"><input type="submit" value="Remove" /></td>
-                    <td colspan="2" align="center"><input type="reset" value="Reset" /></td>
+                    <th align="center"><input type="submit" value="Remove" /></th>
+                    <th align="center"><input type="reset" value="Reset" /></th>
                 </tr>
             </table>
         </form:form>
+        <form action="/">
+            <input type="submit" value="Return home">
+        </form>
     </div>
 </body>
 </html>

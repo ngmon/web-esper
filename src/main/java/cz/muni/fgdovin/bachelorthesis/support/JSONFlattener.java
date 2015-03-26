@@ -73,7 +73,7 @@ public class JSONFlattener {
         return sb.toString();
     }
 
-    public static Long parseDate(String input) {
+    private static Long parseDate(String input) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:ss.SSS");  //must be hardcoded
         Date d = null;
         try {

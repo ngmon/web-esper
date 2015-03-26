@@ -1,17 +1,26 @@
 <body>
-<h3>Dataflow removed:</h3>
-<div align="center">
-    <table>
-        <tr>
-            <td>Dataflow name :</td>
-            <td>${dataflowName}</td>
-        </tr>
-        <tr>
-            <td>Result :</td>
-            <td>${eventType}</td>
-        </tr>
-    </table>
-    <td><a href="/removeDataflow">Remove another dataflow</a></td>
-    <td><a href="/">Return</a></td>
-</div>
+    <div align="center">
+        <h3>Dataflow removed:</h3>
+        <table>
+            <tr>
+                <th>Dataflow name :</th>
+            </tr>
+            <tr>
+                <th>${dataflowName}</th>
+            </tr>
+            <tr>
+                <th>Result :</th>
+            </tr>
+            <tr>
+                <th>${eventType}</th>
+            </tr>
+        </table>
+        </form>
+        <form action="/removeDataflow">
+            <input type="submit" value="Remove another dataflow">
+        </form>
+        <form action="/">
+            <input type="submit" value="Return home">
+        </form>
+    </div>
 </body>

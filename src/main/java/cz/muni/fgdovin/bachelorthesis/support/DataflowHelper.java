@@ -11,21 +11,21 @@ import java.util.Properties;
  */
 public class DataflowHelper {
 
-    public static void loadFromPropFile(Properties prop) {
+    private static void loadFromPropFile(Properties prop) throws IOException {
         InputStream in = DataflowHelper.class.getClassLoader().getResourceAsStream("config.properties");
-        try {
-            prop.load(in);
-            in.close();
-        } catch(IOException ex) {
-            return;
-        }
+        prop.load(in);
+        in.close();
     }
 
     public static String generateEPL(DataflowModel model) {
         Properties prop = new Properties();
-        loadFromPropFile(prop);
+        try {
+            loadFromPropFile(prop);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        if((model.getQuery() == "null") || (model.getQuery() == null) || (model.getQuery().isEmpty())) {
+        if((model.getQuery().equals("null")) || (model.getQuery() == null) || (model.getQuery().isEmpty())) {
             return
             "Create Dataflow " + model.getDataflowName() + "\n" +
             "AMQPSource -> instream<" + model.getEventType() + "> {\n" +

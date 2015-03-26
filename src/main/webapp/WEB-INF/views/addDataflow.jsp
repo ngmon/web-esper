@@ -1,40 +1,39 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
-    <head>
-    </head>
     <body>
-        <h3>Enter dataflow information</h3>
         <div align="center">
+            <h3>Enter dataflow information</h3>
             <form:form action="/addDataflow" method="POST" modelAttribute="DataflowModel">
-                <table border="0">
+                <table style="border:2px solid black;">
                     <tr>
+                        <th><form:label path="dataflowName">Dataflow name:</form:label></th>
+                        <th><form:input path="dataflowName" /></th>
                     </tr>
                     <tr>
-                        <td><form:label path="dataflowName">Dataflow name:</form:label></td>
-                        <td><form:input path="dataflowName" /></td>
+                        <th><form:label path="eventType">Event type:</form:label></th>
+                        <th><form:input path="eventType" /></th>
                     </tr>
                     <tr>
-                        <td><form:label path="eventType">Event type:</form:label></td>
-                        <td><form:input path="eventType" /></td>
+                        <th><form:label path="query">Statement (empty for AMQP source):</form:label></th>
+                        <th><form:input path="query" /></th>
                     </tr>
                     <tr>
-                        <td><form:label path="query">Statement (empty for AMQP source):</form:label></td>
-                        <td><form:input path="query" /></td>
+                        <th><form:label path="queueName">Queue name:</form:label></th>
+                        <th><form:input path="queueName" /></th>
                     </tr>
                     <tr>
-                        <td><form:label path="queueName">Queue name:</form:label></td>
-                        <td><form:input path="queueName" /></td>
+                        <th><form:label path="exchangeName">Exchange name:</form:label></th>
+                        <th><form:input path="exchangeName" /></th>
                     </tr>
                     <tr>
-                        <td><form:label path="exchangeName">Exchange name:</form:label></td>
-                        <td><form:input path="exchangeName" /></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="center"><input type="submit" value="Add" /></td>
-                        <td colspan="2" align="center"><input type="reset" value="Reset" /></td>
+                        <th align="center"><input type="submit" value="Add" /></th>
+                        <th align="center"><input type="reset" value="Reset" /></th>
                     </tr>
                 </table>
             </form:form>
+            <form action="/">
+                <input type="submit" value="Return home">
+            </form>
         </div>
     </body>
 </html>

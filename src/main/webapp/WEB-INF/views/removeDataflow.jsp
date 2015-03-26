@@ -1,22 +1,23 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
-<head>
-</head>
 <body>
-    <h3>Enter dataflow name</h3>
     <div align="center">
+        <h3>Enter dataflow name</h3>
         <form:form action="/removeDataflow" method="POST" modelAttribute="DataflowModel">
-            <table border="0">
+            <table style="border:2px solid black;">
                 <tr>
-                    <td><form:label path="dataflowName">Dataflow name:</form:label></td>
-                    <td><form:input path="dataflowName" /></td>
+                    <th><form:label path="dataflowName">Dataflow name:</form:label></th>
+                    <th><form:input path="dataflowName" /></th>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center"><input type="submit" value="Remove" /></td>
-                    <td colspan="2" align="center"><input type="reset" value="Reset" /></td>
+                    <th align="center"><input type="submit" value="Remove" /></th>
+                    <th align="center"><input type="reset" value="Reset" /></th>
                 </tr>
             </table>
         </form:form>
+        <form action="/">
+            <input type="submit" value="Return home">
+        </form>
     </div>
 </body>
 </html>
