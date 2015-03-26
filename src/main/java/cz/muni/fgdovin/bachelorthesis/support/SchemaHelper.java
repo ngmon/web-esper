@@ -55,7 +55,6 @@ public class SchemaHelper {
             }else {
                 schemaMap.put(key, String.class);
             }
-            System.out.println("Key " + key + ", value " + value);
         }
 
         return schemaMap;

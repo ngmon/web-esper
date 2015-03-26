@@ -37,6 +37,11 @@
             <version>5.1.0</version>
         </dependency>
         <dependency>
+            <groupId>com.espertech</groupId>
+            <artifactId>esperio-amqp</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
             <version>3.4.1</version>

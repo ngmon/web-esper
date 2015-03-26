@@ -22,6 +22,8 @@
     <orderEntry type="library" name="Spring-4.1.5.RELEASE" level="project" />
     <orderEntry type="library" name="Spring MVC-4.1.5.RELEASE" level="project" />
     <orderEntry type="library" name="com.espertech:esperio-amqp:5.1.0" level="project" />
+    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-annotations:2.5.1" level="project" />
+    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-core:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:1.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.2.1.RELEASE" level="project" />
@@ -57,13 +59,14 @@
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.1" level="project" />
     <orderEntry type="library" name="Maven: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:3.1" level="project" />
+    <orderEntry type="library" name="Maven: com.espertech:esperio:5.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.rabbitmq:amqp-client:3.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20141113" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.11" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.5.1" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.4.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:4.1.5.RELEASE" level="project" />
-    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-annotations:2.5.1" level="project" />
-    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-core:2.5.1" level="project" />
   </component>
 </module>
