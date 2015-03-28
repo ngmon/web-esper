@@ -29,7 +29,7 @@ import java.util.Map;
 @Service
 public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger("EsperUserFriendlyServiceImpl");
 
     @Autowired
     private EsperService esperService;

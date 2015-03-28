@@ -25,7 +25,7 @@ public class DataflowHelper {
             e.printStackTrace();
         }
 
-        if((model.getQuery().equals("null")) || (model.getQuery() == null) || (model.getQuery().isEmpty())) {
+        if((model.getQuery() == null) || (model.getQuery().equals("null")) || (model.getQuery().isEmpty())) {
             return
             "Create Dataflow " + model.getDataflowName() + "\n" +
             "AMQPSource -> instream<" + model.getEventType() + "> {\n" +
@@ -43,11 +43,11 @@ public class DataflowHelper {
 
         return
         "Create dataflow " + model.getDataflowName() + "\n" +
-        "EventBusSource -> instream<" + model.getEventType() + "> {}\n" +
-        "Select(instream) -> output"+ model.getEventType() + " {\n" +
+        "EventBusSource -> " + model.getEventType() + "<" + model.getEventType() + "> {}\n" +
+        "Select(" + model.getEventType() + ") -> output" + model.getEventType() + " {\n" +
         "select: (\n" + model.getQuery() +")\n" +
         "}\n" +
-        "AMQPSink(output"+ model.getEventType() + ") {\n" +
+        "AMQPSink(output" + model.getEventType() + ") {\n" +
         "host: '" + prop.getProperty("outputHost") + "',\n" +
         "port: " + Integer.parseInt(prop.getProperty("outputPort")) + ",\n" +
         "queueName: '" + model.getQueueName() + "',\n" +

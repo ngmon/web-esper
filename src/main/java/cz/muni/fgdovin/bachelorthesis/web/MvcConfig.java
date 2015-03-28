@@ -30,7 +30,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger("MvcConfig");
 
     private EPServiceProvider epServiceProvider;
     private EPRuntime epRuntime;

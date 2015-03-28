@@ -16,11 +16,20 @@
                     </tr>
                 </table>
             </form:form>
-            <form:form method="GET" action="/addDataflow">
+            <form:form method="GET" action="/addInputDataflow">
                 <table>
                     <tr>
                         <th>
-                            <input type="submit" align="center" value="Add dataflow"/>
+                            <input type="submit" align="center" value="Add input dataflow"/>
+                        </th>
+                    </tr>
+                </table>
+            </form:form>
+            <form:form method="GET" action="/addOutputDataflow">
+                <table>
+                    <tr>
+                        <th>
+                            <input type="submit" align="center" value="Add output dataflow"/>
                         </th>
                     </tr>
                 </table>
@@ -39,6 +48,24 @@
                     <tr>
                         <th>
                             <input type="submit" align="center" value="Remove dataflow"/>
+                        </th>
+                    </tr>
+                </table>
+            </form:form>
+            <form:form method="GET" action="/showEventTypes">
+                <table>
+                    <tr>
+                        <th>
+                            <input type="submit" align="center" value="Show event types"/>
+                        </th>
+                    </tr>
+                </table>
+            </form:form>
+            <form:form method="GET" action="/showAllDataflows">
+                <table>
+                    <tr>
+                        <th>
+                            <input type="submit" align="center" value="Show all dataflows"/>
                         </th>
                     </tr>
                 </table>

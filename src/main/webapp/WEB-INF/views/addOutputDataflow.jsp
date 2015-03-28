@@ -2,8 +2,8 @@
 <html>
     <body>
         <div align="center">
-            <h3>Enter dataflow information</h3>
-            <form:form action="/addDataflow" method="POST" modelAttribute="DataflowModel">
+            <h3>Enter output dataflow information</h3>
+            <form:form action="/addOutputDataflow" method="POST" modelAttribute="DataflowModel">
                 <table style="border:2px solid black;">
                     <tr>
                         <th><form:label path="dataflowName">Dataflow name:</form:label></th>
@@ -14,7 +14,7 @@
                         <th><form:input path="eventType" /></th>
                     </tr>
                     <tr>
-                        <th><form:label path="query">Statement (empty for AMQP source):</form:label></th>
+                        <th><form:label path="query">Statement:</form:label></th>
                         <th><form:input path="query" /></th>
                     </tr>
                     <tr>

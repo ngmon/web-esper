@@ -18,7 +18,7 @@ import javax.servlet.ServletRegistration;
  */
 public class WebAppInitializer implements WebApplicationInitializer {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger("INFO");
 
     @Override
     public void onStartup(ServletContext servletContext) {

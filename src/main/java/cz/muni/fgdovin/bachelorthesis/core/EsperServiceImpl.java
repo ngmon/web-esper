@@ -6,6 +6,7 @@ import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ import java.util.*;
 @Component
 public class EsperServiceImpl implements EsperService {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger("EsperServiceImpl");
 
     @Autowired
     EPServiceProvider esperServiceProvider;
@@ -81,8 +82,8 @@ public class EsperServiceImpl implements EsperService {
         }
         this.esperAdministrator.createEPL(queueProperties, queueName);
         EPDataFlowInstance sourceInstance = this.esperDataFlowRuntime.instantiate(queueName);
-        this.esperDataFlowRuntime.saveInstance(queueName, sourceInstance);
         sourceInstance.start();
+        this.esperDataFlowRuntime.saveInstance(queueName, sourceInstance); //only save if it started successfully
     }
 
     /**
