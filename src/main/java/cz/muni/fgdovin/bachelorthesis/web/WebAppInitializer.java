@@ -1,6 +1,10 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
 import cz.muni.fgdovin.bachelorthesis.core.EsperServiceImpl;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -13,6 +17,8 @@ import javax.servlet.ServletRegistration;
  * Created by Filip Gdovin on 4. 3. 2015.
  */
 public class WebAppInitializer implements WebApplicationInitializer {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void onStartup(ServletContext servletContext) {

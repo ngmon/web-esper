@@ -1,14 +1,17 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import com.espertech.esper.client.*;
-import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-import com.espertech.esperio.amqp.AMQPSink;
-import com.espertech.esperio.amqp.AMQPSource;
-
 import cz.muni.fgdovin.bachelorthesis.core.EsperService;
 import cz.muni.fgdovin.bachelorthesis.core.EsperServiceImpl;
 import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyServiceImpl;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.espertech.esper.client.*;
+import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
+import com.espertech.esperio.amqp.AMQPSink;
+import com.espertech.esperio.amqp.AMQPSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,6 +30,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private EPServiceProvider epServiceProvider;
     private EPRuntime epRuntime;
 
@@ -34,7 +39,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public EPServiceProvider epServiceProvider() {
         if(this.epServiceProvider == null) {
             com.espertech.esper.client.Configuration config = new com.espertech.esper.client.Configuration();
-            config.getEngineDefaults().getThreading().setInternalTimerEnabled(false); //getting time from events enabled
+//            config.getEngineDefaults().getThreading().setInternalTimerEnabled(false); //getting time from events enabled
             this.epServiceProvider = EPServiceProviderManager.getDefaultProvider(config);
             this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSource.class.getPackage().getName() + ".*");
             this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSink.class.getPackage().getName() + ".*");
