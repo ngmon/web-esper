@@ -134,4 +134,12 @@ public interface EsperUserFriendlyService {
      * or null if there are no dataflows present.
      */
     public List<String> showDataflows();
+
+    /**
+     * Method used to show all EPL statements known to Esper.
+     *
+     * @return List of all present(state='RUNNING') EPL statement dataflows in format 'dataflowName[state]:dataflowParameters',
+     * or null if there are no EPL statements present.
+     */
+    public List<String> showEPLStatements();
 }

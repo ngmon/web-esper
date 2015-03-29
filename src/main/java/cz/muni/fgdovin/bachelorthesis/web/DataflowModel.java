@@ -1,12 +1,18 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Filip Gdovin on 26. 3. 2015.
  */
 public class DataflowModel {
 
     private String dataflowName;
-    private String eventType;
+    private String firstEventType;
+    private String secondEventType;
+    private String thirdEventType;
+    private String outputEventType;
     private String query;
     private String queueName;
     private String exchangeName;
@@ -14,17 +20,43 @@ public class DataflowModel {
     public DataflowModel() {
     }
 
-    public DataflowModel(String dataflowName, String eventType, String query, String queueName, String exchangeName) {
+    //for input dataflows
+    public DataflowModel(String dataflowName, String firstEventType, String queueName, String exchangeName) {
         this.dataflowName = dataflowName;
-        this.eventType = eventType;
+        this.firstEventType = firstEventType;
+        this.queueName = queueName;
+        this.exchangeName = exchangeName;
+    }
+
+    //for one-stream output dataflows
+    public DataflowModel(String dataflowName, String firstEventType, String outputEventType, String query, String queueName, String exchangeName) {
+        this.dataflowName = dataflowName;
+        this.firstEventType = firstEventType;
+        this.outputEventType = outputEventType;
         this.query = query;
         this.queueName = queueName;
         this.exchangeName = exchangeName;
     }
 
-    public DataflowModel(String dataflowName, String eventType, String queueName, String exchangeName) {
+    //for two-stream output dataflows
+    public DataflowModel(String dataflowName, String firstEventType, String secondEventType, String outputEventType, String query, String queueName, String exchangeName) {
         this.dataflowName = dataflowName;
-        this.eventType = eventType;
+        this.firstEventType = firstEventType;
+        this.secondEventType = secondEventType;
+        this.outputEventType = outputEventType;
+        this.query = query;
+        this.queueName = queueName;
+        this.exchangeName = exchangeName;
+    }
+
+    //for three-stream output dataflows
+    public DataflowModel(String dataflowName, String firstEventType, String secondEventType, String thirdEventType, String outputEventType, String query, String queueName, String exchangeName) {
+        this.dataflowName = dataflowName;
+        this.firstEventType = firstEventType;
+        this.secondEventType = secondEventType;
+        this.thirdEventType = thirdEventType;
+        this.outputEventType = outputEventType;
+        this.query = query;
         this.queueName = queueName;
         this.exchangeName = exchangeName;
     }
@@ -37,12 +69,44 @@ public class DataflowModel {
         this.dataflowName = dataflowName;
     }
 
-    public String getEventType() {
-        return eventType;
+    public String getFirstEventType() {
+        return firstEventType;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public void setFirstEventType(String firstEventType) {
+        this.firstEventType = firstEventType;
+    }
+
+    public String getSecondEventType() {
+        return secondEventType;
+    }
+
+    public void setSecondEventType(String secondEventType) {
+        this.secondEventType = secondEventType;
+    }
+
+    public String getThirdEventType() {
+        return thirdEventType;
+    }
+
+    public void setThirdEventType(String thirdEventType) {
+        this.thirdEventType = thirdEventType;
+    }
+
+    public List<String> getAllEventTypes() {
+        List<String> result = new ArrayList<String>();
+        result.add(0, firstEventType);
+        result.add(1, secondEventType);
+        result.add(2, thirdEventType);
+        return result;
+    }
+
+    public String getOutputEventType() {
+        return outputEventType;
+    }
+
+    public void setOutputEventType(String outputEventType) {
+        this.outputEventType = outputEventType;
     }
 
     public String getQuery() {

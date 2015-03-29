@@ -1,20 +1,21 @@
 <body>
     <div align="center">
-        <h3>Event type removed:</h3>
+        <h3>EPL statement removed:</h3>
         <table>
             <tr>
-                <th>Event type name :</th>
+                <th>Statement name :</th>
             </tr>
             <tr>
-                <th>${eventType}</th>
+                <th>${dataflowName}</th>
             </tr>
             <tr>
                 <th>Result :</th>
             </tr>
             <tr>
-                <th>${properties}</th>
+                <th>${eventType}</th>
             </tr>
         </table>
+        </form>
         <form action="/">
             <input type="submit" value="Return home">
         </form>

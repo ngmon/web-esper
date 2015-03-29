@@ -2,16 +2,24 @@
 <html>
     <body>
         <div align="center">
-            <h3>Enter input dataflow information</h3>
-            <form:form action="/addInputDataflow" method="POST" modelAttribute="DataflowModel">
+            <h3>Enter EPL statement information</h3>
+            <form:form action="/addOneStreamEPL" method="POST" modelAttribute="DataflowModel">
                 <table style="border:2px solid black;">
                     <tr>
-                        <th><form:label path="dataflowName">Dataflow name:</form:label></th>
+                        <th><form:label path="dataflowName">Statement name:</form:label></th>
                         <th><form:input path="dataflowName" /></th>
                     </tr>
                     <tr>
-                        <th><form:label path="eventType">Event type:</form:label></th>
-                        <th><form:input path="eventType" /></th>
+                        <th><form:label path="firstEventType">Event type:</form:label></th>
+                        <th><form:input path="firstEventType" /></th>
+                    </tr>
+                    <tr>
+                        <th><form:label path="outputEventType">Output event type:</form:label></th>
+                        <th><form:input path="outputEventType" /></th>
+                    </tr>
+                    <tr>
+                        <th><form:label path="query">Statement:</form:label></th>
+                        <th><form:input path="query" /></th>
                     </tr>
                     <tr>
                         <th><form:label path="queueName">Queue name:</form:label></th>

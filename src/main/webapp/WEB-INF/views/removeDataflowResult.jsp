@@ -16,9 +16,6 @@
             </tr>
         </table>
         </form>
-        <form action="/removeDataflow">
-            <input type="submit" value="Remove another dataflow">
-        </form>
         <form action="/">
             <input type="submit" value="Return home">
         </form>

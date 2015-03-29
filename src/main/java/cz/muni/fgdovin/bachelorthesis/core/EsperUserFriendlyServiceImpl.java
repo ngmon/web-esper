@@ -157,8 +157,34 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         }
 
         //in case we would like to receive more detailed info sometimes
-        for (String allDataFlow : allDataFlows) {
-            result.add(showDataflow(allDataFlow));
+        for (String oneDataFlow : allDataFlows) {
+            String oneDataflowDetails = showDataflow(oneDataFlow);
+            if(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n")) {  //only input dataflows, NO EPL statements
+                result.add(oneDataflowDetails);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> showEPLStatements() {
+        String[] allDataFlows = this.esperService.showDataflows();
+        List<String> result = new ArrayList<String>();
+
+        if((allDataFlows == null) || (allDataFlows.length == 0)) {
+            logger.info("No dataflows present.");
+            return result;
+        }
+
+        //in case we would like to receive more detailed info sometimes
+        for (String oneDataFlow : allDataFlows) {
+            String oneDataflowDetails = showDataflow(oneDataFlow);
+            if(!(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n"))) {  //only EPL statements, NO input dataflows
+                result.add(oneDataflowDetails);
+            }
         }
         return result;
     }

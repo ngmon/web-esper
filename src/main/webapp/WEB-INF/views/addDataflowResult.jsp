@@ -1,6 +1,6 @@
 <body>
     <div align="center">
-        <h3>Input dataflow created:</h3>
+        <h3>Dataflow created:</h3>
         <table style="border:2px solid black;">
             <tr>
                 <th>Dataflow name :</th>

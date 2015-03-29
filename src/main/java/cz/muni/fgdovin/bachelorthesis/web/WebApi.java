@@ -46,107 +46,33 @@ public class WebApi {
     }
 
     /**
-     * This method is called when user decides to add new input (AMQP Source) dataflow.
+     * This method is bound to "/manageDataflows" mapping and displays possible dataflows options.
      *
-     * @return Web page containing form for dataflow creation.
+     * @return Page with available commands.
      */
-    @RequestMapping(value = "/addInputDataflow", method = RequestMethod.GET)
-    public ModelAndView inputDataflowForm() {
-        return new ModelAndView("addInputDataflow", "DataflowModel", new DataflowModel());
+    @RequestMapping(value = "/manageDataflows", method = RequestMethod.GET)
+    public ModelAndView manageDataflows() {
+        return new ModelAndView("manageDataflows");
     }
 
     /**
-     * This method is called when user completes new input dataflow form, it POSTs form contents
-     * so that new input dataflow can be created.
+     * This method is bound to "/manageEventTypes" mapping and displays possible event types options.
      *
-     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
-     * @param resultModel ModelMap containing input dataflow information, it will be displayed as confirmation of creation.
-     * @return Page displaying newly created input dataflow.
+     * @return Page with available commands.
      */
-    @RequestMapping(value = "/addInputDataflow", method = RequestMethod.POST)
-    public String submitInputDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
-        String dataflowName = modelClass.getDataflowName();
-        String eventType = modelClass.getEventType();
-        String queueName = modelClass.getQueueName();
-        String exchangeName = modelClass.getExchangeName();
-
-        resultModel.addAttribute("dataflowName", dataflowName);
-        resultModel.addAttribute("eventType", eventType);
-        resultModel.addAttribute("queueName", queueName);
-        resultModel.addAttribute("exchangeName", exchangeName);
-
-        String queueParams = DataflowHelper.generateEPL(modelClass);
-            esperService.addDataflow(dataflowName, queueParams);
-
-        return "addInputDataflowResult";
+    @RequestMapping(value = "/manageEventTypes", method = RequestMethod.GET)
+    public ModelAndView manageEventTypes() {
+        return new ModelAndView("manageEventTypes");
     }
 
     /**
-     * This method is called when user decides to add new output dataflow.
+     * This method is bound to "/manageEPLStatements" mapping and displays possible EPL statements options.
      *
-     * @return Web page containing form for output dataflow creation.
+     * @return Page with available commands.
      */
-    @RequestMapping(value = "/addOutputDataflow", method = RequestMethod.GET)
-    public ModelAndView outputDataflowForm() {
-        return new ModelAndView("addOutputDataflow", "DataflowModel", new DataflowModel());
-    }
-
-    /**
-     * This method is called when user completes a form, it POSTs form contents
-     * so that new output dataflow can be created.
-     *
-     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
-     * @param resultModel ModelMap containing output dataflow information, it will be displayed as confirmation of creation.
-     * @return Page displaying newly created output dataflow.
-     */
-    @RequestMapping(value = "/addOutputDataflow", method = RequestMethod.POST)
-    public String submitOutputDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
-        String dataflowName = modelClass.getDataflowName();
-        String eventType = modelClass.getEventType();
-        String query = modelClass.getQuery();
-        String queueName = modelClass.getQueueName();
-        String exchangeName = modelClass.getExchangeName();
-
-        resultModel.addAttribute("dataflowName", dataflowName);
-        resultModel.addAttribute("eventType", eventType);
-        resultModel.addAttribute("query", query);
-        resultModel.addAttribute("queueName", queueName);
-        resultModel.addAttribute("exchangeName", exchangeName);
-
-        String queueParams = DataflowHelper.generateEPL(modelClass);
-        esperService.addDataflow(dataflowName, queueParams);
-
-        return "addOutputDataflowResult";
-    }
-
-    /**
-     * This method is called when user chooses to delete dataflow.
-     *
-     * @return Web page containing form to delete dataflow by its name.
-     */
-    @RequestMapping(value = "/removeDataflow", method = RequestMethod.GET)
-    public ModelAndView removeDataflowForm() {
-        return new ModelAndView("removeDataflow", "DataflowModel", new DataflowModel());
-    }
-
-    /**
-     * This method is called when user submits dataflow deletion form,
-     * it finds dataflow and deletes it if possible.
-     *
-     * @param modelClass Model class used to get user input from form.
-     * @param resultModel ModelMap containing result of dataflow deletion.
-     * @return Web page informing user if the dataflow was successfully deleted.
-     */
-    @RequestMapping(value = "/removeDataflow", method = RequestMethod.POST)
-    public String submitRemoveDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
-        resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
-        if (esperService.removeDataflow(modelClass.getDataflowName())) {
-            resultModel.addAttribute("eventType", "Dataflow with given name removed successfully.");
-        } else {
-
-            resultModel.addAttribute("eventType", "Dataflow with this name was not found, or its removal failed.");
-        }
-        return "removeDataflowResult";
+    @RequestMapping(value = "/manageEPLStatements", method = RequestMethod.GET)
+    public ModelAndView manageEPLStatements() {
+        return new ModelAndView("manageEPLStatements");
     }
 
     /**
@@ -160,7 +86,7 @@ public class WebApi {
     }
 
     /**
-     * This method is called when user completes a form, it POSTs form contents
+     * This method is called when user submits a form, it POSTs form contents
      * so that new event type can be created.
      *
      * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
@@ -206,7 +132,7 @@ public class WebApi {
     }
 
     @RequestMapping(value = "/showEventTypes", method = RequestMethod.GET)
-     public ModelAndView showAllEventTypes() {
+    public ModelAndView showAllEventTypes() {
 
         List<String> list = esperService.showEventTypes();
 
@@ -216,12 +142,245 @@ public class WebApi {
         return model;
     }
 
-    @RequestMapping(value = "/showAllDataflows", method = RequestMethod.GET)
+    /**
+     * This method is called when user decides to add new dataflow (AMQP Source).
+     *
+     * @return Web page containing form for dataflow creation.
+     */
+    @RequestMapping(value = "/addDataflow", method = RequestMethod.GET)
+    public ModelAndView dataflowForm() {
+        return new ModelAndView("addDataflow", "DataflowModel", new DataflowModel());
+    }
+
+    /**
+     * This method is called when user submits new dataflow form, it POSTs form contents
+     * so that new dataflow can be created.
+     *
+     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
+     * @param resultModel ModelMap containing dataflow information, it will be displayed as confirmation of creation.
+     * @return Page displaying newly created dataflow.
+     */
+    @RequestMapping(value = "/addDataflow", method = RequestMethod.POST)
+    public String submitDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        String dataflowName = modelClass.getDataflowName();
+        String eventType = modelClass.getFirstEventType();
+        String queueName = modelClass.getQueueName();
+        String exchangeName = modelClass.getExchangeName();
+
+        resultModel.addAttribute("dataflowName", dataflowName);
+        resultModel.addAttribute("eventType", eventType);
+        resultModel.addAttribute("queueName", queueName);
+        resultModel.addAttribute("exchangeName", exchangeName);
+
+        String queueParams = DataflowHelper.generateEPL(modelClass);
+            esperService.addDataflow(dataflowName, queueParams);
+
+        return "addDataflowResult";
+    }
+
+    /**
+     * This method is called when user chooses to delete dataflow.
+     *
+     * @return Web page containing form to delete dataflow by its name.
+     */
+    @RequestMapping(value = "/removeDataflow", method = RequestMethod.GET)
+    public ModelAndView removeDataflowForm() {
+        return new ModelAndView("removeDataflow", "DataflowModel", new DataflowModel());
+    }
+
+    /**
+     * This method is called when user submits dataflow deletion form,
+     * it finds dataflow and deletes it if possible.
+     *
+     * @param modelClass Model class used to get user input from form.
+     * @param resultModel ModelMap containing result of dataflow deletion.
+     * @return Web page informing user if the dataflow was successfully deleted.
+     */
+    @RequestMapping(value = "/removeDataflow", method = RequestMethod.POST)
+    public String submitRemoveDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
+        if (esperService.removeDataflow(modelClass.getDataflowName())) {
+            resultModel.addAttribute("eventType", "Dataflow with given name removed successfully.");
+        } else {
+
+            resultModel.addAttribute("eventType", "Dataflow with this name was not found, or its removal failed.");
+        }
+        return "removeDataflowResult";
+    }
+
+    @RequestMapping(value = "/showDataflows", method = RequestMethod.GET)
     public ModelAndView showAllDataflows() {
 
         List<String> list = esperService.showDataflows();
 
-        ModelAndView model = new ModelAndView("showAllDataflows");
+        ModelAndView model = new ModelAndView("showDataflows");
+        model.addObject("lists", list);
+
+        return model;
+    }
+
+    /**
+     * This method is called when user decides to add new one-stream EPL statement.
+     *
+     * @return Web page containing form for one-stream EPL statement creation.
+     */
+    @RequestMapping(value = "/addOneStreamEPL", method = RequestMethod.GET)
+    public ModelAndView oneStreamEPLForm() {
+        return new ModelAndView("addOneStreamEPL", "DataflowModel", new DataflowModel());
+    }
+
+    /**
+     * This method is called when user submitss a form, it POSTs form contents
+     * so that new one-stream EPL statement can be created.
+     *
+     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
+     * @param resultModel ModelMap containing one-stream EPL statement information, it will be displayed as confirmation of creation.
+     * @return Page displaying newly created one-stream EPL statement.
+     */
+    @RequestMapping(value = "/addOneStreamEPL", method = RequestMethod.POST)
+    public String submitOneStreamEPLForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        String dataflowName = modelClass.getDataflowName();
+        String firstEventType = modelClass.getFirstEventType();
+        String outputEventType = modelClass.getOutputEventType();
+        String query = modelClass.getQuery();
+        String queueName = modelClass.getQueueName();
+        String exchangeName = modelClass.getExchangeName();
+
+        resultModel.addAttribute("dataflowName", dataflowName);
+        resultModel.addAttribute("firstEventType", firstEventType);
+        resultModel.addAttribute("outputEventType", outputEventType);
+        resultModel.addAttribute("query", query);
+        resultModel.addAttribute("queueName", queueName);
+        resultModel.addAttribute("exchangeName", exchangeName);
+
+        String queueParams = DataflowHelper.generateEPL(modelClass);
+        esperService.addDataflow(dataflowName, queueParams);
+
+        return "addOneStreamEPLResult";
+    }
+
+    /**
+     * This method is called when user decides to add new two-stream EPL statement.
+     *
+     * @return Web page containing form for two-stream EPL statement creation.
+     */
+    @RequestMapping(value = "/addTwoStreamEPL", method = RequestMethod.GET)
+    public ModelAndView twoStreamEPLForm() {
+        return new ModelAndView("addTwoStreamEPL", "DataflowModel", new DataflowModel());
+    }
+
+    /**
+     * This method is called when user submits a form, it POSTs form contents
+     * so that new two-stream EPL statement can be created.
+     *
+     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
+     * @param resultModel ModelMap containing two-stream EPL statement information, it will be displayed as confirmation of creation.
+     * @return Page displaying newly created two-stream EPL statement.
+     */
+    @RequestMapping(value = "/addTwoStreamEPL", method = RequestMethod.POST)
+    public String submitTwoStreamEPLForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        String dataflowName = modelClass.getDataflowName();
+        String firstEventType = modelClass.getFirstEventType();
+        String secondEventType = modelClass.getSecondEventType();
+        String outputEventType = modelClass.getOutputEventType();
+        String query = modelClass.getQuery();
+        String queueName = modelClass.getQueueName();
+        String exchangeName = modelClass.getExchangeName();
+
+        resultModel.addAttribute("dataflowName", dataflowName);
+        resultModel.addAttribute("firstEventType", firstEventType);
+        resultModel.addAttribute("secondEventType", secondEventType);
+        resultModel.addAttribute("outputEventType", outputEventType);
+        resultModel.addAttribute("query", query);
+        resultModel.addAttribute("queueName", queueName);
+        resultModel.addAttribute("exchangeName", exchangeName);
+
+        String queueParams = DataflowHelper.generateEPL(modelClass);
+        esperService.addDataflow(dataflowName, queueParams);
+
+        return "addTwoStreamEPLResult";
+    }
+
+    /**
+     * This method is called when user decides to add new three-stream EPL statement.
+     *
+     * @return Web page containing form for three-stream EPL statement creation.
+     */
+    @RequestMapping(value = "/addThreeStreamEPL", method = RequestMethod.GET)
+    public ModelAndView threeStreamEPLForm() {
+        return new ModelAndView("addThreeStreamEPL", "DataflowModel", new DataflowModel());
+    }
+
+    /**
+     * This method is called when user submits a form, it POSTs form contents
+     * so that new two-stream EPL statement can be created.
+     *
+     * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
+     * @param resultModel ModelMap containing three-stream EPL statement information, it will be displayed as confirmation of creation.
+     * @return Page displaying newly created three-stream EPL statement.
+     */
+    @RequestMapping(value = "/addThreeStreamEPL", method = RequestMethod.POST)
+    public String submitThreeStreamEPLForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        String dataflowName = modelClass.getDataflowName();
+        String firstEventType = modelClass.getFirstEventType();
+        String secondEventType = modelClass.getSecondEventType();
+        String thirdEventType = modelClass.getThirdEventType();
+        String outputEventType = modelClass.getOutputEventType();
+        String query = modelClass.getQuery();
+        String queueName = modelClass.getQueueName();
+        String exchangeName = modelClass.getExchangeName();
+
+        resultModel.addAttribute("dataflowName", dataflowName);
+        resultModel.addAttribute("firstEventType", firstEventType);
+        resultModel.addAttribute("secondEventType", secondEventType);
+        resultModel.addAttribute("thirdEventType", thirdEventType);
+        resultModel.addAttribute("outputEventType", outputEventType);
+        resultModel.addAttribute("query", query);
+        resultModel.addAttribute("queueName", queueName);
+        resultModel.addAttribute("exchangeName", exchangeName);
+
+        String queueParams = DataflowHelper.generateEPL(modelClass);
+        esperService.addDataflow(dataflowName, queueParams);
+
+        return "addThreeStreamEPLResult";
+    }
+
+    /**
+     * This method is called when user chooses to delete EPL statement.
+     *
+     * @return Web page containing form to delete EPL statement by its name.
+     */
+    @RequestMapping(value = "/removeEPL", method = RequestMethod.GET)
+    public ModelAndView removeEPLForm() {
+        return new ModelAndView("removeEPL", "DataflowModel", new DataflowModel());
+    }
+
+    /**
+     * This method is called when user submits EPL statement deletion form,
+     * it finds EPL statement and deletes it if possible.
+     *
+     * @param modelClass Model class used to get user input from form.
+     * @param resultModel ModelMap containing result of EPL statement deletion.
+     * @return Web page informing user if the EPL statement was successfully deleted.
+     */
+    @RequestMapping(value = "/removeEPL", method = RequestMethod.POST)
+    public String submitRemoveEPLForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
+        resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
+        if (esperService.removeDataflow(modelClass.getDataflowName())) {
+            resultModel.addAttribute("eventType", "EPL statement with given name removed successfully.");
+        } else {
+
+            resultModel.addAttribute("eventType", "EPL statement with this name was not found, or its removal failed.");
+        }
+        return "removeEPLResult";
+    }
+
+    @RequestMapping(value = "/showEPLStatements", method = RequestMethod.GET)
+    public ModelAndView showAllEPLStatements() {
+
+        List<String> list = esperService.showEPLStatements();
+
+        ModelAndView model = new ModelAndView("showEPLStatements");
         model.addObject("lists", list);
 
         return model;
