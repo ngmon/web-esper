@@ -39,7 +39,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public EPServiceProvider epServiceProvider() {
         if(this.epServiceProvider == null) {
             com.espertech.esper.client.Configuration config = new com.espertech.esper.client.Configuration();
-//            config.getEngineDefaults().getThreading().setInternalTimerEnabled(false); //getting time from events enabled
             this.epServiceProvider = EPServiceProviderManager.getDefaultProvider(config);
             this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSource.class.getPackage().getName() + ".*");
             this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSink.class.getPackage().getName() + ".*");

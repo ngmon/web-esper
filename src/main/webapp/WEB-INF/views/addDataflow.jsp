@@ -1,5 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
+    <head>
+    </head>
     <body>
         <div align="center">
             <h3>Enter dataflow information</h3>

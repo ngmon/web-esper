@@ -4,10 +4,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Properties;
 
 /**
  * Created by Filip Gdovin on 1. 3. 2015.
@@ -74,8 +77,16 @@ public class JSONFlattener {
     }
 
     private static Long parseDate(String input) {
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");  //must be hardcoded
+        Properties prop = new Properties();
+        try {
+            PropLoader.loadFromPropFile(prop);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat f = new SimpleDateFormat(prop.getProperty("timestampFormat"));  //must be hardcoded
         Date d = null;
+
         try {
             d = f.parse(input);
         } catch (ParseException e) {

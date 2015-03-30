@@ -7,7 +7,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="cz.muni.fgdovin.bachelorthesis" level="debug">
+        <Logger name="cz.muni.fgdovin.bachelorthesis" level="info">
             <AppenderRef ref="terminal"/>
         </Logger>
         <Root level="DEBUG">

@@ -11,16 +11,10 @@ import java.util.Properties;
  */
 public class DataflowHelper {
 
-    private static void loadFromPropFile(Properties prop) throws IOException {
-        InputStream in = DataflowHelper.class.getClassLoader().getResourceAsStream("config.properties");
-        prop.load(in);
-        in.close();
-    }
-
     public static String generateEPL(DataflowModel model) {
         Properties prop = new Properties();
         try {
-            loadFromPropFile(prop);
+            PropLoader.loadFromPropFile(prop);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,7 +59,6 @@ public class DataflowHelper {
                 "exchange: '" + model.getExchangeName() + "',\n" +
                 "collector: {class: '" + prop.getProperty("outputCollector") + "'}\n" +
             "}");
-        System.out.println("Generated: " + result);
         return result.toString();
     }
 }
