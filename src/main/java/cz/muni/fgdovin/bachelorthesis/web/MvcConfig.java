@@ -14,10 +14,9 @@ import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -25,9 +24,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 /**
  * Created by Filip Gdovin on 4. 3. 2015.
  */
-@Configuration
-@ComponentScan
-@EnableWebMvc
+@SpringBootApplication
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
     private static final Logger logger = LogManager.getLogger("MvcConfig");
@@ -39,9 +36,9 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public EPServiceProvider epServiceProvider() {
         if(this.epServiceProvider == null) {
             com.espertech.esper.client.Configuration config = new com.espertech.esper.client.Configuration();
+            config.addImport(AMQPSource.class.getPackage().getName() + ".*");
+            config.addImport(AMQPSink.class.getPackage().getName() + ".*");
             this.epServiceProvider = EPServiceProviderManager.getDefaultProvider(config);
-            this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSource.class.getPackage().getName() + ".*");
-            this.epServiceProvider.getEPAdministrator().getConfiguration().addImport(AMQPSink.class.getPackage().getName() + ".*");
         }
         return this.epServiceProvider;
     }
@@ -85,5 +82,9 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public EsperUserFriendlyService esperUserFriendlyService() {
         return new EsperUserFriendlyServiceImpl();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(MvcConfig.class, args);
     }
 }
