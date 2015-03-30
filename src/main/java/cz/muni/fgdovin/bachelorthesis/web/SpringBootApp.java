@@ -25,7 +25,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  * Created by Filip Gdovin on 4. 3. 2015.
  */
 @SpringBootApplication
-public class MvcConfig extends WebMvcConfigurerAdapter {
+public class SpringBootApp extends WebMvcConfigurerAdapter {
 
     private static final Logger logger = LogManager.getLogger("MvcConfig");
 
@@ -85,6 +85,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(MvcConfig.class, args);
+        SpringApplication.run(SpringBootApp.class, args);
     }
 }

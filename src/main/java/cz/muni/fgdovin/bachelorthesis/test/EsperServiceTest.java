@@ -3,7 +3,7 @@ package cz.muni.fgdovin.bachelorthesis.test;
 import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.web.DataflowModel;
-import cz.muni.fgdovin.bachelorthesis.web.MvcConfig;
+import cz.muni.fgdovin.bachelorthesis.web.SpringBootApp;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = MvcConfig.class)
+@ContextConfiguration(classes = SpringBootApp.class)
 public class EsperServiceTest {
 
     @Autowired
@@ -44,7 +44,7 @@ public class EsperServiceTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        context = new AnnotationConfigApplicationContext(MvcConfig.class);
+        context = new AnnotationConfigApplicationContext(SpringBootApp.class);
         schema = new HashMap<String, Object>();
         schema.put("hostname", String.class);
         schema.put("application", String.class);
