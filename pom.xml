@@ -67,12 +67,7 @@
             <version>3.5.0</version>
         </dependency>
 
-        <!--Other (sort!!)-->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20141113</version>
-        </dependency>
+        <!--Loggers dependencies-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-web</artifactId>
