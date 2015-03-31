@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Welcome to the Spring MVC Quickstart application! Get started quickly by signing up!</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        <nav th:include="fragments/header :: header">
+            <ul>
+                <li class="active"><a href="#">Home</a></li>
+            </ul>
+        </nav>
+        <div align="center">
+            <h1>Esper Continuous Engine</h1>
+            <p>
+                This is Esper Continuous Engine, which allows you to add, remove and show
+                event types, dataflows and EPL statements on the run.
+            </p>
+        </div>
+    </body>
+</html>

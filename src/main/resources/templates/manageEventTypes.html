@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+    </head>
+    <body>
+        <div th:replace="fragments/header :: header">
+            <!-- ============================================================================ -->
+            <!-- This content is only used for static prototyping purposes (natural templates)-->
+            <!-- and is therefore entirely optional, as this markup fragment will be included -->
+            <!-- from "fragments/header.html" at runtime.                                     -->
+            <!-- ============================================================================ -->
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#">Static header</a>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="#">Event types</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div align="center">
+            <h1>Event type management</h1>
+            <p>
+                Event type management allows you to add, remove and show
+                event types, which all statements will be depending on.
+            </p>
+            <h2>Select your action:</h2>
+            <p>
+            <form method="GET" action="/addEventType">
+                <input type="submit" value="Add event type"/>
+            </form>
+            </p>
+            <p>
+            <form method="GET" action="/removeEventType">
+                <input type="submit" value="Remove event type"/>
+            </form>
+            </p>
+            <p>
+            <form method="GET" action="/showEventTypes">
+                <input type="submit" value="Show all event types"/>
+            </form>
+            </p>
+            <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+        </div>
+    </body>
+</html>

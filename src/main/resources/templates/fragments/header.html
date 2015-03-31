@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" type="text/css" media="all" href="../../resources/static/css/tabs.css" th:href="@{resources/static/css/tabs.css}" />
+    </head>
+    <body>
+        <nav class="toc" th:fragment="header">
+            <ul>
+                <li class="active"><a href="#" th:href="@{/}">Home</a></li>
+                <li><a href="#" th:href="@{/manageEventTypes}">Event types</a></li>
+                <li><a href="#" th:href="@{/manageDataflows}">Dataflows</a></li>
+                <li><a href="#" th:href="@{/manageEPLStatements}">EPL statements</a></li>
+            </ul>
+        </nav>
+    </body>
+</html>

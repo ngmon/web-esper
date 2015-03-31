@@ -17,15 +17,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 
 /**
  * Created by Filip Gdovin on 4. 3. 2015.
  */
 @SpringBootApplication
-public class SpringBootApp extends WebMvcConfigurerAdapter {
+public class SpringBootApp {
 
     private static final Logger logger = LogManager.getLogger("MvcConfig");
 
@@ -66,13 +67,19 @@ public class SpringBootApp extends WebMvcConfigurerAdapter {
         return epServiceProvider().getEPAdministrator().getConfiguration();
     }
 
-    @Bean
+    /*@Bean
     public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setPrefix("/WEB-INF/views/");
-        viewResolver.setSuffix(".jsp");
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setSuffix(".html");
+        SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.setTemplateResolver(templateResolver);
+
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(engine);
         return viewResolver;
-    }
+    }*/
 
     @Bean
     public EsperService esperService() {

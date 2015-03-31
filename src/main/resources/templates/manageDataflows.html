@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+    </head>
+    <body>
+    <div th:replace="fragments/header :: header" align="center">
+        <!-- ============================================================================ -->
+        <!-- This content is only used for static prototyping purposes (natural templates)-->
+        <!-- and is therefore entirely optional, as this markup fragment will be included -->
+        <!-- from "fragments/header.html" at runtime.                                     -->
+        <!-- ============================================================================ -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Static header</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Dataflows</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div align="center">
+        <h1>Dataflow management</h1>
+        <p>
+            Dataflow management allows you to add, remove and show
+            dataflows, which represent AMQP event stream sources
+            and send upcoming events into Esper for querying.
+        </p>
+        <h2>Select your action:</h2>
+        <p>
+        <form method="GET" action="/addDataflow">
+            <input type="submit" align="center" value="Add dataflow"/>
+        </form>
+        </p>
+        <p>
+        <form method="GET" action="/removeDataflow">
+            <input type="submit" align="center" value="Remove dataflow"/>
+        </form>
+        </p>
+        <p>
+        <form method="GET" action="/showDataflows">
+            <input type="submit" align="center" value="Show all dataflows"/>
+        </form>
+        </p>
+        <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+    </div>
+    </body>
+</html>

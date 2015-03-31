@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div align="center">
+        <h3>Enter event type information</h3>
+        <table class="myTable">
+            <form action="#" th:action="@{/removeEventType}" th:object="${EventTypeModel}" method="post">
+                <div align="center">
+                    <p>Event type name: <input type="text" th:field="*{eventType}" /></p>
+                    <p><input type="submit" value="Remove" /> <input type="reset" value="Reset"/></p>
+                </div>
+            </form>
+        </table>
+        <form action="/manageEventTypes">
+            <input type="submit" align="center" value="Back to event type management"/>
+        </form>
+    </div>
+    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+</body>
+</html>

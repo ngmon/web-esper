@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div align="center">
+        <h3>Enter two-stream EPL statement information</h3>
+        <table class="myTable">
+            <form action="#" th:action="@{/addTwoStreamEPL}" th:object="${DataflowModel}" method="post">
+                <div align="center">
+                    <p>Dataflow name: <input type="text" th:field="*{dataflowName}" /></p>
+                    <p>First event type: <input type="text" th:field="*{firstEventType}" /></p>
+                    <p>Second event type: <input type="text" th:field="*{secondEventType}" /></p>
+                    <p>Output event type: <input type="text" th:field="*{outputEventType}" /></p>
+                    <p>EPL Statement: <input type="text" th:field="*{query}" /></p>
+                    <p>Queue name: <input type="text" th:field="*{queueName}" /></p>
+                    <p>Exchange name: <input type="text" th:field="*{exchangeName}" /></p>
+                    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
+                </div>
+            </form>
+        </table>
+        <form action="/manageEPLStatements">
+            <input type="submit" align="center" value="Back to EPL statement management"/>
+        </form>
+        <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+    </div>
+</body>
+</html>

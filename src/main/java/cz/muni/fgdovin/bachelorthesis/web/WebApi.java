@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.ViewResolver;
 
 import java.util.List;
 import java.util.Map;
@@ -137,7 +138,7 @@ public class WebApi {
         List<String> list = esperService.showEventTypes();
 
         ModelAndView model = new ModelAndView("showEventTypes");
-        model.addObject("lists", list);
+        model.addObject("list", list);
 
         return model;
     }
@@ -200,10 +201,10 @@ public class WebApi {
     public String submitRemoveDataflowForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
         resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
         if (esperService.removeDataflow(modelClass.getDataflowName())) {
-            resultModel.addAttribute("eventType", "Dataflow with given name removed successfully.");
+            resultModel.addAttribute("firstEventType", "Dataflow with given name removed successfully.");
         } else {
 
-            resultModel.addAttribute("eventType", "Dataflow with this name was not found, or its removal failed.");
+            resultModel.addAttribute("firstEventType", "Dataflow with this name was not found, or its removal failed.");
         }
         return "removeDataflowResult";
     }
@@ -367,10 +368,10 @@ public class WebApi {
     public String submitRemoveEPLForm(@ModelAttribute("DataflowModel") DataflowModel modelClass, ModelMap resultModel) {
         resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
         if (esperService.removeDataflow(modelClass.getDataflowName())) {
-            resultModel.addAttribute("eventType", "EPL statement with given name removed successfully.");
+            resultModel.addAttribute("firstEventType", "EPL statement with given name removed successfully.");
         } else {
 
-            resultModel.addAttribute("eventType", "EPL statement with this name was not found, or its removal failed.");
+            resultModel.addAttribute("firstEventType", "EPL statement with this name was not found, or its removal failed.");
         }
         return "removeEPLResult";
     }

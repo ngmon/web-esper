@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div align="center">
+    <h3>Deleting dataflow...</h3>
+    <table style="border:2px solid black;">
+        <div>
+            <fieldset class="myFieldSet">
+                <fieldset>
+                    <legend>Dataflow name</legend>
+                    <p th:text="${DataflowModel.dataflowName}" />
+                </fieldset>
+                <fieldset>
+                    <legend>Deletion result</legend>
+                    <!--@thymesVar id="firstEventType" type="String"-->
+                    <p th:text="${firstEventType}" />
+                </fieldset>
+            </fieldset>
+        </div>
+    </table>
+        <form action="/manageDataflows">
+            <input type="submit" align="center" value="Back to dataflow management"/>
+        </form>
+        <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+    </div>
+</body>
+</html>
