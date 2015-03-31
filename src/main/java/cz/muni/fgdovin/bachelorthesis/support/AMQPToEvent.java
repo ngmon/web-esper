@@ -56,6 +56,23 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         else if(value instanceof Boolean) {
             resultMap.put(actualKey, (Boolean) value);
         }
+        else if(value.getClass().isArray()) {
+            StringBuilder mapAsString = new StringBuilder("[");
+            Object[] myArray = (Object[])value;
+            for(int i = 0; i < myArray.length; i++) {
+                Object arrayValue = myArray[i];
+                if ((arrayValue instanceof Number) || (arrayValue instanceof Boolean)
+                        || (arrayValue instanceof Map) || (arrayValue.getClass().isArray())){
+                    mapAsString.append("\"" + actualKey + "[" + i + "]\": " + arrayValue);
+                } else {
+                    mapAsString.append("\"" + actualKey + "[" + i + "]\": \"" + arrayValue + "\"");
+            }
+
+
+            }
+            mapAsString.append("]");
+            flatMap(mapAsString.toString(), actualKey + ".");
+        }
         else if(value instanceof Map) {
             StringBuilder mapAsString = new StringBuilder("{");
             int keySetSize = ((Map) value).keySet().size();
@@ -64,7 +81,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
                 String stringKey = mapKey.toString();
                 Object mapValue = ((Map) value).get(stringKey);
                 if ((mapValue instanceof Number) || (mapValue instanceof Boolean)
-                        || (mapValue instanceof Map)) {
+                        || (mapValue instanceof Map) || (mapValue.getClass().isArray())) {
                     mapAsString.append("\"" + stringKey + "\": " + mapValue);
                 } else {
                     mapAsString.append("\"" + stringKey + "\": \"" + mapValue + "\"");
