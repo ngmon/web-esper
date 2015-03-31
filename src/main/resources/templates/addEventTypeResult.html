@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div align="center">
+    <h3>Event type created:</h3>
+    <table style="border:2px solid black;">
+        <p th:text="'Event type name: ' + ${EventTypeModel.eventType}" />
+        <p th:text="'Properties: ' + ${EventTypeModel.properties}" />
+    </table>
+    <form action="/manageEventTypes">
+        <input type="submit" align="center" value="Back to event type management"/>
+    </form>
+    <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+</div>
+</body>
+</html>
