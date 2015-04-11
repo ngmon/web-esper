@@ -6,10 +6,13 @@ import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.logging.log4j.LogManager;
+
 import java.io.IOException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -17,7 +20,8 @@ import java.util.*;
  */
 public class AMQPToEvent implements AMQPToObjectCollector {
 
-    private static HashMap<String, Object> resultMap = new HashMap<String, Object>();
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger("AMQPToEvent");
+    private HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
     @Override
     public void collect(final AMQPToObjectCollectorContext context) {
@@ -26,7 +30,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         context.getEmitter().submit(resultMap);
     }
 
-    private static Map toMap(String input) {
+    private Map toMap(String input) {
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
         Map<String, String> nestedMap = null;
         try {
@@ -37,7 +41,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         return nestedMap;
     }
 
-    private static void flatMap(String input, String keyPrefix) {
+    private void flatMap(String input, String keyPrefix) {
         Map<String, Object> nestedMap = toMap(input);
         for (String key : nestedMap.keySet()) {
             String actualKey = keyPrefix + key;
@@ -49,7 +53,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         }
     }
 
-    private static void putInMap(String actualKey, Object value) {
+    private void putInMap(String actualKey, Object value) {
         if(value instanceof Number) {
             resultMap.put(actualKey, value);
         }
@@ -99,7 +103,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         }
     }
 
-    private static Long parseDate(String input) {
+    private Long parseDate(String input) {
         Properties prop = new Properties();
         try {
             PropLoader.loadFromPropFile(prop);

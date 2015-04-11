@@ -97,12 +97,12 @@ public interface EsperUserFriendlyService {
      *
      * @param queueName String describing name of dataflow.
      * @param queueProperties String defining properties of the dataflow (see dataflow types above),
-     *                        for convenience there is a support class (EPLHelper), which takes dataflow
+     *                        for convenience there is a support class (DataflowHelper), which takes dataflow
      *                        parameters and creates String defining the whole dataflow, adding static
      *                        parameters such as host, port, etc. Those properties, however, can be changed
      *                        in properties file 'config.properties', located under 'resources'.
-     * @return Returns created EPDataflowInstance if dataflow was successfully created,
-     *         or null otherwise.
+     * @return Returns true if dataflow was successfully created,
+     *         or false otherwise.
      */
     public boolean addDataflow(String queueName, String queueProperties);
 
@@ -128,18 +128,18 @@ public interface EsperUserFriendlyService {
     public String showDataflow(String queueName);
 
     /**
-     * Method used to show all dataflows known to Esper.
+     * Method used to show all input dataflows known to Esper.
      *
-     * @return List of all present(state='RUNNING') dataflows in format 'dataflowName[state]:dataflowParameters',
-     * or null if there are no dataflows present.
+     * @return List of all present(state='RUNNING') input dataflows in format 'dataflowName[state]:dataflowParameters',
+     * or null if there are no input dataflows present.
      */
-    public List<String> showDataflows();
+    public List<String> showInputDataflows();
 
     /**
-     * Method used to show all EPL statements known to Esper.
+     * Method used to show all output dataflows known to Esper.
      *
-     * @return List of all present(state='RUNNING') EPL statement dataflows in format 'dataflowName[state]:dataflowParameters',
-     * or null if there are no EPL statements present.
+     * @return List of all present(state='RUNNING') output dataflows in format 'dataflowName[state]:dataflowParameters',
+     * or null if there are no output dataflows present.
      */
-    public List<String> showEPLStatements();
+    public List<String> showOutputDataflows();
 }

@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class EventTypeHelper {
 
-    public static Map<String, Object> toMap(String properties) {
+    public Map<String, Object> toMap(String properties) {
         String[] pairs = properties.split(",");
 
         Map<String, Object> schemaMap= new HashMap<String, Object>();

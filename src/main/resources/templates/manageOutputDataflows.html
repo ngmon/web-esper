@@ -17,47 +17,47 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">EPL statements</a></li>
+                            <li class="active"><a href="#">Output dataflows</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
         <div align="center">
-            <h1>EPL statement management</h1>
+            <h1>Output dataflow management</h1>
             <p>
-                EPL statement management allows you to add, remove and show
-                EPL statements, which represent queries bound to
+                Output dataflow management allows you to add, remove and show
+                output dataflows, which represent queries bound to
                 specific stream sources and their results are
                 send via AMQP protocol as new stream.
             </p>
             <h2>Select your action:</h2>
             <p>
-            <form method="GET" action="/addOneStreamEPL">
-                <input type="submit" value="Add one-stream EPL statement"/>
+            <form method="GET" action="/addOneStreamOutputDataflow">
+                <input type="submit" value="Add one-stream output dataflow"/>
             </form>
             </p>
             <p>
-            <form method="GET" action="/addTwoStreamEPL">
-                <input type="submit" value="Add two-stream EPL statement"/>
+            <form method="GET" action="/addTwoStreamOutputDataflow">
+                <input type="submit" value="Add two-stream output dataflow"/>
             </form>
             </p>
             <p>
-            <form method="GET" action="/addThreeStreamEPL">
-                <input type="submit" value="Add three-stream EPL statement"/>
+            <form method="GET" action="/addThreeStreamOutputDataflow">
+                <input type="submit" value="Add three-stream output dataflow"/>
             </form>
             </p>
             <p>
-            <form method="GET" action="/removeEPL">
-                <input type="submit" value="Remove EPL statement"/>
+            <form method="GET" action="/removeOutputDataflow">
+                <input type="submit" value="Remove output dataflow"/>
             </form>
             </p>
             <p>
-            <form method="GET" action="/showDataflows">
-                <input type="submit" align="center" value="Show all EPL statements"/>
+            <form method="GET" action="/showOutputDataflows">
+                <input type="submit" align="center" value="Show all output dataflows"/>
             </form>
             </p>
-            <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+            <div th:include="fragments/footer :: footer"></div>
         </div>
     </body>
 </html>

@@ -10,9 +10,15 @@ import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.servlet.ViewResolver;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import org.thymeleaf.templateresolver.TemplateResolver;
 
 /**
  * Created by Filip Gdovin on 4. 3. 2015.
@@ -21,8 +27,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringBootApp {
 
     private EPServiceProvider epServiceProvider;
-    private EPRuntime epRuntime;
 
+    //Esper beans
     @Bean
     public EPServiceProvider epServiceProvider() {
         if(this.epServiceProvider == null) {
@@ -41,10 +47,7 @@ public class SpringBootApp {
 
     @Bean
     public EPRuntime epRuntime() {
-        if(this.epRuntime == null) {
-            this.epRuntime = EPServiceProviderManager.getDefaultProvider().getEPRuntime();
-        }
-        return this.epRuntime;
+        return EPServiceProviderManager.getDefaultProvider().getEPRuntime();
     }
 
     @Bean

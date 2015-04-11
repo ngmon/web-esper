@@ -27,26 +27,26 @@
         <h1>Dataflow management</h1>
         <p>
             Dataflow management allows you to add, remove and show
-            dataflows, which represent AMQP event stream sources
+            input dataflows, which represent AMQP event stream sources
             and send upcoming events into Esper for querying.
         </p>
         <h2>Select your action:</h2>
         <p>
-        <form method="GET" action="/addDataflow">
-            <input type="submit" align="center" value="Add dataflow"/>
+        <form method="GET" action="/addInputDataflow">
+            <input type="submit" align="center" value="Add input dataflow"/>
         </form>
         </p>
         <p>
-        <form method="GET" action="/removeDataflow">
-            <input type="submit" align="center" value="Remove dataflow"/>
+        <form method="GET" action="/removeInputDataflow">
+            <input type="submit" align="center" value="Remove input dataflow"/>
         </form>
         </p>
         <p>
-        <form method="GET" action="/showDataflows">
-            <input type="submit" align="center" value="Show all dataflows"/>
+        <form method="GET" action="/showInputDataflows">
+            <input type="submit" align="center" value="Show all input dataflows"/>
         </form>
         </p>
-        <div th:replace="fragments/footer :: footer">&copy; 2013 The Static Templates</div>
+        <div th:include="fragments/footer :: footer"></div>
     </div>
     </body>
 </html>

@@ -1,9 +1,9 @@
 package cz.muni.fgdovin.bachelorthesis.support;
 
-import cz.muni.fgdovin.bachelorthesis.web.DataflowModel;
+import cz.muni.fgdovin.bachelorthesis.web.InputDataflowModel;
+import cz.muni.fgdovin.bachelorthesis.web.OutputDataflowModel;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class DataflowHelper {
 
-    public static String generateEPL(DataflowModel model) {
+    public String generateInputDataflow(InputDataflowModel model) {
         Properties prop = new Properties();
         try {
             PropLoader.loadFromPropFile(prop);
@@ -19,21 +19,29 @@ public class DataflowHelper {
             e.printStackTrace();
         }
 
-        if((model.getQuery() == null) || (model.getQuery().equals("null")) || (model.getQuery().isEmpty())) {
-            return
-            "Create Dataflow " + model.getDataflowName() + "\n" +
-            "AMQPSource -> instream<" + model.getFirstEventType() + "> {\n" +
-            "host: '" + prop.getProperty("inputHost") + "',\n" +
-            "port: " + Integer.parseInt(prop.getProperty("inputPort")) + ",\n" +
-            "queueName: '" + model.getQueueName() + "',\n" +
-            "declareDurable: " + prop.getProperty("inputDeclareDurable") + ",\n" +
-            "declareExclusive: " + prop.getProperty("inputDeclareExclusive") + ",\n" +
-            "declareAutoDelete: " + prop.getProperty("inputDeclareAutoDelete") + ",\n" +
-            "exchange: '" + model.getExchangeName() +"',\n" +
-            "collector: {class: '" + prop.getProperty("inputCollector") + "'}\n" +
-            "}" +
-            "EventBusSink(instream) {}";
+        return
+        "Create Dataflow " + model.getDataflowName() + "\n" +
+        "AMQPSource -> instream<" + model.getEventType() + "> {\n" +
+        "host: '" + prop.getProperty("inputHost") + "',\n" +
+        "port: " + Integer.parseInt(prop.getProperty("inputPort")) + ",\n" +
+        "queueName: '" + model.getQueueName() + "',\n" +
+        "declareDurable: " + prop.getProperty("inputDeclareDurable") + ",\n" +
+        "declareExclusive: " + prop.getProperty("inputDeclareExclusive") + ",\n" +
+        "declareAutoDelete: " + prop.getProperty("inputDeclareAutoDelete") + ",\n" +
+        "exchange: '" + model.getExchangeName() +"',\n" +
+        "collector: {class: '" + prop.getProperty("inputCollector") + "'}\n" +
+        "}" +
+        "EventBusSink(instream) {}";
+    }
+
+    public String generateOutputDataflow(OutputDataflowModel model) {
+        Properties prop = new Properties();
+        try {
+            PropLoader.loadFromPropFile(prop);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         StringBuilder result = new StringBuilder("Create dataflow " + model.getDataflowName() + "\n");
         StringBuilder selector = new StringBuilder("Select(");
         for(String eventType : model.getAllEventTypes()) {

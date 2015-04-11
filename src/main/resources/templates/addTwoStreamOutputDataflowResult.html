@@ -10,11 +10,11 @@
 </head>
 <body>
     <div align="center">
-        <h3>Creating event type...</h3>
+        <h3>Creating two-stream output dataflow...</h3>
         <fieldset class="myFieldSet">
             <fieldset>
-                <legend>Event type name</legend>
-                <p th:text="${EventTypeModel.eventType}" />
+                <legend>Dataflow name</legend>
+                <p th:text="${OutputDataflowModel.dataflowName}" />
             </fieldset>
             <fieldset>
                 <legend>Creation result</legend>
@@ -22,7 +22,7 @@
                 <p th:text="${result}" />
             </fieldset>
         </fieldset>
-        <div th:include="fragments/backToManagement :: eventType"></div>
+        <div th:include="fragments/backToManagement :: outputDataflow"></div>
         <div th:include="fragments/footer :: footer"></div>
     </div>
 </body>

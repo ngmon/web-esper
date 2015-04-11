@@ -52,7 +52,10 @@ public class EsperServiceImpl implements EsperService {
      * {@inheritDoc}
      */
     @Override
-    public void removeEventType(String eventName) throws ConfigurationException{
+    public void removeEventType(String eventName) throws ConfigurationException, NullPointerException {
+        if(this.showEventType(eventName) == null) {
+            throw new NullPointerException("Event type with this name is not present!");
+        }
         this.configurationOperations.removeEventType(eventName, false);
     }
 
@@ -90,25 +93,30 @@ public class EsperServiceImpl implements EsperService {
      * {@inheritDoc}
      */
     @Override
-    public void removeDataflow(String queueName) throws NullPointerException {
+    public boolean removeDataflow(String queueName) throws NullPointerException {
+        boolean result;
         EPDataFlowInstance sourceInstance = this.esperDataFlowRuntime.getSavedInstance(queueName);
-        EPStatement creatingStatement = this.esperAdministrator.getStatement(queueName);
+        if(esperDataFlowRuntime == null) {
+            System.out.println("Impossible to happen!");
+        }
         if(sourceInstance == null) {
             throw new NullPointerException("No dataflow instance with given name found.");
         }
+        EPStatement creatingStatement = this.esperAdministrator.getStatement(queueName);
         sourceInstance.cancel();
-        this.esperDataFlowRuntime.removeSavedInstance(queueName);
+        result = this.esperDataFlowRuntime.removeSavedInstance(queueName);
 
         if (creatingStatement != null) {
             creatingStatement.destroy();
         }
+        return result;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public EPStatement showDataflow(String queueName){
+    public EPStatement showDataflow(String queueName) throws NullPointerException {
         return this.esperAdministrator.getStatement(queueName);
     }
 

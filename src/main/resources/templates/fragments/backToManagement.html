@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div th:fragment="outputDataflow">
+        <div align="center">
+            <form action="/manageOutputDataflows">
+                <p><input type="submit" align="center" value="Back to output dataflow management"/></p>
+            </form>
+        </div>
+    </div>
+
+    <div th:fragment="inputDataflow">
+        <div align="center">
+            <form action="/manageInputDataflows">
+                <p><input type="submit" align="center" value="Back to input dataflow management"/></p>
+            </form>
+        </div>
+    </div>
+
+    <div th:fragment="eventType">
+        <div align="center">
+            <form action="/manageEventTypes">
+                <p><input type="submit" align="center" value="Back to event type management"/></p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

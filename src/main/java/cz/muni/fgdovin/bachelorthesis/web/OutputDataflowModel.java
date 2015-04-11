@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Filip Gdovin on 26. 3. 2015.
+ * Created by Filip Gdovin on 11. 4. 2015.
  */
-public class DataflowModel {
+public class OutputDataflowModel {
 
     private String dataflowName;
     private String firstEventType;
@@ -17,19 +17,11 @@ public class DataflowModel {
     private String queueName;
     private String exchangeName;
 
-    public DataflowModel() {
-    }
-
-    //for input dataflows
-    public DataflowModel(String dataflowName, String firstEventType, String queueName, String exchangeName) {
-        this.dataflowName = dataflowName;
-        this.firstEventType = firstEventType;
-        this.queueName = queueName;
-        this.exchangeName = exchangeName;
+    public OutputDataflowModel() {
     }
 
     //for one-stream output dataflows
-    public DataflowModel(String dataflowName, String firstEventType, String outputEventType, String query, String queueName, String exchangeName) {
+    public OutputDataflowModel(String dataflowName, String firstEventType, String outputEventType, String query, String queueName, String exchangeName) {
         this.dataflowName = dataflowName;
         this.firstEventType = firstEventType;
         this.outputEventType = outputEventType;
@@ -39,7 +31,7 @@ public class DataflowModel {
     }
 
     //for two-stream output dataflows
-    public DataflowModel(String dataflowName, String firstEventType, String secondEventType, String outputEventType, String query, String queueName, String exchangeName) {
+    public OutputDataflowModel(String dataflowName, String firstEventType, String secondEventType, String outputEventType, String query, String queueName, String exchangeName) {
         this.dataflowName = dataflowName;
         this.firstEventType = firstEventType;
         this.secondEventType = secondEventType;
@@ -50,7 +42,7 @@ public class DataflowModel {
     }
 
     //for three-stream output dataflows
-    public DataflowModel(String dataflowName, String firstEventType, String secondEventType, String thirdEventType, String outputEventType, String query, String queueName, String exchangeName) {
+    public OutputDataflowModel(String dataflowName, String firstEventType, String secondEventType, String thirdEventType, String outputEventType, String query, String queueName, String exchangeName) {
         this.dataflowName = dataflowName;
         this.firstEventType = firstEventType;
         this.secondEventType = secondEventType;

@@ -42,7 +42,9 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         try {
             this.esperService.addEventType(eventName, schema);
         } catch (ConfigurationException ex) {
-            logger.warn("Error while adding new event type!" ,ex);
+            if(logger.isDebugEnabled()) {
+                logger.debug("Error while adding new event type!", ex);
+            }
             return false;
         }
         return true;
@@ -55,8 +57,10 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
     public boolean removeEventType(String eventName) {
         try {
             this.esperService.removeEventType(eventName);
-        } catch (ConfigurationException ex) {
-            logger.info("Error while removing event type!", ex);
+        } catch (ConfigurationException | NullPointerException ex) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Error while removing event type!", ex);
+            }
             return false;
         }
         return true;
@@ -71,8 +75,10 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         try {
             myEvent = this.esperService.showEventType(eventName);
         } catch (NullPointerException ex) {
-            logger.warn("No event type with given name["+ eventName+"] was found.", ex);
-            return "";
+            if(logger.isDebugEnabled()) {
+                logger.debug("No event type with given name[" + eventName + "] was found.", ex);
+            }
+            return null;
         }
         return myEvent.getName() + ":" + Arrays.toString(myEvent.getPropertyNames());
     }
@@ -86,7 +92,7 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         if((allEvents == null) || (allEvents.length == 0)) {
             return null;
         }
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (EventType allEvent : allEvents) {
             result.add(showEventType(allEvent.getName()));
         }
@@ -98,34 +104,27 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public boolean addDataflow(String dataflowName, String dataflowProperties) {
-        boolean result = true;
         try {
             this.esperService.addDataflow(dataflowName, dataflowProperties);
         } catch (NullPointerException ex) {
-            logger.warn("Failed to create dataflow!", ex);
-            result = false;
+            if(logger.isDebugEnabled()) {
+                logger.debug("Failed to create dataflow!", ex);
+            }
+            return false;
         } catch (EPDataFlowInstantiationException ex) {
-            logger.error("Failed to instantiate new dataflow!", ex);
-            result = false;
+            if(logger.isDebugEnabled()) {
+                logger.debug("Failed to instantiate new dataflow!", ex);
+            }
+            return false;
         } catch (EPDataFlowAlreadyExistsException ex) {
-            logger.error("Failed to save new dataflow instance, which causes it to be unreachable by its name!", ex);
-            result = false;
+            if (logger.isDebugEnabled()) {
+                logger.debug("Failed to save new dataflow instance, which causes it to be unreachable by its name!", ex);
+            }
+            return false;
         } catch (IllegalStateException ex) {
-            logger.error("Failed to start new dataflow!", ex);
-            result = false;
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean removeDataflow(String dataflowName) {
-        try {
-            this.esperService.removeDataflow(dataflowName);
-        } catch (NullPointerException ex) {
-            logger.info("Failed to remove dataflow " + dataflowName + ".", ex);
+            if(logger.isDebugEnabled()) {
+                logger.debug("Failed to start new dataflow!", ex);
+            }
             return false;
         }
         return true;
@@ -135,10 +134,32 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * {@inheritDoc}
      */
     @Override
+    public boolean removeDataflow(String dataflowName) {
+        boolean result;
+        try {
+            result = this.esperService.removeDataflow(dataflowName);
+        } catch (NullPointerException ex) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Failed to remove dataflow " + dataflowName + ".", ex);
+            }
+            return false;
+        }
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String showDataflow(String dataflowName) {
-        EPStatement myDataflow = this.esperService.showDataflow(dataflowName);
-        if(myDataflow == null) {
-            return null;
+        EPStatement myDataflow = null;
+        try {
+            myDataflow = this.esperService.showDataflow(dataflowName);
+        } catch (NullPointerException ex) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Failed to find dataflow!", ex);
+                return null;
+            }
         }
         return myDataflow.getName() + "[" + myDataflow.getState() + "]:\n\"" + myDataflow.getText() + "\"\n";
     }
@@ -147,19 +168,19 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * {@inheritDoc}
      */
     @Override
-    public List<String> showDataflows() {
+    public List<String> showInputDataflows() {
         String[] allDataFlows = this.esperService.showDataflows();
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         if((allDataFlows == null) || (allDataFlows.length == 0)) {
-            logger.info("No dataflows present.");
+            if(logger.isDebugEnabled()) {
+                logger.debug("No input dataflows present.");
+            }
             return result;
         }
-
-        //in case we would like to receive more detailed info sometimes
         for (String oneDataFlow : allDataFlows) {
             String oneDataflowDetails = showDataflow(oneDataFlow);
-            if(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n")) {  //only input dataflows, NO EPL statements
+            if(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n")) {  //only input dataflows, NO output ones
                 result.add(oneDataflowDetails);
             }
         }
@@ -170,19 +191,19 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * {@inheritDoc}
      */
     @Override
-    public List<String> showEPLStatements() {
+    public List<String> showOutputDataflows() {
         String[] allDataFlows = this.esperService.showDataflows();
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         if((allDataFlows == null) || (allDataFlows.length == 0)) {
-            logger.info("No dataflows present.");
+            if(logger.isDebugEnabled()) {
+                logger.debug("No output dataflows present.");
+            }
             return result;
         }
-
-        //in case we would like to receive more detailed info sometimes
         for (String oneDataFlow : allDataFlows) {
             String oneDataflowDetails = showDataflow(oneDataFlow);
-            if(!(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n"))) {  //only EPL statements, NO input dataflows
+            if(!(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n"))) {  //only output dataflows, NO input ones
                 result.add(oneDataflowDetails);
             }
         }

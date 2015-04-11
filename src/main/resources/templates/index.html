@@ -6,7 +6,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     </head>
     <body>
-        <nav th:include="fragments/header :: header">
+        <nav th:replace="fragments/header :: header">
             <ul>
                 <li class="active"><a href="#">Home</a></li>
             </ul>
@@ -14,9 +14,10 @@
         <div align="center">
             <h1>Esper Continuous Engine</h1>
             <p>
-                This is Esper Continuous Engine, which allows you to add, remove and show
-                event types, dataflows and EPL statements on the run.
+                This is Esper Continuous Engine, which allows you to add, remove and show event types,
+                input dataflows (AMQP sources) and output dataflows (EPL statements and AMQP sinks) on the run.
             </p>
         </div>
+    <div th:include="fragments/footer :: footer"/>
     </body>
 </html>
