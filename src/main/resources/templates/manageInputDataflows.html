@@ -1,32 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-    <head>
-    </head>
-    <body>
-    <div th:replace="fragments/header :: header" align="center">
-        <!-- ============================================================================ -->
-        <!-- This content is only used for static prototyping purposes (natural templates)-->
-        <!-- and is therefore entirely optional, as this markup fragment will be included -->
-        <!-- from "fragments/header.html" at runtime.                                     -->
-        <!-- ============================================================================ -->
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Static header</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Dataflows</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+<head>
+</head>
+<body>
     <div align="center">
-        <h1>Dataflow management</h1>
+        <h1>Input dataflow management</h1>
         <p>
-            Dataflow management allows you to add, remove and show
+            Input dataflow management allows you to add, remove and show
             input dataflows, which represent AMQP event stream sources
             and send upcoming events into Esper for querying.
         </p>
@@ -48,5 +29,5 @@
         </p>
         <div th:include="fragments/footer :: footer"></div>
     </div>
-    </body>
+</body>
 </html>

@@ -185,7 +185,8 @@ public class WebApi {
         if(added) {
             resultModel.addAttribute("result", "Input dataflow created successfully.");
         } else {
-            resultModel.addAttribute("result", "Error creating input dataflow. Bad input or is already defined!");
+            resultModel.addAttribute("result", "Error creating input dataflow. Possible reasons: Bad user input, " +
+                    "dataflow with this name already defined or given event type does not exist in Esper engine!");
         }
         return "addInputDataflowResult";
     }
@@ -210,7 +211,7 @@ public class WebApi {
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.POST)
     public String submitRemoveInputDataflowForm(@ModelAttribute("InputDataflowModel") InputDataflowModel modelClass, ModelMap resultModel) {
-        boolean removed = esperService.removeDataflow(modelClass.getDataflowName());
+        boolean removed = esperService.removeInputDataflow(modelClass.getDataflowName());
 
         resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
         if (removed) {
@@ -260,7 +261,8 @@ public class WebApi {
         if(added) {
             resultModel.addAttribute("result", "Output dataflow created successfully.");
         } else {
-            resultModel.addAttribute("result", "Error creating output dataflow. Bad input or is already defined!");
+            resultModel.addAttribute("result", "Error creating output dataflow. Possible reasons: Bad user input, " +
+                    "dataflow with this name already defined or given event type does not exist in Esper engine!");
         }
         return "addOneStreamOutputDataflowResult";
     }
@@ -293,7 +295,8 @@ public class WebApi {
         if(added) {
             resultModel.addAttribute("result", "Output dataflow created successfully.");
         } else {
-            resultModel.addAttribute("result", "Error creating output dataflow. Bad input or is already defined!");
+            resultModel.addAttribute("result", "Error creating output dataflow. Possible reasons: Bad user input," +
+                    "dataflow with this name already defined or given event type does not exist in Esper engine!");
         }
         return "addTwoStreamOutputDataflowResult";
     }
@@ -326,7 +329,8 @@ public class WebApi {
         if(added) {
             resultModel.addAttribute("result", "Output dataflow created successfully.");
         } else {
-            resultModel.addAttribute("result", "Error creating output dataflow. Bad input or is already defined!");
+            resultModel.addAttribute("result", "Error creating output dataflow. Possible reasons: Bad user input," +
+                    "dataflow with this name already defined or given event type does not exist in Esper engine!");
         }
         return "addThreeStreamOutputDataflowResult";
     }
@@ -352,7 +356,7 @@ public class WebApi {
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.POST)
     public String submitRemoveOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
         resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
-        if (esperService.removeDataflow(modelClass.getDataflowName())) {
+        if (esperService.removeOutputDataflow(modelClass.getDataflowName())) {
             resultModel.addAttribute("result", "Output dataflow with given name removed successfully.");
         } else {
 

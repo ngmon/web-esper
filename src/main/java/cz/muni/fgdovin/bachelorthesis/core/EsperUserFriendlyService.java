@@ -107,25 +107,24 @@ public interface EsperUserFriendlyService {
     public boolean addDataflow(String queueName, String queueProperties);
 
     /**
-     * Method used to remove dataflow by providing its name.
+     * Method used to remove input dataflow by providing its name.
      *
-     * @param queueName String describing dataflow name.
-     * @return True if dataflow with provided name was deleted,
-     * false if Esper doesn't contain dataflow with such name.
+     * @param queueName String describing input dataflow name.
+     * @return True if input dataflow with provided name was deleted,
+     * false if Esper doesn't contain input dataflow with such name.
      *
      */
-    public boolean removeDataflow(String queueName);
+    public boolean removeInputDataflow(String queueName);
 
     /**
-     * Method used to show dataflow by providing its name.
+     * Method used to remove output dataflow by providing its name.
      *
-     * @param queueName String describing dataflow name.
-     * @return String containing dataflow in format 'dataflowName[state]:dataflowParameters',
-     * (state can be only 'RUNNING', as there was no need to implement option to change
-     * state without deletion of such dataflow. however, creation of such method would be trivial.)
-     * or null if there is no dataflow with provided name present (never created or already removed).
+     * @param queueName String describing output dataflow name.
+     * @return True if output dataflow with provided name was deleted,
+     * false if Esper doesn't contain output dataflow with such name.
+     *
      */
-    public String showDataflow(String queueName);
+    public boolean removeOutputDataflow(String queueName);
 
     /**
      * Method used to show all input dataflows known to Esper.

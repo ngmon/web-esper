@@ -55,15 +55,16 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public boolean removeEventType(String eventName) {
+        boolean result;
         try {
-            this.esperService.removeEventType(eventName);
+            result = this.esperService.removeEventType(eventName);
         } catch (ConfigurationException | NullPointerException ex) {
             if(logger.isDebugEnabled()) {
                 logger.debug("Error while removing event type!", ex);
             }
             return false;
         }
-        return true;
+        return result;
     }
 
     /**
@@ -134,7 +135,62 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * {@inheritDoc}
      */
     @Override
-    public boolean removeDataflow(String dataflowName) {
+    public boolean removeInputDataflow(String dataflowName) {
+        String dataflowInfo = this.showDataflow(dataflowName);
+        if(dataflowInfo == null) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("No dataflow with given name present: " + dataflowName);
+            }
+            return false;
+        }
+        if(isInputDataflow(dataflowInfo)) { //its an input dataflow
+            return this.removeDataflow(dataflowName);
+        } else {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Dataflow with given name is not an input one: " + dataflowName);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeOutputDataflow(String dataflowName) {
+        String dataflowInfo = this.showDataflow(dataflowName);
+        if(dataflowInfo == null) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("No dataflow with given name present: " + dataflowName);
+            }
+            return false;
+        }
+        if(!(isInputDataflow(dataflowInfo))) { //its NOT an input dataflow
+            return this.removeDataflow(dataflowName);
+        } else {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Dataflow with given name is not an output one: " + dataflowName);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Method used to remove any dataflow by providing its name (used by other methods).
+     *
+     * @param dataflowName String describing dataflow name.
+     * @return True if dataflow with provided name was deleted,
+     * false if Esper doesn't contain dataflow with such name.
+     *
+     */
+    private boolean removeDataflow(String dataflowName) {
+        String dataflowInfo = this.showDataflow(dataflowName);
+        if(dataflowInfo == null) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("No dataflow with given name present: " + dataflowName);
+            }
+            return false;
+        }
         boolean result;
         try {
             result = this.esperService.removeDataflow(dataflowName);
@@ -148,18 +204,29 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
     }
 
     /**
-     * {@inheritDoc}
+     * Method used to show dataflow by providing its name (used by other methods).
+     *
+     * @param dataflowName String describing dataflow name.
+     * @return String containing dataflow in format 'dataflowDetails[state]:dataflowParameters',
+     * or null if there is no dataflow with provided name present (never created or already removed).
      */
-    @Override
-    public String showDataflow(String dataflowName) {
+    private String showDataflow(String dataflowName) {
         EPStatement myDataflow = null;
         try {
             myDataflow = this.esperService.showDataflow(dataflowName);
         } catch (NullPointerException ex) {
             if(logger.isDebugEnabled()) {
                 logger.debug("Failed to find dataflow!", ex);
-                return null;
+
             }
+            return null;
+        }
+        if(myDataflow == null) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Failed to find dataflow! NULL");
+
+            }
+            return null;
         }
         return myDataflow.getName() + "[" + myDataflow.getState() + "]:\n\"" + myDataflow.getText() + "\"\n";
     }
@@ -180,7 +247,7 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         }
         for (String oneDataFlow : allDataFlows) {
             String oneDataflowDetails = showDataflow(oneDataFlow);
-            if(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n")) {  //only input dataflows, NO output ones
+            if(isInputDataflow(oneDataflowDetails)) {  //only input dataflows, NO output ones
                 result.add(oneDataflowDetails);
             }
         }
@@ -203,10 +270,21 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
         }
         for (String oneDataFlow : allDataFlows) {
             String oneDataflowDetails = showDataflow(oneDataFlow);
-            if(!(oneDataflowDetails.endsWith("EventBusSink(instream) {}\"\n"))) {  //only output dataflows, NO input ones
+            if(!isInputDataflow(oneDataflowDetails)) {  //only output dataflows, NO input ones
                 result.add(oneDataflowDetails);
             }
         }
         return result;
+    }
+
+    /**
+     * Method used to decide whether given dataflow is input dataflow (used by other methods).
+     *
+     * @param dataflowDetails String describing dataflow with its details.
+     * @return true if given dataflow is input one (ends with "EventBusSink(instream) {}""),
+     * or false otherwise.
+     */
+    private boolean isInputDataflow(String dataflowDetails) {
+        return dataflowDetails.endsWith("EventBusSink(instream) {}\"\n");
     }
 }

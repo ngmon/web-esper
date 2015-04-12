@@ -6,18 +6,24 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     </head>
     <body>
-        <nav th:replace="fragments/header :: header">
-            <ul>
-                <li class="active"><a href="#">Home</a></li>
-            </ul>
-        </nav>
         <div align="center">
             <h1>Esper Continuous Engine</h1>
             <p>
                 This is Esper Continuous Engine, which allows you to add, remove and show event types,
                 input dataflows (AMQP sources) and output dataflows (EPL statements and AMQP sinks) on the run.
             </p>
+            <h2>Select your action:</h2>
+            <p>
+            <form action="/manageEventTypes">
+                <p><input type="submit" align="center" value="Manage event types"/></p>
+            </form>
+            <form action="/manageInputDataflows">
+                <p><input type="submit" align="center" value="Manage input dataflows"/></p>
+            </form>
+            <form action="/manageOutputDataflows">
+                <p><input type="submit" align="center" value="Manage output dataflows"/></p>
+            </form>
+            </p>
         </div>
-    <div th:include="fragments/footer :: footer"/>
     </body>
 </html>

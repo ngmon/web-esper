@@ -43,8 +43,9 @@ public interface EsperService{
      * Method used to remove event type by providing its name.
      *
      * @param eventName String describing event type name.
+     * @return true is event type was found and removed, false otherwise.
      */
-    public void removeEventType(String eventName) throws ConfigurationException, NullPointerException;
+    public boolean removeEventType(String eventName) throws ConfigurationException, NullPointerException;
 
     /**
      * Method used to show event type by providing its name.

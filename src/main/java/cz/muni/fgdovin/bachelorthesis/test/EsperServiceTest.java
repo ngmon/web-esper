@@ -74,7 +74,7 @@ public class EsperServiceTest {
         InputDataflowModel input1 = new InputDataflowModel(AMQPQueueName, eventType, inputQueueName, inputExchangeName);
         String inputQueue = dataflowHelper.generateInputDataflow(input1);
         assertTrue(esperService.addDataflow(AMQPQueueName, inputQueue));
-        assertTrue(esperService.removeDataflow(AMQPQueueName));
+        assertTrue(esperService.removeInputDataflow(AMQPQueueName));
     }
 
     @Test
@@ -83,9 +83,7 @@ public class EsperServiceTest {
         if(savedSchema==null) {
             esperService.addEventType(eventType, schema);
         }
-        if(esperService.showDataflow(AMQPQueueName) != null) {
-            esperService.removeDataflow(AMQPQueueName);
-        }
+        esperService.removeInputDataflow(AMQPQueueName);
 
         InputDataflowModel input1 = new InputDataflowModel(AMQPQueueName, eventType, inputQueueName, inputExchangeName);
 
@@ -95,7 +93,7 @@ public class EsperServiceTest {
         String inputQueue2 = dataflowHelper.generateInputDataflow(input1);
         assertFalse(esperService.addDataflow(AMQPQueueName, inputQueue2));
 
-        assertTrue(esperService.removeDataflow(AMQPQueueName));
+        assertTrue(esperService.removeInputDataflow(AMQPQueueName));
     }
 
     @Test
@@ -103,9 +101,6 @@ public class EsperServiceTest {
         String savedSchema = esperService.showEventType(eventType);
         if(savedSchema==null) {
             esperService.addEventType(eventType, schema);
-        }
-        if(esperService.showDataflow(AMQPQueueName) != null) {
-            esperService.removeDataflow(AMQPQueueName);
         }
 
         InputDataflowModel input1 = new InputDataflowModel(AMQPQueueName, eventType, inputQueueName, inputExchangeName);
@@ -117,7 +112,7 @@ public class EsperServiceTest {
 
         String inputQueue2 = dataflowHelper.generateInputDataflow(input2);
         assertFalse(esperService.addDataflow(AMQPQueueName, inputQueue2));
-        assertTrue(esperService.removeDataflow(AMQPQueueName));
+        assertTrue(esperService.removeInputDataflow(AMQPQueueName));
     }
 
     @Test
@@ -126,29 +121,24 @@ public class EsperServiceTest {
         if(savedSchema==null) {
             esperService.addEventType(eventType, schema);
         }
-        if(esperService.showDataflow(AMQPQueueName + "WithDiffName") != null){
-            assertTrue(esperService.removeDataflow(AMQPQueueName + "WithDiffName"));
-        }
+        assertTrue(esperService.removeInputDataflow(AMQPQueueName + "WithDiffName"));
         InputDataflowModel input1 = new InputDataflowModel(AMQPQueueName + "WithDiffName", eventType, inputQueueName, inputExchangeName);
 
         String inputQueue = dataflowHelper.generateInputDataflow(input1);
         assertTrue(esperService.addDataflow(AMQPQueueName + "WithDiffName", inputQueue));
-        assertTrue(esperService.removeDataflow(AMQPQueueName + "WithDiffName"));
+        assertTrue(esperService.removeInputDataflow(AMQPQueueName + "WithDiffName"));
     }
 
     @Test
     public void testRemoveExistingAMQPSource() throws Exception {
-        if(esperService.showDataflow(AMQPQueueName + "WithDiffName") == null){
-            InputDataflowModel input1 = new InputDataflowModel(AMQPQueueName + "WithDiffName", eventType, inputQueueName, inputExchangeName);
-
-            String inputQueue = dataflowHelper.generateInputDataflow(input1);
-            assertTrue(esperService.addDataflow(AMQPQueueName + "WithDiffName", inputQueue));
-        }
-        assertTrue(esperService.removeDataflow(AMQPQueueName + "WithDiffName"));
+        InputDataflowModel input1 = new InputDataflowModel(AMQPQueueName + "WithDiffName", eventType, inputQueueName, inputExchangeName);
+        String inputQueue = dataflowHelper.generateInputDataflow(input1);
+        assertTrue(esperService.addDataflow(AMQPQueueName + "WithDiffName", inputQueue));
+        assertTrue(esperService.removeInputDataflow(AMQPQueueName + "WithDiffName"));
     }
 
     @Test
     public void testRemoveNonExistingAMQPSource() throws Exception {
-        assertFalse(esperService.removeDataflow("SomeCertainlyNonExistingAMQPSource"));
+        assertFalse(esperService.removeInputDataflow("SomeCertainlyNonExistingAMQPSource"));
     }
 }
