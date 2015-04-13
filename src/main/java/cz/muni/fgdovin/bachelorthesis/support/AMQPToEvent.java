@@ -6,13 +6,18 @@ import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 /**
@@ -104,21 +109,8 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     }
 
     private Long parseDate(String input) {
-        Properties prop = new Properties();
-        try {
-            PropLoader.loadFromPropFile(prop);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        SimpleDateFormat f = new SimpleDateFormat(prop.getProperty("timestampFormat"));  //must be precisely set
-        Date d = null;
-
-        try {
-            d = f.parse(input);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return d.getTime();
+        final DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME; //"yyyy-MM-dd'T'HH:mm:ss.SSSz" format
+        final ZonedDateTime zonedDateTime = ZonedDateTime.parse(input, formatter);
+        return zonedDateTime.toInstant().toEpochMilli();
     }
 }

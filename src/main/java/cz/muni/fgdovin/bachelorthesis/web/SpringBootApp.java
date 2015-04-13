@@ -10,14 +10,18 @@ import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
+import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
+import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Created by Filip Gdovin on 4. 3. 2015.
  */
 @SpringBootApplication
+@PropertySource("classpath:config.properties")
 public class SpringBootApp {
 
     private EPServiceProvider epServiceProvider;
@@ -62,6 +66,17 @@ public class SpringBootApp {
     @Bean
     public EsperUserFriendlyService esperUserFriendlyService() {
         return new EsperUserFriendlyServiceImpl();
+    }
+
+    //support beans
+    @Bean
+    public DataflowHelper dataflowHelper() {
+        return new DataflowHelper();
+    }
+
+    @Bean
+    public EventTypeHelper eventTypeHelper() {
+        return new EventTypeHelper();
     }
 
     public static void main(String[] args) {

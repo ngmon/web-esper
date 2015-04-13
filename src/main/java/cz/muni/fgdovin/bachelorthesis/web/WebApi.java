@@ -36,14 +36,11 @@ public class WebApi {
     @Autowired
     private EsperUserFriendlyService esperService;
 
+    @Autowired
     private DataflowHelper dataflowHelper;
-    private EventTypeHelper eventTypeHelper;
 
-    @PostConstruct
-    public void setHelpers() {
-        dataflowHelper = new DataflowHelper();
-        eventTypeHelper = new EventTypeHelper();
-    }
+    @Autowired
+    private EventTypeHelper eventTypeHelper;
 
     /**
      * This method is bound to "/" mapping and displays welcome page.
