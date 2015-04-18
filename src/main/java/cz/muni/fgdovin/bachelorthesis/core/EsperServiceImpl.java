@@ -102,6 +102,7 @@ public class EsperServiceImpl implements EsperService {
             if(logger.isDebugEnabled()) {
                 logger.debug("Dataflow creation aborted! Dataflow instance instantiation failed, destroying EPL statement!");
             }
+            assert currentStatement != null;
             currentStatement.destroy();
             throw new EPDataFlowInstantiationException("Dataflow creation aborted! Dataflow instance instantiation failed!", ex);
         }

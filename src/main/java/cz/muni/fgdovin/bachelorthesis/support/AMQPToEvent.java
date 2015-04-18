@@ -6,27 +6,18 @@ import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import org.apache.logging.log4j.LogManager;
-
 import java.io.IOException;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
 import java.util.*;
 
 /**
- * Created by Filip Gdovin on 6. 2. 2015.
+ * @author Filip Gdovin
+ * @version 6. 2. 2015
  */
 public class AMQPToEvent implements AMQPToObjectCollector {
 
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger("AMQPToEvent");
-    private HashMap<String, Object> resultMap = new HashMap<String, Object>();
+    private HashMap<String, Object> resultMap = new HashMap<>();
 
     @Override
     public void collect(final AMQPToObjectCollectorContext context) {
@@ -35,9 +26,9 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         context.getEmitter().submit(resultMap);
     }
 
-    private Map toMap(String input) {
+    private Map<String, Object> toMap(String input) {
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
-        Map<String, String> nestedMap = null;
+        Map<String, Object> nestedMap = null;
         try {
             nestedMap = new ObjectMapper().readValue(input, typeRef);
         } catch (IOException e) {
@@ -52,7 +43,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
             String actualKey = keyPrefix + key;
             Object value = nestedMap.get(key);
             if((actualKey.contains("timestamp")) && (!(value instanceof Long))) {
-                value = (Long) parseDate(value.toString());
+                value = parseDate(value.toString());
             }
             putInMap(actualKey, value);
         }
@@ -63,7 +54,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
             resultMap.put(actualKey, value);
         }
         else if(value instanceof Boolean) {
-            resultMap.put(actualKey, (Boolean) value);
+            resultMap.put(actualKey, value);
         }
         else if(value.getClass().isArray()) {
             StringBuilder mapAsString = new StringBuilder("[");
@@ -111,6 +102,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     private Long parseDate(String input) {
         final DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME; //"yyyy-MM-dd'T'HH:mm:ss.SSSz" format
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse(input, formatter);
+        EventToAMQP.setZoneID(zonedDateTime.getZone().getId());
         return zonedDateTime.toInstant().toEpochMilli();
     }
 }

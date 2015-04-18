@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="info">
+<Configuration status="debug">
     <Appenders>
         <Console name="terminal">
-            <param name="Threshold" value="INFO"/>
+            <param name="Threshold" value="debug"/>
             <param name="Target" value="System.out"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="cz.muni.fgdovin.bachelorthesis" level="info">
+        <Logger name="cz.muni.fgdovin.bachelorthesis" level="debug">
             <AppenderRef ref="terminal"/>
         </Logger>
-        <Root level="info">
+        <Root level="debug">
             <appender-ref ref="terminal"/>
         </Root>
     </Loggers>

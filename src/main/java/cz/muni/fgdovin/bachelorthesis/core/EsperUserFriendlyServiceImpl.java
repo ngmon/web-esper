@@ -1,5 +1,7 @@
 package cz.muni.fgdovin.bachelorthesis.core;
 
+import com.espertech.esper.client.util.EventRenderer;
+import com.espertech.esper.client.util.JSONEventRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -211,7 +213,7 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * or null if there is no dataflow with provided name present (never created or already removed).
      */
     private String showDataflow(String dataflowName) {
-        EPStatement myDataflow = null;
+        EPStatement myDataflow;
         try {
             myDataflow = this.esperService.showDataflow(dataflowName);
         } catch (NullPointerException ex) {

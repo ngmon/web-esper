@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Filip Gdovin on 11. 4. 2015.
+ * @author Filip Gdovin
+ * @version 11. 4. 2015
  */
 public class OutputDataflowModel {
 

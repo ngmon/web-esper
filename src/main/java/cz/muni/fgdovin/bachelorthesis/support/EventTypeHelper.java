@@ -4,14 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Filip Gdovin on 7. 3. 2015.
+ * @author Filip Gdovin
+ * @version 7. 3. 2015
  */
 public class EventTypeHelper {
 
     public Map<String, Object> toMap(String properties) {
         String[] pairs = properties.split(",");
 
-        Map<String, Object> schemaMap= new HashMap<String, Object>();
+        Map<String, Object> schemaMap= new HashMap<>();
 
         for (String pair : pairs) {
             pair = pair.trim();

@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Filip Gdovin on 26. 3. 2015.
+ * @author Filip Gdovin
+ * @version 26. 3. 2015
  */
 
 /**

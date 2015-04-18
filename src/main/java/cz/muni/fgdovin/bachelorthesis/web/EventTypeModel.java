@@ -1,7 +1,8 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
 /**
- * Created by Filip Gdovin on 26. 3. 2015.
+ * @author Filip Gdovin
+ * @version 26. 3. 2015
  */
 public class EventTypeModel {
 

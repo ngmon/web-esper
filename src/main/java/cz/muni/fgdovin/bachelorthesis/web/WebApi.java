@@ -4,16 +4,12 @@ import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +23,10 @@ import java.util.Map;
  * @version 4. 3. 2015
  */
 
+@SuppressWarnings("SpringMVCViewInspection") //provided by Spring Boot, Idea doesn't like it
 @Controller
 @RequestMapping(value = "/")
 public class WebApi {
-
-    private static final Logger logger = LogManager.getLogger("WebApi");
 
     @Autowired
     private EsperUserFriendlyService esperService;

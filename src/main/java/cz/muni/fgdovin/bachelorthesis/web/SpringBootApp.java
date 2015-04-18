@@ -4,21 +4,22 @@ import cz.muni.fgdovin.bachelorthesis.core.EsperService;
 import cz.muni.fgdovin.bachelorthesis.core.EsperServiceImpl;
 import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyServiceImpl;
+import cz.muni.fgdovin.bachelorthesis.support.CustomAMQPSink;
+import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
+import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
 import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-import com.espertech.esperio.amqp.AMQPSink;
 import com.espertech.esperio.amqp.AMQPSource;
 
-import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
-import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 /**
- * Created by Filip Gdovin on 4. 3. 2015.
+ * @author Filip Gdovin
+ * @version 4. 3. 2015
  */
 @SpringBootApplication
 @PropertySource("classpath:config.properties")
@@ -32,7 +33,8 @@ public class SpringBootApp {
         if(this.epServiceProvider == null) {
             com.espertech.esper.client.Configuration config = new com.espertech.esper.client.Configuration();
             config.addImport(AMQPSource.class.getPackage().getName() + ".*");
-            config.addImport(AMQPSink.class.getPackage().getName() + ".*");
+            config.addImport(CustomAMQPSink.class.getPackage().getName() + ".*");
+            config.getEngineDefaults().getEventMeta().setDefaultEventRepresentation(Configuration.EventRepresentation.MAP);
             this.epServiceProvider = EPServiceProviderManager.getDefaultProvider(config);
         }
         return this.epServiceProvider;

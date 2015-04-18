@@ -7,7 +7,8 @@ import org.springframework.core.env.Environment;
 import javax.annotation.Resource;
 
 /**
- * Created by Filip Gdovin on 10. 2. 2015.
+ * @author Filip Gdovin
+ * @version 10. 2. 2015
  */
 public class DataflowHelper {
 
@@ -18,14 +19,14 @@ public class DataflowHelper {
         return
         "Create Dataflow " + model.getDataflowName() + "\n" +
         "AMQPSource -> instream<" + model.getEventType() + "> {\n" +
-        "host: '" + environment.getProperty("inputHost") + "',\n" +
-        "port: " + Integer.parseInt(environment.getProperty("inputPort")) + ",\n" +
+        "host: '" + this.environment.getProperty("inputHost") + "',\n" +
+        "port: " + Integer.parseInt(this.environment.getProperty("inputPort")) + ",\n" +
         "queueName: '" + model.getQueueName() + "',\n" +
-        "declareDurable: " + environment.getProperty("inputDeclareDurable") + ",\n" +
-        "declareExclusive: " + environment.getProperty("inputDeclareExclusive") + ",\n" +
-        "declareAutoDelete: " + environment.getProperty("inputDeclareAutoDelete") + ",\n" +
+        "declareDurable: " + this.environment.getProperty("inputDeclareDurable") + ",\n" +
+        "declareExclusive: " + this.environment.getProperty("inputDeclareExclusive") + ",\n" +
+        "declareAutoDelete: " + this.environment.getProperty("inputDeclareAutoDelete") + ",\n" +
         "exchange: '" + model.getExchangeName() +"',\n" +
-        "collector: {class: '" + environment.getProperty("inputCollector") + "'}\n" +
+        "collector: {class: '" + this.environment.getProperty("inputCollector") + "'}\n" +
         "}" +
         "EventBusSink(instream) {}";
     }
@@ -45,16 +46,20 @@ public class DataflowHelper {
                 ") -> " + model.getOutputEventType() + " {\n" +
                 "select: (\n" + model.getQuery() + ")\n" +
                 "}\n" +
-                "AMQPSink(" + model.getOutputEventType() + ") {\n" +
+                "CustomAMQPSink(" + model.getOutputEventType() + ") {\n" +
                 "host: '" + environment.getProperty("outputHost") + "',\n" +
                 "port: " + Integer.parseInt(environment.getProperty("outputPort")) + ",\n" +
                 "queueName: '" + model.getQueueName() + "',\n" +
-                "declareDurable: " + environment.getProperty("outputDeclareDurable") + ",\n" +
-                "declareExclusive: " + environment.getProperty("outputDeclareExclusive") + ",\n" +
-                "declareAutoDelete: " + environment.getProperty("outputDeclareAutoDelete") + ",\n" +
+                "declareDurable: " + this.environment.getProperty("outputDeclareDurable") + ",\n" +
+                "declareExclusive: " + this.environment.getProperty("outputDeclareExclusive") + ",\n" +
+                "declareAutoDelete: " + this.environment.getProperty("outputDeclareAutoDelete") + ",\n" +
                 "exchange: '" + model.getExchangeName() + "',\n" +
-                "collector: {class: '" + environment.getProperty("outputCollector") + "'}\n" +
-            "}");
+                "collector: {class: '" + this.environment.getProperty("outputCollector") + "'}\n" +
+                "}"/* +
+                "LogSink(" + model.getOutputEventType() + ") {" +
+                "format : 'json'" +
+                "}"*/
+                );
         return result.toString();
     }
 }
