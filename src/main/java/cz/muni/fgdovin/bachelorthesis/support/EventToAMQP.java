@@ -43,7 +43,8 @@ public class EventToAMQP implements ObjectToAMQPCollector {
         }
         Long timestamp = Long.parseLong(timestampValue.toString());
         String correctTimestamp = "\"" + Instant.ofEpochMilli(timestamp).atZone(ZoneId.of(zoneID)).toString() + "\"";
-        String result = input.replace(timestampValue.toString(), correctTimestamp);
+        String result = input.replace("timestamp", "@timestamp");
+        result = result.replace(timestampValue.toString(), correctTimestamp);
         return result;
     }
 

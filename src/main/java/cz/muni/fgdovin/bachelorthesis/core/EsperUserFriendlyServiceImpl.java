@@ -41,6 +41,9 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public boolean addEventType(String eventName, Map<String, Object> schema) {
+        if((eventName == null) || (eventName.isEmpty()) || (schema == null)) { //test this
+            return false;
+        }
         try {
             this.esperService.addEventType(eventName, schema);
         } catch (ConfigurationException ex) {
