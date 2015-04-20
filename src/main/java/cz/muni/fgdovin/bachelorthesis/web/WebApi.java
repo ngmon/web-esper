@@ -23,7 +23,7 @@ import java.util.Map;
  * @version 4. 3. 2015
  */
 
-@SuppressWarnings("SpringMVCViewInspection") //provided by Spring Boot, Idea doesn't like it
+@SuppressWarnings("SpringMVCViewInspection") //provided by Spring Boot, Idea doesn't like it and cries about being unable to find view resolvers
 @Controller
 @RequestMapping(value = "/")
 public class WebApi {

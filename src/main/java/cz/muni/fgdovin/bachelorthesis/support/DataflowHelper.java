@@ -47,19 +47,15 @@ public class DataflowHelper {
                 "select: (\n" + model.getQuery() + ")\n" +
                 "}\n" +
                 "CustomAMQPSink(" + model.getOutputEventType() + ") {\n" +
-                "host: '" + environment.getProperty("outputHost") + "',\n" +
-                "port: " + Integer.parseInt(environment.getProperty("outputPort")) + ",\n" +
+                "host: '" + this.environment.getProperty("outputHost") + "',\n" +
+                "port: " + Integer.parseInt(this.environment.getProperty("outputPort")) + ",\n" +
                 "queueName: '" + model.getQueueName() + "',\n" +
                 "declareDurable: " + this.environment.getProperty("outputDeclareDurable") + ",\n" +
                 "declareExclusive: " + this.environment.getProperty("outputDeclareExclusive") + ",\n" +
                 "declareAutoDelete: " + this.environment.getProperty("outputDeclareAutoDelete") + ",\n" +
                 "exchange: '" + model.getExchangeName() + "',\n" +
                 "collector: {class: '" + this.environment.getProperty("outputCollector") + "'}\n" +
-                "}"/* +
-                "LogSink(" + model.getOutputEventType() + ") {" +
-                "format : 'json'" +
-                "}"*/
-                );
+                "}");
         return result.toString();
     }
 }
