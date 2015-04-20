@@ -152,17 +152,6 @@ public class WebApi {
         return "removeEventTypeResult";
     }
 
-    @RequestMapping(value = "/showEventTypes", method = RequestMethod.GET)
-    public ModelAndView showAllEventTypes() {
-
-        List<String> list = esperService.showEventTypes();
-
-        ModelAndView model = new ModelAndView("showEventTypes");
-        model.addObject("allEventTypes", list);
-
-        return model;
-    }
-
     /**
      * This method is called when user decides to add new input dataflow (AMQP Source).
      *
@@ -228,17 +217,6 @@ public class WebApi {
             resultModel.addAttribute("result", "Dataflow with this name was not found, or its removal failed.");
         }
         return "removeInputDataflowResult";
-    }
-
-    @RequestMapping(value = "/showInputDataflows", method = RequestMethod.GET)
-    public ModelAndView showAllInputDataflows() {
-
-        List<String> list = esperService.showInputDataflows();
-
-        ModelAndView model = new ModelAndView("showInputDataflows");
-        model.addObject("allInputDataflows", list);
-
-        return model;
     }
 
     /**
@@ -374,16 +352,5 @@ public class WebApi {
             resultModel.addAttribute("result", "Output dataflow with this name was not found, or its removal failed.");
         }
         return "removeOutputDataflowResult";
-    }
-
-    @RequestMapping(value = "/showOutputDataflows", method = RequestMethod.GET)
-    public ModelAndView showAllOutputDataflow() {
-
-        List<String> list = esperService.showOutputDataflows();
-
-        ModelAndView model = new ModelAndView("showOutputDataflows");
-        model.addObject("allOutputDataflows", list);
-
-        return model;
     }
 }
