@@ -11,9 +11,12 @@
 
 package cz.muni.fgdovin.bachelorthesis.support;
 
+import com.espertech.esper.client.EventBean;
+import com.espertech.esper.client.EventType;
 import com.espertech.esper.dataflow.annotations.DataFlowOpPropertyHolder;
 import com.espertech.esper.dataflow.annotations.DataFlowOperator;
 import com.espertech.esper.dataflow.interfaces.*;
+import com.espertech.esper.event.EventBeanAdapterFactory;
 import com.espertech.esperio.amqp.AMQPEmitter;
 import com.espertech.esperio.amqp.AMQPSettingsSink;
 import com.espertech.esperio.amqp.ObjectToAMQPCollectorContext;
@@ -31,12 +34,13 @@ import java.io.IOException;
  * @version 20. 4. 2015
  */
 @DataFlowOperator
-public class AMQPSink implements DataFlowOpLifecycle {
-    private static final Log log = LogFactory.getLog(AMQPSink.class);
+public class CustomAMQPSink implements DataFlowOpLifecycle {
+    private static final Log log = LogFactory.getLog(CustomAMQPSink.class);
 
     @DataFlowOpPropertyHolder
     private AMQPSettingsSink settings;
 
+    private EventBeanAdapterFactory adapterFactories[];
     private transient Connection connection;
     private transient Channel channel;
     private ThreadLocal<ObjectToAMQPCollectorContext> collectorDataTL = new ThreadLocal<ObjectToAMQPCollectorContext>() {
@@ -46,6 +50,16 @@ public class AMQPSink implements DataFlowOpLifecycle {
     };
 
     public DataFlowOpInitializeResult initialize(DataFlowOpInitializateContext context) throws Exception {
+
+        EventType[] eventTypes = new EventType[context.getInputPorts().size()];
+        for (int i = 0; i < eventTypes.length; i++) {
+            eventTypes[i] = context.getInputPorts().get(i).getTypeDesc().getEventType();
+        }
+
+        adapterFactories = new EventBeanAdapterFactory[eventTypes.length];
+        for (int i = 0; i < eventTypes.length; i++) {
+            adapterFactories[i] = context.getServicesContext().getEventAdapterService().getAdapterFactoryForType(eventTypes[i]);
+        }
         return null;
     }
 
@@ -97,7 +111,9 @@ public class AMQPSink implements DataFlowOpLifecycle {
         }
     }
 
-    public void onInput(Object event) {
+    public void onInput(int port, Object event) {
+
+        Object result = getEventOut(port, event);
 
         ObjectToAMQPCollectorContext holder = collectorDataTL.get();
         if (holder == null) {
@@ -116,7 +132,7 @@ public class AMQPSink implements DataFlowOpLifecycle {
                             throw new RuntimeException(message, e);
                         }
                     }
-                }, event);
+                }, result);
             }
             else {
                 if (log.isDebugEnabled()) {
@@ -133,15 +149,33 @@ public class AMQPSink implements DataFlowOpLifecycle {
                             throw new RuntimeException(message, e);
                         }
                     }
-                }, event);
+                }, result);
             }
             collectorDataTL.set(holder);
         }
         else {
-            holder.setObject(event);
+            holder.setObject(result);
         }
 
         settings.getCollector().collect(holder);
+    }
+
+    private Object getEventOut(int port, Object theEvent) {
+
+        if (theEvent instanceof EventBean) {
+            return ((EventBean) theEvent).getUnderlying();
+
+        }
+
+        if (adapterFactories[port] != null) {
+            synchronized(this) {
+                EventBean event = adapterFactories[port].makeAdapter(theEvent);
+                return event.getUnderlying();
+            }
+        }
+        else {
+            return "Unknown underlying";
+        }
     }
 
     public void close(DataFlowOpCloseContext openContext) {
