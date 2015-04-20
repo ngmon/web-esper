@@ -16,7 +16,6 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.dataflow.annotations.DataFlowOpPropertyHolder;
 import com.espertech.esper.dataflow.annotations.DataFlowOperator;
 import com.espertech.esper.dataflow.interfaces.*;
-import com.espertech.esper.event.EventAdapterServiceHelper;
 import com.espertech.esper.event.EventBeanAdapterFactory;
 import com.espertech.esperio.amqp.AMQPEmitter;
 import com.espertech.esperio.amqp.AMQPSettingsSink;
