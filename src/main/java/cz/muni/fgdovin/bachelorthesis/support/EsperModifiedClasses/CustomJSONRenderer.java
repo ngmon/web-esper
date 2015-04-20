@@ -26,7 +26,7 @@ import java.util.Stack;
 
 /**
  * Render for the JSON format.
- * Modified Filip Gdovin on 18. 4. 2015.
+ * Modified by Filip Gdovin on 18. 4. 2015.
  */
 public class CustomJSONRenderer implements JSONEventRenderer {
 
