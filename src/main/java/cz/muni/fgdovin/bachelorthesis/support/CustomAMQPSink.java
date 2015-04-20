@@ -16,6 +16,7 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.dataflow.annotations.DataFlowOpPropertyHolder;
 import com.espertech.esper.dataflow.annotations.DataFlowOperator;
 import com.espertech.esper.dataflow.interfaces.*;
+import com.espertech.esper.event.EventAdapterServiceHelper;
 import com.espertech.esper.event.EventBeanAdapterFactory;
 import com.espertech.esperio.amqp.AMQPEmitter;
 import com.espertech.esperio.amqp.AMQPSettingsSink;
@@ -28,6 +29,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Modified by Filip Gdovin
@@ -162,20 +165,21 @@ public class CustomAMQPSink implements DataFlowOpLifecycle {
 
     private Object getEventOut(int port, Object theEvent) {
 
+        EventBean event;
         if (theEvent instanceof EventBean) {
-            return ((EventBean) theEvent).getUnderlying();
+            event = ((EventBean) theEvent);
 
+        } else if (adapterFactories[port] != null) {
+            event = adapterFactories[port].makeAdapter(theEvent);
+        } else {
+            return null;
         }
-
-        if (adapterFactories[port] != null) {
-            synchronized(this) {
-                EventBean event = adapterFactories[port].makeAdapter(theEvent);
-                return event.getUnderlying();
-            }
+        EventType type = event.getEventType();
+        Map<String, Object> result = new HashMap<>();
+        for(String prop : type.getPropertyNames()) {
+            result.put(prop, event.get(prop));
         }
-        else {
-            return "Unknown underlying";
-        }
+        return result;
     }
 
     public void close(DataFlowOpCloseContext openContext) {

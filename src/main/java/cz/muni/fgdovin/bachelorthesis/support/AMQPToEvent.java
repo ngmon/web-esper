@@ -44,8 +44,9 @@ public class AMQPToEvent implements AMQPToObjectCollector {
             Object value = nestedMap.get(key);
             if((actualKey.equals("@timestamp")) && (!(value instanceof Long))) {
                 value = parseDate(value.toString());
+                actualKey = "timestamp";
             }
-            putInMap("timestamp", value);
+            putInMap(actualKey, value);
         }
     }
 

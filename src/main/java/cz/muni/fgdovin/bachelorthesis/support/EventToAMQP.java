@@ -25,14 +25,7 @@ public class EventToAMQP implements ObjectToAMQPCollector {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        //to remove [] from each event because they are maps in Esper...
-        return result.substring(1, result.length()-1).getBytes();
-    }
-
-    private byte[] fromString(Object object) {
-        String input = String.valueOf(object);
-        String result = returnTimeStampAsString(input);
-        //to convert timestamp back to String
+        result = returnTimeStampAsString(result);
         return result.getBytes();
     }
 
