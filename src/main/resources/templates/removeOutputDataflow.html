@@ -8,15 +8,17 @@
 </head>
 <body>
     <div align="center">
-        <h3>Enter output dataflow information</h3>
-        <form action="#" th:action="@{/removeOutputDataflow}" th:object="${OutputDataflowModel}" method="post">
+        <h3>Are you sure you want to remove this output dataflow?</h3>
+        <!--@thymesVar id="dataflowName" type="String"-->
+        <form action="#" th:action="@{/removeOutputDataflow(datafowName=${dataflowName})}" method="post">
             <div align="center">
                 <fieldset class="myFieldSet">
                     <fieldset>
                         <legend>Dataflow name</legend>
-                        <p><input type="text" th:field="*{dataflowName}" /></p>
+                        <!--@thymesVar id="dataflowName" type="String"-->
+                        <p><label th:text="${dataflowName}"/></p>
                     </fieldset>
-                    <p><input type="submit" value="Remove" /> <input type="reset" value="Reset"/></p>
+                    <p><input type="submit" value="Remove" /></p>
                 </fieldset>
             </div>
         </form>

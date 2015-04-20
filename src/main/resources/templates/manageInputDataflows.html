@@ -7,24 +7,36 @@
     <div align="center">
         <h1>Input dataflow management</h1>
         <p>
-            Input dataflow management allows you to add, remove and show
-            input dataflows, which represent AMQP event stream sources
+            Input dataflow management allows you to add and remove
+            input dataflows, which represent AMQP stream sources
             and send upcoming events into Esper for querying.
         </p>
-        <h2>Select your action:</h2>
+        <p>
+        <fieldset class="myFieldSet">
+            <fieldset>
+                <legend>All input dataflows</legend>
+                <div th:unless="${#lists.isEmpty(allInputDataflows)}">
+                    <form action="#" th:object="${InputDataflowModel}">
+                        <table>
+                            <tbody>
+                            <tr th:each="item : ${allInputDataflows}">
+                                <td th:text="${item}" />
+                                <td> <a th:action="GET" th:href="@{/removeInputDataflow/(dataflowName=${item})}">Delete</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <!--@thymesVar id="allInputDataflows" type="List"-->
+                <div th:if="${#lists.isEmpty(allInputDataflows)}">
+                    No event types present.
+                </div>
+            </fieldset>
+        </fieldset>
+        </p>
         <p>
         <form method="GET" action="/addInputDataflow">
             <input type="submit" align="center" value="Add input dataflow"/>
-        </form>
-        </p>
-        <p>
-        <form method="GET" action="/removeInputDataflow">
-            <input type="submit" align="center" value="Remove input dataflow"/>
-        </form>
-        </p>
-        <p>
-        <form method="GET" action="/showInputDataflows">
-            <input type="submit" align="center" value="Show all input dataflows"/>
         </form>
         </p>
         <div th:include="fragments/footer :: footer"></div>

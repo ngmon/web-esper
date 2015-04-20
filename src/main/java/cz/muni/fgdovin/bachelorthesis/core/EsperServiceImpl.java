@@ -58,9 +58,6 @@ public class EsperServiceImpl implements EsperService {
         if(this.showEventType(eventName) == null) {
             throw new NullPointerException("Event type with this name is not present!");
         }
-        //for debugging purposes, because event types are deleted even if there are dataflows relying :(
-        logger.info("Statements using " + eventName + ": " + configurationOperations.getEventTypeNameUsedBy(eventName));
-
         try {
             result = this.configurationOperations.removeEventType(eventName, false);
         } catch (ConfigurationException ex) {
@@ -98,6 +95,7 @@ public class EsperServiceImpl implements EsperService {
         try {
             currentStatement = this.esperAdministrator.createEPL(dataflowDetails, dataflowName);
             currentInstance = this.esperDataFlowRuntime.instantiate(dataflowName);
+            currentInstance.start();
         } catch (EPDataFlowInstantiationException ex) {
             if(logger.isDebugEnabled()) {
                 logger.debug("Dataflow creation aborted! Dataflow instance instantiation failed, destroying EPL statement!");
@@ -106,7 +104,6 @@ public class EsperServiceImpl implements EsperService {
             currentStatement.destroy();
             throw new EPDataFlowInstantiationException("Dataflow creation aborted! Dataflow instance instantiation failed!", ex);
         }
-        currentInstance.start();
         this.esperDataFlowRuntime.saveInstance(dataflowName, currentInstance); //only save if it started successfully
     }
 

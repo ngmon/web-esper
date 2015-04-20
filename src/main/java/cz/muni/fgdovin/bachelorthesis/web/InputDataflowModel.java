@@ -9,7 +9,6 @@ public class InputDataflowModel {
     private String dataflowName;
     private String eventType;
     private String queueName;
-    private String exchangeName;
 
     public InputDataflowModel() {
     }
@@ -19,7 +18,6 @@ public class InputDataflowModel {
         this.dataflowName = dataflowName;
         this.eventType = eventType;
         this.queueName = queueName;
-        this.exchangeName = exchangeName;
     }
 
     public String getDataflowName() {
@@ -44,13 +42,5 @@ public class InputDataflowModel {
 
     public void setQueueName(String queueName) {
         this.queueName = queueName;
-    }
-
-    public String getExchangeName() {
-        return exchangeName;
-    }
-
-    public void setExchangeName(String exchangeName) {
-        this.exchangeName = exchangeName;
     }
 }

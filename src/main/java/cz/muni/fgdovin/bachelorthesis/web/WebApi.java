@@ -54,7 +54,11 @@ public class WebApi {
      */
     @RequestMapping(value = "/manageEventTypes", method = RequestMethod.GET)
     public ModelAndView manageEventTypes() {
-        return new ModelAndView("manageEventTypes");
+        List<String> list = esperService.showEventTypes();
+
+        ModelAndView model = new ModelAndView("manageEventTypes");
+        model.addObject("allEventTypes", list);
+        return model;
     }
 
     /**
@@ -64,7 +68,11 @@ public class WebApi {
      */
     @RequestMapping(value = "/manageInputDataflows", method = RequestMethod.GET)
     public ModelAndView manageInputDataflows() {
-        return new ModelAndView("manageInputDataflows");
+        List<String> list = esperService.showInputDataflows();
+
+        ModelAndView model = new ModelAndView("manageInputDataflows");
+        model.addObject("allInputDataflows", list);
+        return model;
     }
 
     /**
@@ -74,7 +82,11 @@ public class WebApi {
      */
     @RequestMapping(value = "/manageOutputDataflows", method = RequestMethod.GET)
     public ModelAndView manageOutputDataflows() {
-        return new ModelAndView("manageOutputDataflows");
+        List<String> list = esperService.showOutputDataflows();
+
+        ModelAndView model = new ModelAndView("manageOutputDataflows");
+        model.addObject("allOutputDataflows", list);
+        return model;
     }
 
     /**
@@ -114,22 +126,24 @@ public class WebApi {
      * @return Web page containing form to delete event type by its name.
      */
     @RequestMapping(value = "/removeEventType", method = RequestMethod.GET)
-    public ModelAndView removeEventTypeForm() {
-        return new ModelAndView("removeEventType", "EventTypeModel", new EventTypeModel());
+    public String removeEventTypeForm(@RequestParam("eventType")String eventType, ModelMap resultModel) {
+        String eventName = eventType.substring(0, eventType.indexOf(':'));
+        resultModel.addAttribute("eventType", eventName);
+        return "removeEventType";
     }
 
     /**
      * This method is called when user submits event type deletion form, it finds event type
      * and deletes it if possible.
      *
-     * @param modelClass Model class used to get user input from form.
      * @param resultModel ModelMap containing result of event type deletion.
      * @return Web page informing user if the event type was successfully deleted.
      */
     @RequestMapping(value = "/removeEventType", method = RequestMethod.POST)
-    public String submitRemoveEventTypeForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
-        resultModel.addAttribute("eventType", modelClass.getEventType());
-        boolean removed = esperService.removeEventType(modelClass.getEventType());
+    public String submitRemoveEventTypeForm(@RequestParam("eventType")String eventType, ModelMap resultModel) {
+        resultModel.addAttribute("eventType", eventType);
+        boolean removed = esperService.removeEventType(eventType);
+
         if (removed) {
             resultModel.addAttribute("result", "No statements rely on this event type, event type removed successfully.");
         } else {
@@ -189,8 +203,10 @@ public class WebApi {
      * @return Web page containing form to delete input dataflow by its name.
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.GET)
-    public ModelAndView removeInputDataflowForm() {
-        return new ModelAndView("removeInputDataflow", "InputDataflowModel", new InputDataflowModel());
+    public String removeInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
+        String dataflowActualName = dataflowName.substring(0, dataflowName.indexOf(":"));
+        resultModel.addAttribute("dataflowName", dataflowActualName);
+        return "removeInputDataflow";
     }
 
     /**
@@ -202,10 +218,10 @@ public class WebApi {
      * @return Web page informing user if the input dataflow was successfully deleted.
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.POST)
-    public String submitRemoveInputDataflowForm(@ModelAttribute("InputDataflowModel") InputDataflowModel modelClass, ModelMap resultModel) {
-        boolean removed = esperService.removeInputDataflow(modelClass.getDataflowName());
+    public String submitRemoveInputDataflowForm(@RequestParam("dataflowName")String dataflowName, InputDataflowModel modelClass, ModelMap resultModel) {
+        resultModel.addAttribute("dataflowName", dataflowName);
+        boolean removed = esperService.removeInputDataflow(dataflowName);
 
-        resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
         if (removed) {
             resultModel.addAttribute("result", "Dataflow with given name removed successfully.");
         } else {
@@ -333,22 +349,25 @@ public class WebApi {
      * @return Web page containing form to delete output dataflow by its name.
      */
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.GET)
-    public ModelAndView removeOutputDataflowForm() {
-        return new ModelAndView("removeOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
+    public String removeOutputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
+        String dataflowActualName = dataflowName.substring(0, dataflowName.indexOf(":"));
+        resultModel.addAttribute("dataflowName", dataflowActualName);
+        return "removeOutputDataflow";
     }
 
     /**
      * This method is called when user submits output dataflow deletion form,
      * it finds output dataflow and deletes it if possible.
      *
-     * @param modelClass Model class used to get user input from form.
      * @param resultModel ModelMap containing result of output dataflow deletion.
      * @return Web page informing user if the output dataflow was successfully deleted.
      */
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.POST)
-    public String submitRemoveOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
-        resultModel.addAttribute("dataflowName", modelClass.getDataflowName());
-        if (esperService.removeOutputDataflow(modelClass.getDataflowName())) {
+    public String submitRemoveOutputDataflowForm(@RequestParam("dataflowName") String dataflowName, ModelMap resultModel) {
+        resultModel.addAttribute("dataflowName", dataflowName);
+        boolean removed = esperService.removeInputDataflow(dataflowName);
+
+        if (removed) {
             resultModel.addAttribute("result", "Output dataflow with given name removed successfully.");
         } else {
 

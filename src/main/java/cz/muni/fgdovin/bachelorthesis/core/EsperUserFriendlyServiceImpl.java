@@ -1,7 +1,5 @@
 package cz.muni.fgdovin.bachelorthesis.core;
 
-import com.espertech.esper.client.util.EventRenderer;
-import com.espertech.esper.client.util.JSONEventRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -233,7 +231,7 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
             }
             return null;
         }
-        return myDataflow.getName() + "[" + myDataflow.getState() + "]:\n\"" + myDataflow.getText() + "\"\n";
+        return myDataflow.getName() + ":\n\"" + myDataflow.getText() + "\"\n";
     }
 
     /**

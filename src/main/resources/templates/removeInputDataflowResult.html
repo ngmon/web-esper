@@ -13,7 +13,8 @@
             <fieldset class="myFieldSet">
                 <fieldset>
                     <legend>Dataflow name</legend>
-                    <p th:text="${InputDataflowModel.dataflowName}" />
+                    <!--@thymesVar id="dataflowName" type="String"-->
+                    <p th:text="${dataflowName}" />
                 </fieldset>
                 <fieldset>
                     <legend>Deletion result</legend>

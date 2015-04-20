@@ -2,28 +2,43 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet"
+          th:href="@{/css/fieldset.css}"
+          href="../../css/fieldset.css"/>
 </head>
 <body>
     <div align="center">
         <h1>Event type management</h1>
         <p>
-            Event type management allows you to add, remove and show
-            event types, which all statements will be depending on.
+            Event type management allows you to add and remove
+            event types, which all statements will depend on.
         </p>
-        <h2>Select your action:</h2>
+        <p>
+        <fieldset class="myFieldSet">
+            <fieldset>
+                <legend>All event types</legend>
+                <div th:unless="${#lists.isEmpty(allEventTypes)}">
+                    <form action="#" th:object="${EventTypeModel}">
+                        <table>
+                            <tbody>
+                            <tr th:each="item : ${allEventTypes}">
+                                <td th:text="${item}" />
+                                <td> <a th:action="GET" th:href="@{/removeEventType/(eventType=${item})}">Delete</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <!--@thymesVar id="allEventTypes" type="List"-->
+                <div th:if="${#lists.isEmpty(allEventTypes)}">
+                    No event types present.
+                </div>
+            </fieldset>
+        </fieldset>
+        </p>
         <p>
         <form method="GET" action="/addEventType">
-            <input type="submit" value="Add event type"/>
-        </form>
-        </p>
-        <p>
-        <form method="GET" action="/removeEventType">
-            <input type="submit" value="Remove event type"/>
-        </form>
-        </p>
-        <p>
-        <form method="GET" action="/showEventTypes">
-            <input type="submit" value="Show all event types"/>
+            <input type="submit" align="center" value="Add event type"/>
         </form>
         </p>
         <div th:include="fragments/footer :: footer"></div>

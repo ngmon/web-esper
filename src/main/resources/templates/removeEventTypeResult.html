@@ -13,7 +13,8 @@
             <fieldset class="myFieldSet">
                 <fieldset>
                     <legend>Event type name</legend>
-                    <p th:text="${EventTypeModel.eventType}" />
+                    <!--@thymesVar id="eventType" type="String"-->
+                    <p th:text="${eventType}" />
                 </fieldset>
                 <fieldset>
                     <legend>Deletion result</legend>

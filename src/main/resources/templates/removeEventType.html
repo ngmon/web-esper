@@ -8,15 +8,17 @@
 </head>
 <body>
     <div align="center">
-        <h3>Enter event type information</h3>
-        <form action="#" th:action="@{/removeEventType}" th:object="${EventTypeModel}" method="post">
+        <h3>Are you sure you want to remove this event type?</h3>
+        <!--@thymesVar id="eventType" type="String"-->
+        <form action="#" th:action="@{/removeEventType(eventType=${eventType})}" method="post">
             <div align="center">
                 <fieldset class="myFieldSet">
                     <fieldset>
                         <legend>Event type name</legend>
-                        <p><input type="text" th:field="*{eventType}" /></p>
+                        <!--@thymesVar id="eventType" type="String"-->
+                        <p><label th:text="${eventType}"/></p>
                     </fieldset>
-                    <p><input type="submit" value="Remove" /> <input type="reset" value="Reset"/></p>
+                    <p><input type="submit" value="Remove" /></p>
                 </fieldset>
             </div>
         </form>

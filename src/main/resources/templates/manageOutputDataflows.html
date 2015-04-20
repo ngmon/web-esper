@@ -7,12 +7,34 @@
     <div align="center">
         <h1>Output dataflow management</h1>
         <p>
-            Output dataflow management allows you to add, remove and show
+            Output dataflow management allows you to add and remove
             output dataflows, which represent queries bound to
             specific stream sources and their results are
             send via AMQP protocol as new stream.
         </p>
-        <h2>Select your action:</h2>
+        <p>
+        <fieldset class="myFieldSet">
+            <fieldset>
+                <legend>All output dataflows</legend>
+                <div th:unless="${#lists.isEmpty(allOutputDataflows)}">
+                    <form action="#" th:object="${OutputDataflowModel}">
+                        <table>
+                            <tbody>
+                            <tr th:each="item : ${allOutputDataflows}">
+                                <td th:text="${item}" />
+                                <td> <a th:action="GET" th:href="@{/removeOutputDataflow/(dataflowName=${item})}">Delete</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <!--@thymesVar id="allOutputDataflows" type="List"-->
+                <div th:if="${#lists.isEmpty(allOutputDataflows)}">
+                    No event types present.
+                </div>
+            </fieldset>
+        </fieldset>
+        </p>
         <p>
         <form method="GET" action="/addOneStreamOutputDataflow">
             <input type="submit" value="Add one-stream output dataflow"/>
@@ -26,16 +48,6 @@
         <p>
         <form method="GET" action="/addThreeStreamOutputDataflow">
             <input type="submit" value="Add three-stream output dataflow"/>
-        </form>
-        </p>
-        <p>
-        <form method="GET" action="/removeOutputDataflow">
-            <input type="submit" value="Remove output dataflow"/>
-        </form>
-        </p>
-        <p>
-        <form method="GET" action="/showOutputDataflows">
-            <input type="submit" align="center" value="Show all output dataflows"/>
         </form>
         </p>
         <div th:include="fragments/footer :: footer"></div>

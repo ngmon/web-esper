@@ -25,7 +25,6 @@ public class DataflowHelper {
         "declareDurable: " + this.environment.getProperty("inputDeclareDurable") + ",\n" +
         "declareExclusive: " + this.environment.getProperty("inputDeclareExclusive") + ",\n" +
         "declareAutoDelete: " + this.environment.getProperty("inputDeclareAutoDelete") + ",\n" +
-        "exchange: '" + model.getExchangeName() +"',\n" +
         "collector: {class: '" + this.environment.getProperty("inputCollector") + "'}\n" +
         "}" +
         "EventBusSink(instream) {}";
