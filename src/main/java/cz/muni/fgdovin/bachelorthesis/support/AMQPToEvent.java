@@ -4,7 +4,11 @@ import com.espertech.esperio.amqp.AMQPToObjectCollector;
 import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -16,88 +20,26 @@ import java.util.*;
  * @version 6. 2. 2015
  */
 public class AMQPToEvent implements AMQPToObjectCollector {
+    private static final Log log = LogFactory.getLog(CustomAMQPSink.class);
 
-    private HashMap<String, Object> resultMap = new HashMap<>();
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void collect(final AMQPToObjectCollectorContext context) {
         String input = new String(context.getBytes());
-        flatMap(input, "");
-        context.getEmitter().submit(resultMap);
-    }
-
-    private Map<String, Object> toMap(String input) {
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
-        Map<String, Object> nestedMap = null;
         try {
-            nestedMap = new ObjectMapper().readValue(input, typeRef);
+            context.getEmitter().submit(alterMap(input));
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return nestedMap;
-    }
-
-    private void flatMap(String input, String keyPrefix) {
-        Map<String, Object> nestedMap = toMap(input);
-        for (String key : nestedMap.keySet()) {
-            String actualKey = keyPrefix + key;
-            Object value = nestedMap.get(key);
-            if((actualKey.equals("@timestamp")) && (!(value instanceof Long))) {
-                value = parseDate(value.toString());
-                actualKey = "timestamp";
-            }
-            putInMap(actualKey, value);
+            log.info("Malformed input: " + input + "Exception: " + e.getMessage());
         }
     }
 
-    private void putInMap(String actualKey, Object value) {
-        if(value instanceof Number) {
-            resultMap.put(actualKey, value);
-        }
-        else if(value instanceof Boolean) {
-            resultMap.put(actualKey, value);
-        }
-        else if(value.getClass().isArray()) {
-            StringBuilder mapAsString = new StringBuilder("[");
-            Object[] myArray = (Object[])value;
-            for(int i = 0; i < myArray.length; i++) {
-                Object arrayValue = myArray[i];
-                if ((arrayValue instanceof Number) || (arrayValue instanceof Boolean)
-                        || (arrayValue instanceof Map) || (arrayValue.getClass().isArray())){
-                    mapAsString.append("\"" + actualKey + "[" + i + "]\": " + arrayValue);
-                } else {
-                    mapAsString.append("\"" + actualKey + "[" + i + "]\": \"" + arrayValue + "\"");
-            }
-
-
-            }
-            mapAsString.append("]");
-            flatMap(mapAsString.toString(), actualKey + ".");
-        }
-        else if(value instanceof Map) {
-            StringBuilder mapAsString = new StringBuilder("{");
-            int keySetSize = ((Map) value).keySet().size();
-            int current = 0;
-            for(Object mapKey : ((Map) value).keySet()) {
-                String stringKey = mapKey.toString();
-                Object mapValue = ((Map) value).get(stringKey);
-                if ((mapValue instanceof Number) || (mapValue instanceof Boolean)
-                        || (mapValue instanceof Map) || (mapValue.getClass().isArray())) {
-                    mapAsString.append("\"" + stringKey + "\": " + mapValue);
-                } else {
-                    mapAsString.append("\"" + stringKey + "\": \"" + mapValue + "\"");
-                }
-                if(current < keySetSize-1) {
-                    mapAsString.append(", ");
-                }
-                current++;
-            }
-            mapAsString.append("}");
-            flatMap(mapAsString.toString(), actualKey + ".");
-        }
-        else {
-            resultMap.put(actualKey, value);
-        }
+    // TODO: Deal with invalid input
+    private Map<String, Object> alterMap(String input) throws IOException {
+        Map<String, Object> map = jsonToFlatMap(input);
+        map.put("timestamp", parseDate((String) map.get("@timestamp")));
+        map.remove("@timestamp");
+        return map;
     }
 
     private Long parseDate(String input) {
@@ -105,5 +47,32 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse(input, formatter);
         EventToAMQP.setZoneID(zonedDateTime.getZone().getId());
         return zonedDateTime.toInstant().toEpochMilli();
+    }
+
+    public Map<String, Object> jsonToFlatMap(String json) throws IOException {
+        return process(this.mapper.readValue(json, JsonNode.class).fields());
+    }
+
+    private Map<String, Object> process(Iterator<Map.Entry<String, JsonNode>> nodeIterator) {
+        Map<String, Object> map1 = new HashMap<>();
+
+        while (nodeIterator.hasNext()) {
+            Map.Entry<String, JsonNode> entry1 = nodeIterator.next();
+
+            String key = entry1.getKey();
+            JsonNode value = entry1.getValue();
+
+            if (value.getNodeType().equals(JsonNodeType.OBJECT)) {
+                Map<String, Object> map2 = process(value.fields());
+
+                for (Map.Entry<String, Object> entry2 : map2.entrySet()) {
+                    map1.put(key.concat(".").concat(entry2.getKey()), entry2.getValue());
+                }
+
+            } else {
+                map1.put(key, this.mapper.convertValue(value, Object.class));
+            }
+        }
+        return map1;
     }
 }
