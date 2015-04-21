@@ -1,6 +1,6 @@
 package cz.muni.fgdovin.bachelorthesis.test;
 
-import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 import cz.muni.fgdovin.bachelorthesis.web.InputDataflowModel;

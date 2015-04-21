@@ -1,4 +1,4 @@
-package cz.muni.fgdovin.bachelorthesis.core;
+package cz.muni.fgdovin.bachelorthesis.esper;
 
 import com.espertech.esper.client.*;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;

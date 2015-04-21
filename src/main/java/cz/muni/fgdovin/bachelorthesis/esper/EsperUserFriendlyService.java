@@ -1,4 +1,4 @@
-package cz.muni.fgdovin.bachelorthesis.core;
+package cz.muni.fgdovin.bachelorthesis.esper;
 
 import java.util.List;
 import java.util.Map;

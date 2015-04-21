@@ -1,4 +1,4 @@
-package cz.muni.fgdovin.bachelorthesis.core;
+package cz.muni.fgdovin.bachelorthesis.esper;
 
 import com.espertech.esper.client.ConfigurationException;
 import com.espertech.esper.client.EPException;

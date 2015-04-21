@@ -1,6 +1,7 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
@@ -37,6 +38,9 @@ public class WebApi {
     @Autowired
     private EventTypeHelper eventTypeHelper;
 
+    @Autowired
+    private RabbitMqService rabbitMqService;
+
     /**
      * This method is bound to "/" mapping and displays welcome page.
      *
@@ -44,6 +48,8 @@ public class WebApi {
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
+        ModelMap model = new ModelMap();
+        model.addAttribute("rabbitMqInfo", this.rabbitMqService.isAlive());
         return new ModelAndView("index");
     }
 

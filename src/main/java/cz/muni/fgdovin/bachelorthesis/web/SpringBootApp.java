@@ -1,9 +1,11 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import cz.muni.fgdovin.bachelorthesis.core.EsperService;
-import cz.muni.fgdovin.bachelorthesis.core.EsperServiceImpl;
-import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyService;
-import cz.muni.fgdovin.bachelorthesis.core.EsperUserFriendlyServiceImpl;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperService;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperServiceImpl;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyServiceImpl;
+import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
+import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqServiceImpl;
 import cz.muni.fgdovin.bachelorthesis.support.CustomAMQPSink;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
@@ -26,6 +28,12 @@ import org.springframework.context.annotation.PropertySource;
 public class SpringBootApp {
 
     private EPServiceProvider epServiceProvider;
+
+    //RabbitMQ beans
+    @Bean
+    public RabbitMqService rabbitMqService() {
+        return new RabbitMqServiceImpl();
+    }
 
     //Esper beans
     @Bean

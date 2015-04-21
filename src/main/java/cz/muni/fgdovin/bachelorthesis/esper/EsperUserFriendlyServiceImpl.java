@@ -1,4 +1,4 @@
-package cz.muni.fgdovin.bachelorthesis.core;
+package cz.muni.fgdovin.bachelorthesis.esper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

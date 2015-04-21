@@ -19,8 +19,8 @@ public class DataflowHelper {
         return
         "Create Dataflow " + model.getDataflowName() + "\n" +
         "AMQPSource -> instream<" + model.getEventType() + "> {\n" +
-        "host: '" + this.environment.getProperty("inputHost") + "',\n" +
-        "port: " + Integer.parseInt(this.environment.getProperty("inputPort")) + ",\n" +
+        "host: '" + this.environment.getProperty("host") + "',\n" +
+        "port: " + Integer.parseInt(this.environment.getProperty("port")) + ",\n" +
         "queueName: '" + model.getQueueName() + "',\n" +
         "declareDurable: " + this.environment.getProperty("inputDeclareDurable") + ",\n" +
         "declareExclusive: " + this.environment.getProperty("inputDeclareExclusive") + ",\n" +
@@ -46,8 +46,8 @@ public class DataflowHelper {
                 "select: (\n" + model.getQuery() + ")\n" +
                 "}\n" +
                 "CustomAMQPSink(" + model.getOutputEventType() + ") {\n" +
-                "host: '" + this.environment.getProperty("outputHost") + "',\n" +
-                "port: " + Integer.parseInt(this.environment.getProperty("outputPort")) + ",\n" +
+                "host: '" + this.environment.getProperty("host") + "',\n" +
+                "port: " + Integer.parseInt(this.environment.getProperty("port")) + ",\n" +
                 "queueName: '" + model.getQueueName() + "',\n" +
                 "declareDurable: " + this.environment.getProperty("outputDeclareDurable") + ",\n" +
                 "declareExclusive: " + this.environment.getProperty("outputDeclareExclusive") + ",\n" +
