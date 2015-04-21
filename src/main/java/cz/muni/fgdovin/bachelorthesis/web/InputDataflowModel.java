@@ -13,8 +13,7 @@ public class InputDataflowModel {
     public InputDataflowModel() {
     }
 
-    //for input dataflows
-    public InputDataflowModel(String dataflowName, String eventType, String queueName, String exchangeName) {
+    public InputDataflowModel(String dataflowName, String eventType, String queueName) {
         this.dataflowName = dataflowName;
         this.eventType = eventType;
         this.queueName = queueName;

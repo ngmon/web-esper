@@ -10,12 +10,11 @@
     <div align="center">
         <h3>Are you sure you want to remove this input dataflow?</h3>
         <!--@thymesVar id="dataflowName" type="String"-->
-        <form action="#" th:action="@{/removeInputDataflow(datafowName=${dataflowName})}" method="post">
+        <form action="#" th:action="@{/removeInputDataflow(dataflowName=${dataflowName})}" method="post">
             <div align="center">
                 <fieldset class="myFieldSet">
                     <fieldset>
                         <legend>Dataflow name</legend>
-                        <!--@thymesVar id="dataflowName" type="String"-->
                         <p><label th:text="${dataflowName}"/></p>
                     </fieldset>
                     <p><input type="submit" value="Remove" /></p>

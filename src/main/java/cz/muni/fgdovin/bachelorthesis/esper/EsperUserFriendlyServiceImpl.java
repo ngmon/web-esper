@@ -91,6 +91,22 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * {@inheritDoc}
      */
     @Override
+    public List<String> showEventTypeNames() {
+        EventType[] allEvents = this.esperService.showEventTypes();
+        if((allEvents == null) || (allEvents.length == 0)) {
+            return null;
+        }
+        List<String> result = new ArrayList<>();
+        for (EventType allEvent : allEvents) {
+            result.add(allEvent.getName());
+        }
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<String> showEventTypes() {
         EventType[] allEvents = this.esperService.showEventTypes();
         if((allEvents == null) || (allEvents.length == 0)) {
@@ -239,19 +255,19 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public List<String> showInputDataflows() {
-        String[] allDataFlows = this.esperService.showDataflows();
+        String[] allDataflows = this.esperService.showDataflows();
         List<String> result = new ArrayList<>();
 
-        if((allDataFlows == null) || (allDataFlows.length == 0)) {
+        if((allDataflows == null) || (allDataflows.length == 0)) {
             if(logger.isDebugEnabled()) {
                 logger.debug("No input dataflows present.");
             }
             return result;
         }
-        for (String oneDataFlow : allDataFlows) {
-            String oneDataflowDetails = showDataflow(oneDataFlow);
+        for (String oneDataflow : allDataflows) {
+            String oneDataflowDetails = showDataflow(oneDataflow);
             if(isInputDataflow(oneDataflowDetails)) {  //only input dataflows, NO output ones
-                result.add(oneDataflowDetails);
+                result.add(oneDataflow);
             }
         }
         return result;
@@ -262,19 +278,19 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public List<String> showOutputDataflows() {
-        String[] allDataFlows = this.esperService.showDataflows();
+        String[] allDataflows = this.esperService.showDataflows();
         List<String> result = new ArrayList<>();
 
-        if((allDataFlows == null) || (allDataFlows.length == 0)) {
+        if((allDataflows == null) || (allDataflows.length == 0)) {
             if(logger.isDebugEnabled()) {
                 logger.debug("No output dataflows present.");
             }
             return result;
         }
-        for (String oneDataFlow : allDataFlows) {
-            String oneDataflowDetails = showDataflow(oneDataFlow);
+        for (String oneDataflow : allDataflows) {
+            String oneDataflowDetails = showDataflow(oneDataflow);
             if(!isInputDataflow(oneDataflowDetails)) {  //only output dataflows, NO input ones
-                result.add(oneDataflowDetails);
+                result.add(oneDataflow);
             }
         }
         return result;

@@ -60,6 +60,14 @@ public interface EsperUserFriendlyService {
     public String showEventType(String eventName);
 
     /**
+     * Method used to show all event type names known to Esper.
+     *
+     * @return List of all present event type names,
+     * or null if there are no event types present.
+     */
+    public List<String> showEventTypeNames();
+
+    /**
      * Method used to show all event types known to Esper.
      *
      * @return List of all present event types in format 'eventTypeName:eventProperties',

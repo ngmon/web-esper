@@ -11,41 +11,55 @@
         <h3>Enter three-stream output dataflow information</h3>
         <form action="#" th:action="@{/addThreeStreamOutputDataflow}" th:object="${OutputDataflowModel}" method="post">
             <div align="center">
-                <fieldset class="myFieldSet">
-                    <fieldset>
-                        <legend>Dataflow name</legend>
-                        <p><input type="text" th:field="*{dataflowName}" /></p>
+                <!--@thymesVar id="availEventTypes" type="List"-->
+                <div th:unless="${#lists.isEmpty(availEventTypes)}">
+                    <fieldset class="myFieldSet">
+                        <fieldset>
+                            <legend>First event type</legend>
+                            <p>
+                                <select th:field="*{firstEventType}">
+                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
+                                </select>
+                            </p>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Second event type</legend>
+                            <p>
+                                <select th:field="*{secondEventType}">
+                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
+                                </select>
+                            </p>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Third event type</legend>
+                            <p>
+                                <select th:field="*{thirdEventType}">
+                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
+                                </select>
+                            </p>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Output event type</legend>
+                            <p>
+                                <select th:field="*{outputEventType}">
+                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available queues</option>
+                                </select>
+                            </p>
+                            <fieldset>
+                                <legend>Create new output event type</legend>
+                                <p><input type="text" th:field="*{outputEventType}" /></p>
+                            </fieldset>
+                        </fieldset>
+                        <fieldset>
+                            <legend>EPL statement</legend>
+                            <p><input type="text" th:field="*{query}" /></p>
+                        </fieldset>
+                        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
                     </fieldset>
-                    <fieldset>
-                        <legend>First event type</legend>
-                        <p><input type="text" th:field="*{firstEventType}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Second event type</legend>
-                        <p><input type="text" th:field="*{secondEventType}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Third event type</legend>
-                        <p><input type="text" th:field="*{thirdEventType}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Output event type</legend>
-                        <p><input type="text" th:field="*{outputEventType}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>EPL statement</legend>
-                        <p><input type="text" th:field="*{query}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Queue name</legend>
-                        <p><input type="text" th:field="*{queueName}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Exchange name</legend>
-                        <p><input type="text" th:field="*{exchangeName}" /></p>
-                    </fieldset>
-                    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
-                </fieldset>
+                </div>
+                <div th:if="${#lists.isEmpty(availEventTypes)}">
+                    <div th:include="fragments/toEventTypeCreation :: createEventType"></div>
+                </div>
             </div>
         </form>
         <div th:include="fragments/backToManagement :: outputDataflow"></div>

@@ -49,7 +49,7 @@ public class WebApi {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
         boolean serverOK = this.rabbitMqService.isAlive().equals("ok");
-        
+
         ModelAndView model = new ModelAndView("index");
         model.addObject("rabbitMqInfo", serverOK);
         return model;
@@ -104,7 +104,8 @@ public class WebApi {
      */
     @RequestMapping(value = "/addEventType", method = RequestMethod.GET)
     public ModelAndView EventTypeForm() {
-        return new ModelAndView("addEventType", "EventTypeModel", new EventTypeModel());
+        ModelAndView model = new ModelAndView("addEventType", "EventTypeModel", new EventTypeModel());
+        return model;
     }
 
     /**
@@ -117,13 +118,26 @@ public class WebApi {
      */
     @RequestMapping(value = "/addEventType", method = RequestMethod.POST)
     public String submitEventTypeForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
+        String eventTypeName = modelClass.getEventType();
         Map<String, Object> properties = eventTypeHelper.toMap(modelClass.getProperties());
-        boolean added = esperService.addEventType(modelClass.getEventType(), properties);
-        resultModel.addAttribute("eventType", modelClass.getEventType());
+
+        boolean added = esperService.addEventType(eventTypeName, properties);
+        resultModel.addAttribute("eventType", eventTypeName);
+
+        if(added) {
+            List<String> allQueues = this.rabbitMqService.listQueues();
+            if (!allQueues.contains(eventTypeName)) {
+                added = this.rabbitMqService.createQueue(eventTypeName);
+            }
+        } else {
+            resultModel.addAttribute("result", "Error creating event type. Bad input or is already defined!");
+        }
+
         if(added) {
             resultModel.addAttribute("result", "Event type created successfully.");
         } else {
-            resultModel.addAttribute("result", "Error creating event type. Bad input or is already defined!");
+            resultModel.addAttribute("result", "Error creating event type. Creation of AMQP queue failed!");
+            this.esperService.removeEventType(eventTypeName);
         }
         return "addEventTypeResult";
     }
@@ -167,7 +181,9 @@ public class WebApi {
      */
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.GET)
     public ModelAndView inputDataflowForm() {
-        return new ModelAndView("addInputDataflow", "InputDataflowModel", new InputDataflowModel());
+        ModelAndView model = new ModelAndView("addInputDataflow", "InputDataflowModel", new InputDataflowModel());
+        model.addObject("availEventTypes", this.esperService.showEventTypeNames());
+        return model;
     }
 
     /**
@@ -180,7 +196,11 @@ public class WebApi {
      */
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.POST)
     public String submitInputDataflowForm(@ModelAttribute("InputDataflowModel") InputDataflowModel modelClass, ModelMap resultModel) {
-        String dataflowName = modelClass.getDataflowName();
+        String eventType = modelClass.getEventType();
+        String dataflowName = eventType + System.currentTimeMillis();
+        modelClass.setDataflowName(dataflowName);
+        modelClass.setQueueName(eventType);
+
         String queueParams = dataflowHelper.generateInputDataflow(modelClass);
         boolean added = esperService.addDataflow(dataflowName, queueParams);
 
@@ -201,8 +221,7 @@ public class WebApi {
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.GET)
     public String removeInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
-        String dataflowActualName = dataflowName.substring(0, dataflowName.indexOf(":"));
-        resultModel.addAttribute("dataflowName", dataflowActualName);
+        resultModel.addAttribute("dataflowName", dataflowName);
         return "removeInputDataflow";
     }
 
@@ -234,7 +253,9 @@ public class WebApi {
      */
     @RequestMapping(value = "/addOneStreamOutputDataflow", method = RequestMethod.GET)
     public ModelAndView oneStreamOutputDataflowForm() {
-        return new ModelAndView("addOneStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
+        ModelAndView model = new ModelAndView("addOneStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
+        model.addObject("availEventTypes", this.esperService.showEventTypeNames());
+        return model;
     }
 
     /**
@@ -247,7 +268,12 @@ public class WebApi {
      */
     @RequestMapping(value = "/addOneStreamOutputDataflow", method = RequestMethod.POST)
     public String submitOneStreamOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
-        String dataflowName = modelClass.getDataflowName();
+        String outputEventType = modelClass.getOutputEventType();
+        String dataflowName = outputEventType + System.currentTimeMillis();
+        modelClass.setDataflowName(dataflowName);
+        modelClass.setQueueName(outputEventType);
+        modelClass.setExchangeName(this.rabbitMqService.getExchangeName());
+
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
         boolean added = esperService.addDataflow(dataflowName, queueParams);
 
@@ -268,7 +294,9 @@ public class WebApi {
      */
     @RequestMapping(value = "/addTwoStreamOutputDataflow", method = RequestMethod.GET)
     public ModelAndView twoStreamOutputDataflowForm() {
-        return new ModelAndView("addTwoStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
+        ModelAndView model = new ModelAndView("addTwoStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
+        model.addObject("availEventTypes", this.esperService.showEventTypeNames());
+        return model;
     }
 
     /**
@@ -281,7 +309,12 @@ public class WebApi {
      */
     @RequestMapping(value = "/addTwoStreamOutputDataflow", method = RequestMethod.POST)
     public String submitTwoStreamOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
-        String dataflowName = modelClass.getDataflowName();
+        String outputEventType = modelClass.getOutputEventType();
+        String dataflowName = outputEventType + System.currentTimeMillis();
+        modelClass.setDataflowName(dataflowName);
+        modelClass.setQueueName(outputEventType);
+        modelClass.setExchangeName(this.rabbitMqService.getExchangeName());
+
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
         boolean added = esperService.addDataflow(dataflowName, queueParams);
 
@@ -302,7 +335,9 @@ public class WebApi {
      */
     @RequestMapping(value = "/addThreeStreamOutputDataflow", method = RequestMethod.GET)
     public ModelAndView threeStreamOutputDataflowForm() {
-        return new ModelAndView("addThreeStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
+        ModelAndView model = new ModelAndView("addThreeStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
+        model.addObject("availEventTypes", this.esperService.showEventTypeNames());
+        return model;
     }
 
     /**
@@ -315,7 +350,12 @@ public class WebApi {
      */
     @RequestMapping(value = "/addThreeStreamOutputDataflow", method = RequestMethod.POST)
     public String submitThreeStreamOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
-        String dataflowName = modelClass.getDataflowName();
+        String outputEventType = modelClass.getOutputEventType();
+        String dataflowName = outputEventType + System.currentTimeMillis();
+        modelClass.setDataflowName(dataflowName);
+        modelClass.setQueueName(outputEventType);
+        modelClass.setExchangeName(this.rabbitMqService.getExchangeName());
+
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
         boolean added = esperService.addDataflow(dataflowName, queueParams);
 
@@ -336,8 +376,7 @@ public class WebApi {
      */
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.GET)
     public String removeOutputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
-        String dataflowActualName = dataflowName.substring(0, dataflowName.indexOf(":"));
-        resultModel.addAttribute("dataflowName", dataflowActualName);
+        resultModel.addAttribute("dataflowName", dataflowName);
         return "removeOutputDataflow";
     }
 
@@ -356,7 +395,6 @@ public class WebApi {
         if (removed) {
             resultModel.addAttribute("result", "Output dataflow with given name removed successfully.");
         } else {
-
             resultModel.addAttribute("result", "Output dataflow with this name was not found, or its removal failed.");
         }
         return "removeOutputDataflowResult";

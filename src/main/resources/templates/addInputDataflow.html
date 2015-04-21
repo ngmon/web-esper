@@ -11,21 +11,23 @@
         <h3>Enter input dataflow information</h3>
         <form action="#" th:action="@{/addInputDataflow}" th:object="${InputDataflowModel}" method="post">
             <div align="center">
-                <fieldset class="myFieldSet">
-                    <fieldset>
-                        <legend>Dataflow name</legend>
-                        <p><input type="text" th:field="*{dataflowName}" /></p>
+                <!--@thymesVar id="availEventTypes" type="List"-->
+                <div th:unless="${#lists.isEmpty(availEventTypes)}">
+                    <fieldset class="myFieldSet">
+                        <fieldset>
+                            <legend>Event type</legend>
+                            <p>
+                            <select th:field="*{eventType}">
+                                <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
+                            </select>
+                            </p>
+                        </fieldset>
+                        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
                     </fieldset>
-                    <fieldset>
-                        <legend>Event type</legend>
-                        <p><input type="text" th:field="*{eventType}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Queue name</legend>
-                        <p><input type="text" th:field="*{queueName}" /></p>
-                    </fieldset>
-                    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
-                </fieldset>
+                </div>
+                <div th:if="${#lists.isEmpty(availEventTypes)}">
+                    <div th:include="fragments/toEventTypeCreation :: createEventType"></div>
+                </div>
             </div>
         </form>
         <div th:include="fragments/backToManagement :: inputDataflow"></div>

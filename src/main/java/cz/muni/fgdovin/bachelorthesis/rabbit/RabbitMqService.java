@@ -9,7 +9,11 @@ public interface RabbitMqService {
 
     public String isAlive();
 
+    public boolean createQueue(String queueName);
+
     public List<String> listQueues();
 
     public List<String> listExchanges();
+
+    public String getExchangeName();
 }

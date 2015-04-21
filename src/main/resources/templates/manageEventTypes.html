@@ -17,6 +17,7 @@
         <fieldset class="myFieldSet">
             <fieldset>
                 <legend>All event types</legend>
+                <!--@thymesVar id="allEventTypes" type="List"-->
                 <div th:unless="${#lists.isEmpty(allEventTypes)}">
                     <form action="#" th:object="${EventTypeModel}">
                         <table>
@@ -29,7 +30,6 @@
                         </table>
                     </form>
                 </div>
-                <!--@thymesVar id="allEventTypes" type="List"-->
                 <div th:if="${#lists.isEmpty(allEventTypes)}">
                     No event types present.
                 </div>
