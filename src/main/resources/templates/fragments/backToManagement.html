@@ -4,14 +4,6 @@
 <head>
 </head>
 <body>
-    <div th:fragment="outputDataflow">
-        <div align="center">
-            <form action="/manageOutputDataflows">
-                <p><input type="submit" align="center" value="Back to output dataflow management"/></p>
-            </form>
-        </div>
-    </div>
-
     <div th:fragment="inputDataflow">
         <div align="center">
             <form action="/manageInputDataflows">
@@ -19,11 +11,10 @@
             </form>
         </div>
     </div>
-
-    <div th:fragment="eventType">
+    <div th:fragment="outputDataflow">
         <div align="center">
-            <form action="/manageEventTypes">
-                <p><input type="submit" align="center" value="Back to event type management"/></p>
+            <form action="/manageOutputDataflows">
+                <p><input type="submit" align="center" value="Back to output dataflow management"/></p>
             </form>
         </div>
     </div>

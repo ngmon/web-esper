@@ -24,15 +24,7 @@
                         </fieldset>
                         <fieldset>
                             <legend>Output event type</legend>
-                            <p>
-                            <select th:field="*{outputEventType}">
-                                <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available queues</option>
-                            </select>
-                            </p>
-                            <fieldset>
-                                <legend>Create new output event type</legend>
-                                <p><input type="text" th:field="*{outputEventType}" /></p>
-                            </fieldset>
+                            <p><input type="text" th:field="*{outputEventType}" /></p>
                         </fieldset>
                         <fieldset>
                             <legend>EPL statement</legend>
@@ -42,7 +34,7 @@
                     </fieldset>
                 </div>
                 <div th:if="${#lists.isEmpty(availEventTypes)}">
-                    <div th:include="fragments/toEventTypeCreation :: createEventType"></div>
+                    <div th:include="fragments/toEventTypeCreation :: createInputDataflow"></div>
                 </div>
             </div>
         </form>

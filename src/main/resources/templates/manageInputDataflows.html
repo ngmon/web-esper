@@ -19,7 +19,7 @@
             <fieldset>
                 <legend>All input dataflows</legend>
                 <div th:unless="${#lists.isEmpty(allInputDataflows)}">
-                    <form action="#" th:object="${InputDataflowModel}">
+                    <form action="#" th:object="${EventTypeModel}">
                         <table>
                             <tbody>
                             <tr th:each="item : ${allInputDataflows}">
@@ -32,7 +32,7 @@
                 </div>
                 <!--@thymesVar id="allInputDataflows" type="List"-->
                 <div th:if="${#lists.isEmpty(allInputDataflows)}">
-                    No event types present.
+                    No input dataflows present.
                 </div>
             </fieldset>
         </fieldset>

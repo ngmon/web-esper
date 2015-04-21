@@ -12,17 +12,14 @@
         <div align="center">
             <h1>Esper Continuous Engine</h1>
             <p>
-                This is Esper Continuous Engine, which allows you to add, remove and show event types,
-                input dataflows (AMQP sources) and output dataflows (EPL statements and AMQP sinks) on the run.
+                This is Esper Continuous Engine, which allows you to manage input dataflows (AMQP sources)
+                and output dataflows (EPL statements and AMQP sinks) on the run.
             </p>
             <h2>Select your action:</h2>
             <!--@thymesVar id="rabbitMqInfo" type="Bool"-->
             <div th:if="${rabbitMqInfo}">
                 <fieldset class="myFieldSet">
                     <p>
-                    <form action="/manageEventTypes">
-                        <p><input type="submit" align="center" value="Manage event types"/></p>
-                    </form>
                     <form action="/manageInputDataflows">
                         <p><input type="submit" align="center" value="Manage input dataflows"/></p>
                     </form>

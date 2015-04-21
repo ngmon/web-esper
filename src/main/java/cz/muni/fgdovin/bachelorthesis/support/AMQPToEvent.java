@@ -36,10 +36,18 @@ public class AMQPToEvent implements AMQPToObjectCollector {
 
     // TODO: Deal with invalid input
     private Map<String, Object> alterMap(String input) throws IOException {
-        Map<String, Object> map = jsonToFlatMap(input);
-        map.put("timestamp", parseDate((String) map.get("@timestamp")));
-        map.remove("@timestamp");
-        return map;
+        Map<String, Object> mapOfEvent = jsonToFlatMap(input);
+
+        String key = "@timestamp";
+        if(!mapOfEvent.containsKey(key)) {
+            throw new IOException("Event did not contain \"@timestamp\" attribute, which is mandatory");
+        } else {
+            String timestampString = (mapOfEvent.get(key).toString());
+            mapOfEvent.remove(key);
+            Long timestampLong = parseDate(timestampString);
+            mapOfEvent.put("timestamp", timestampLong);
+        }
+        return mapOfEvent;
     }
 
     private Long parseDate(String input) {
