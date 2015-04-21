@@ -4,6 +4,9 @@
     <head>
         <title>Welcome to the Esper Continuous Engine application!</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet"
+              th:href="@{/css/fieldset.css}"
+              href="../../css/fieldset.css"/>
     </head>
     <body>
         <div align="center">
@@ -13,9 +16,9 @@
                 input dataflows (AMQP sources) and output dataflows (EPL statements and AMQP sinks) on the run.
             </p>
             <h2>Select your action:</h2>
-            <fieldset>
-                <!--@thymesVar id="rabbitMqInfo" type="boolean"-->
-                <div th:if="${rabbitMqInfo}">
+            <!--@thymesVar id="rabbitMqInfo" type="Bool"-->
+            <div th:if="${rabbitMqInfo}">
+                <fieldset class="myFieldSet">
                     <p>
                     <form action="/manageEventTypes">
                         <p><input type="submit" align="center" value="Manage event types"/></p>
@@ -27,16 +30,18 @@
                         <p><input type="submit" align="center" value="Manage output dataflows"/></p>
                     </form>
                     </p>
-                </div>
-                <div th:unless="${rabbitMqInfo}">
+                </fieldset>
+            </div>
+            <div th:unless="${rabbitMqInfo}">
+                <fieldset class="myFieldSet">
                     <h2>RabbitMQ server is not responding</h2>
                     <p>
                     <form action="/">
                         <p><input type="submit" align="center" value="Reload page"/></p>
                     </form>
                     </p>
-                </div>
-            </fieldset>
+                </fieldset>
+            </div>
         </div>
     </body>
 </html>

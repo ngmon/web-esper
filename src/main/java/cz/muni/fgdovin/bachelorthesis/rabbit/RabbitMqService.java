@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface RabbitMqService {
 
-    public boolean isAlive();
+    public String isAlive();
 
     public List<String> listQueues();
 

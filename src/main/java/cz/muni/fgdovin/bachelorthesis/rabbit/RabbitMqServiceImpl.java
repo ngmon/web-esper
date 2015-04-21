@@ -32,10 +32,9 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         this.rabbitManagementApi = RabbitManagementApi.newInstance(this.host, username, password);
     }
 
-    public boolean isAlive() {
-        String expectedResponse = "{\"status\":\"ok\"}";
-        Status serverStatus = this.rabbitManagementApi.alivenessTest("/");  //probably takes vhost name as argument
-        return expectedResponse.equals(serverStatus.getStatus());
+    public String isAlive() {
+        Status serverStatus = this.rabbitManagementApi.alivenessTest("/");  //takes vhost name as argument
+        return serverStatus.getStatus();
     }
 
     public List<String> listQueues() {

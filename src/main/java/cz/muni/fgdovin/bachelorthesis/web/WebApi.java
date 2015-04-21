@@ -48,9 +48,11 @@ public class WebApi {
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
-        ModelMap model = new ModelMap();
-        model.addAttribute("rabbitMqInfo", this.rabbitMqService.isAlive());
-        return new ModelAndView("index");
+        boolean serverOK = this.rabbitMqService.isAlive().equals("ok");
+        
+        ModelAndView model = new ModelAndView("index");
+        model.addObject("rabbitMqInfo", serverOK);
+        return model;
     }
 
     /**
