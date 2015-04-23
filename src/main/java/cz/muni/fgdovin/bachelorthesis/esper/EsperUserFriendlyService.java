@@ -84,8 +84,7 @@ public interface EsperUserFriendlyService {
      * 1.: To define source for event streams, such dataflow contains only:
      *     name of said dataflow,
      *     name of event type to understand incoming events (MUST be defined before using addEventType() ),
-     *     name of AMQP queue containing events of said event type,
-     *     name of AMQP exchange distributing events to said queue.
+     *     name of AMQP queue containing events of said event type.
      *
      * This type of dataflow converts incoming events to Map and pushes them into EventBusSink.
      *
@@ -104,8 +103,8 @@ public interface EsperUserFriendlyService {
      * AMQP queue will cause NullPointerException.
      *
      *
-     * @param queueName String describing name of dataflow.
-     * @param queueProperties String defining properties of the dataflow (see dataflow types above),
+     * @param dataflowName String describing name of dataflow.
+     * @param dataflowProperties String defining properties of the dataflow (see dataflow types above),
      *                        for convenience there is a support class (DataflowHelper), which takes dataflow
      *                        parameters and creates String defining the whole dataflow, adding static
      *                        parameters such as host, port, etc. Those properties, however, can be changed
@@ -113,27 +112,27 @@ public interface EsperUserFriendlyService {
      * @return Returns true if dataflow was successfully created,
      *         or false otherwise.
      */
-    public boolean addDataflow(String queueName, String queueProperties);
+    public boolean addDataflow(String dataflowName, String dataflowProperties);
 
     /**
      * Method used to remove input dataflow by providing its name.
      *
-     * @param queueName String describing input dataflow name.
+     * @param dataflowName String describing input dataflow name.
      * @return True if input dataflow with provided name was deleted,
      * false if Esper doesn't contain input dataflow with such name.
      *
      */
-    public boolean removeInputDataflow(String queueName);
+    public boolean removeInputDataflow(String dataflowName);
 
     /**
      * Method used to remove output dataflow by providing its name.
      *
-     * @param queueName String describing output dataflow name.
+     * @param dataflowName String describing output dataflow name.
      * @return True if output dataflow with provided name was deleted,
      * false if Esper doesn't contain output dataflow with such name.
      *
      */
-    public boolean removeOutputDataflow(String queueName);
+    public boolean removeOutputDataflow(String dataflowName);
 
     /**
      * Method used to show all input dataflows known to Esper.

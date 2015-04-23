@@ -45,23 +45,31 @@ public class EsperServiceImpl implements EsperService {
      * {@inheritDoc}
      */
     @Override
-    public void addEventType(String eventName, Map<String, Object> schema) throws ConfigurationException {
-        this.configurationOperations.addEventType(eventName, schema);
+    public boolean addEventType(String eventName, Map<String, Object> schema) {
+        if(this.showEventType(eventName) != null) {
+            return false;
+        }
+        try {
+            this.configurationOperations.addEventType(eventName, schema);
+        } catch (ConfigurationException ex) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean removeEventType(String eventName) throws ConfigurationException, NullPointerException {
-        boolean result;
+    public boolean removeEventType(String eventName) {
         if(this.showEventType(eventName) == null) {
-            throw new NullPointerException("Event type with this name is not present!");
+            return false;
         }
+        boolean result;
         try {
             result = this.configurationOperations.removeEventType(eventName, false);
         } catch (ConfigurationException ex) {
-            throw new ConfigurationException("Trying to remove event type with active statements", ex);
+            return false;
         }
         return result;
     }
@@ -70,7 +78,7 @@ public class EsperServiceImpl implements EsperService {
      * {@inheritDoc}
      */
     @Override
-    public EventType showEventType(String eventName) throws NullPointerException{
+    public EventType showEventType(String eventName) {
         return this.configurationOperations.getEventType(eventName);
     }
 

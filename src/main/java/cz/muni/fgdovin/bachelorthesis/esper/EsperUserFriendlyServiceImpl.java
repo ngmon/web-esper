@@ -39,18 +39,14 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public boolean addEventType(String eventName, Map<String, Object> schema) {
-        if((eventName == null) || (eventName.isEmpty()) || (schema == null)) { //test this
+        if((eventName == null) || (eventName.isEmpty()) || (schema == null)) {
             return false;
         }
-        try {
-            this.esperService.addEventType(eventName, schema);
-        } catch (ConfigurationException ex) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("Error while adding new event type!", ex);
-            }
-            return false;
+        boolean result = esperService.addEventType(eventName, schema);
+        if((!result) && (logger.isDebugEnabled())) {
+            logger.debug("Error while adding event type!");
         }
-        return true;
+        return result;
     }
 
     /**
@@ -58,14 +54,12 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public boolean removeEventType(String eventName) {
-        boolean result;
-        try {
-            result = this.esperService.removeEventType(eventName);
-        } catch (ConfigurationException | NullPointerException ex) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("Error while removing event type!", ex);
-            }
+        if((eventName == null) || (eventName.isEmpty())) {
             return false;
+        }
+        boolean result = this.esperService.removeEventType(eventName);
+        if((!result) && (logger.isDebugEnabled())) {
+            logger.debug("Error while removing event type!");
         }
         return result;
     }
@@ -75,12 +69,10 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      */
     @Override
     public String showEventType(String eventName) {
-        EventType myEvent;
-        try {
-            myEvent = this.esperService.showEventType(eventName);
-        } catch (NullPointerException ex) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("No event type with given name[" + eventName + "] was found.", ex);
+        EventType myEvent = this.esperService.showEventType(eventName);
+        if(myEvent == null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("No event type with given name[" + eventName + "] was found.");
             }
             return null;
         }
@@ -93,10 +85,11 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
     @Override
     public List<String> showEventTypeNames() {
         EventType[] allEvents = this.esperService.showEventTypes();
-        if((allEvents == null) || (allEvents.length == 0)) {
-            return null;
-        }
         List<String> result = new ArrayList<>();
+
+        if((allEvents == null) || (allEvents.length == 0)) {
+            return result;
+        }
         for (EventType allEvent : allEvents) {
             result.add(allEvent.getName());
         }
@@ -109,12 +102,13 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
     @Override
     public List<String> showEventTypes() {
         EventType[] allEvents = this.esperService.showEventTypes();
-        if((allEvents == null) || (allEvents.length == 0)) {
-            return null;
-        }
         List<String> result = new ArrayList<>();
+
+        if((allEvents == null) || (allEvents.length == 0)) {
+            return result;
+        }
         for (EventType allEvent : allEvents) {
-            result.add(showEventType(allEvent.getName()));
+            result.add(this.showEventType(allEvent.getName()));
         }
         return result;
     }

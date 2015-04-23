@@ -9,10 +9,10 @@
 <body>
     <div align="center">
         <h3>Enter three-stream output dataflow information</h3>
-        <form action="#" th:action="@{/addThreeStreamOutputDataflow}" th:object="${OutputDataflowModel}" method="post">
-            <div align="center">
-                <!--@thymesVar id="availEventTypes" type="List"-->
-                <div th:unless="${#lists.isEmpty(availEventTypes)}">
+        <div align="center">
+            <!--@thymesVar id="availEventTypes" type="List"-->
+            <div th:unless="${#lists.isEmpty(availEventTypes)}">
+                <form action="#" th:action="@{/addThreeStreamOutputDataflow}" th:object="${OutputDataflowModel}" method="post">
                     <fieldset class="myFieldSet">
                         <fieldset>
                             <legend>First event type</legend>
@@ -48,12 +48,12 @@
                         </fieldset>
                         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
                     </fieldset>
-                </div>
-                <div th:if="${#lists.isEmpty(availEventTypes)}">
-                    <div th:include="fragments/toEventTypeCreation :: createInputDataflow"></div>
-                </div>
+                </form>
             </div>
-        </form>
+            <div th:if="${#lists.isEmpty(availEventTypes)}">
+                <div th:include="fragments/toEventTypeCreation :: createInputDataflow"></div>
+            </div>
+        </div>
         <div th:include="fragments/backToManagement :: outputDataflow"></div>
         <div th:include="fragments/footer :: footer"></div>
     </div>

@@ -36,8 +36,9 @@ public interface EsperService{
      *               (e.g. avg(val1) expects 'val1' to be Number)
      *               Also, for the purpose of this thesis, property containing
      *               string "timestamp" with value of Long is expected and MUST be provided.
+     * @return true if the event type was successfully added, false otherwise (e.g. was already defined)
      */
-    public void addEventType(String eventName, Map<String, Object> schema) throws ConfigurationException;
+    public boolean addEventType(String eventName, Map<String, Object> schema);
 
     /**
      * Method used to remove event type by providing its name.
