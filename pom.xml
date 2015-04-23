@@ -27,6 +27,14 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -43,6 +51,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jetty</artifactId>
             <version>1.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
         <!--Esper + AMQP dependencies-->
@@ -76,25 +88,14 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.3.2</version>
         </dependency>
-
-        <!--Loggers dependencies-->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.2</version>
-        </dependency>
     </dependencies>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.eventType>1.7</maven.compiler.eventType>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <jstl.version>1.2</jstl.version>
+        <maven.compiler.eventType>1.8</maven.compiler.eventType>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
     <build>
         <plugins>
             <plugin>

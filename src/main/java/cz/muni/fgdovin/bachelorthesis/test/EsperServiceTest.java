@@ -70,8 +70,6 @@ public class EsperServiceTest {
         //add basic event type for tests
         this.schema = this.eventTypeHelper.toMap(this.stringSchema);
         esperService.addEventType(this.eventType, this.schema);
-
-        System.out.println("Available event types:" + this.esperService.showEventTypeNames());
     }
 
     @Test
