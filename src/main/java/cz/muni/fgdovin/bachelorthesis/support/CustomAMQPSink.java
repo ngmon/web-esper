@@ -176,7 +176,11 @@ public class CustomAMQPSink implements DataFlowOpLifecycle {
         EventType type = event.getEventType();
         Map<String, Object> result = new HashMap<>();
         for(String prop : type.getPropertyNames()) {
-            result.put(prop, event.get(prop));
+            if(prop.startsWith("stream_")) {   //this is necessary in case of "select * from whateverType" statement
+                return event.get(prop);
+            } else {
+                result.put(prop, event.get(prop));
+            }
         }
         return result;
     }

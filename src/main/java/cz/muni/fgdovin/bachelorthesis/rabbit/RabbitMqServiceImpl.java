@@ -3,7 +3,6 @@ package cz.muni.fgdovin.bachelorthesis.rabbit;
 import org.nigajuan.rabbit.management.client.RabbitManagementApi;
 import org.nigajuan.rabbit.management.client.domain.aliveness.Status;
 import org.nigajuan.rabbit.management.client.domain.binding.queue.QueueBind;
-import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
 import org.nigajuan.rabbit.management.client.domain.queue.Arguments;
 import org.nigajuan.rabbit.management.client.domain.queue.Queue;
 import org.springframework.core.env.Environment;
@@ -16,7 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by Filip Gdovin on 20. 4. 2015.
+ * @author Filip Gdovin
+ * @version 20. 4. 2015
  */
 @Service
 public class RabbitMqServiceImpl implements RabbitMqService {
@@ -25,31 +25,25 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     private Environment environment; //to load RabbitMQ server info from properties
     private RabbitManagementApi rabbitManagementApi;
 
-    private Exchange exchange;
     private String exchangeName;
     private String vhost;
-    private String host;
 
     @PostConstruct
     public void setUp() {
         String username = this.environment.getProperty("serverUsername");
         String password = this.environment.getProperty("serverPassword");
+        String serverHost = this.environment.getProperty("serverHost");
+        String serverPort = this.environment.getProperty("serverPort");
         this.exchangeName = this.environment.getProperty("exchangeName");
         this.vhost = this.environment.getProperty("vhost");
-        this.host = "http://" + this.environment.getProperty("serverHost")
-                + ":" + this.environment.getProperty("serverPort");
-        this.rabbitManagementApi = RabbitManagementApi.newInstance(this.host, username, password);
 
-        getExchange();
+        String host = "http://" + serverHost + ":" + serverPort;
+        this.rabbitManagementApi = RabbitManagementApi.newInstance(host, username, password);
     }
 
     public String isAlive() {
         Status serverStatus = this.rabbitManagementApi.alivenessTest(this.vhost);  //takes vhost name as argument
         return serverStatus.getStatus();
-    }
-
-    private void getExchange() {
-        this.exchange = this.rabbitManagementApi.listExchanges(this.vhost).get(0); //only one exchange in system
     }
 
     public String getExchangeName() {
@@ -74,15 +68,6 @@ public class RabbitMqServiceImpl implements RabbitMqService {
 
     public List<String> listQueues() {
         List<Queue> allQueues = this.rabbitManagementApi.listQueues();
-        List<String> result = allQueues.stream().map(Queue::getName).collect(Collectors.toList());
-
-        return result;
-    }
-
-    public List<String> listExchanges() {
-        List<Exchange> allExchanges = this.rabbitManagementApi.listExchanges();
-        List<String> result = allExchanges.stream().map(Exchange::getName).collect(Collectors.toList());
-
-        return result;
+        return allQueues.stream().map(Queue::getName).collect(Collectors.toList());
     }
 }

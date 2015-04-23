@@ -90,8 +90,7 @@ public class WebApi {
      */
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.GET)
     public ModelAndView InputDataflowForm() {
-        ModelAndView model = new ModelAndView("addInputDataflow", "EventTypeModel", new EventTypeModel());
-        return model;
+        return new ModelAndView("addInputDataflow", "EventTypeModel", new EventTypeModel());
     }
 
     /**
@@ -217,7 +216,7 @@ public class WebApi {
             return "addOneStreamOutputDataflowResult";
         }
 
-        added = manageAMQPQueue(dataflowName);
+        added = manageAMQPQueue(outputEventType);
 
         if(!added) {
             resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
@@ -265,7 +264,7 @@ public class WebApi {
             return "addTwoStreamOutputDataflowResult";
         }
 
-        added = manageAMQPQueue(dataflowName);
+        added = manageAMQPQueue(outputEventType);
 
         if(!added) {
             resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
@@ -313,7 +312,7 @@ public class WebApi {
             return "addThreeStreamOutputDataflowResult";
         }
 
-        added = manageAMQPQueue(dataflowName);
+        added = manageAMQPQueue(outputEventType);
 
         if(!added) {
             resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
@@ -344,7 +343,8 @@ public class WebApi {
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.POST)
     public String submitRemoveOutputDataflowForm(@RequestParam("dataflowName") String dataflowName, ModelMap resultModel) {
         resultModel.addAttribute("dataflowName", dataflowName);
-        boolean removed = esperService.removeInputDataflow(dataflowName);
+        System.out.println("Removing " + dataflowName);
+        boolean removed = esperService.removeOutputDataflow(dataflowName);
 
         if (removed) {
             resultModel.addAttribute("result", "Output dataflow with given name removed successfully.");
@@ -354,11 +354,11 @@ public class WebApi {
         return "removeOutputDataflowResult";
     }
 
-    private boolean manageAMQPQueue(String dataflowName) {
+    private boolean manageAMQPQueue(String eventType) {
         List<String> allQueues = this.rabbitMqService.listQueues();
         boolean added = true;
-        if (!allQueues.contains(dataflowName)) {
-            added = this.rabbitMqService.createQueue(dataflowName);
+        if (!allQueues.contains(eventType)) {
+            added = this.rabbitMqService.createQueue(eventType);
         }
         return added;
     }
