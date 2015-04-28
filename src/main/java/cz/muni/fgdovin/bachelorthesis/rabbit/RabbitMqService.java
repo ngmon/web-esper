@@ -12,7 +12,11 @@ public interface RabbitMqService {
 
     public boolean createQueue(String queueName);
 
+    public void deleteQueue(String queueName);
+
     public List<String> listQueues();
+
+    public void deleteAllQueues();
 
     public String getExchangeName();
 }

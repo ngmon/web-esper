@@ -15,7 +15,7 @@ public class EventTypeHelper {
         }
         String[] pairs = properties.split(",");
 
-        Map<String, Object> schemaMap= new HashMap<>();
+        Map<String, Object> schemaMap = new HashMap<>();
 
         for (String pair : pairs) {
             pair = pair.trim();

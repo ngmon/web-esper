@@ -66,8 +66,19 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         return ((response.getStatus() > 199) && (response.getStatus() < 300));
     }
 
+    public void deleteQueue(String queueName) {
+        this.rabbitManagementApi.deleteQueue(this.vhost, queueName);
+    }
+
     public List<String> listQueues() {
         List<Queue> allQueues = this.rabbitManagementApi.listQueues();
         return allQueues.stream().map(Queue::getName).collect(Collectors.toList());
+    }
+
+    public void deleteAllQueues() {
+        List<String> allQueues = this.listQueues();
+        for(String queueName : allQueues) {
+            this.deleteQueue(queueName);
+        }
     }
 }

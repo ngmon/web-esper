@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SpringBootApp.class)
-public class EsperServiceTest {
+public class EsperServiceUnitTest {
 
     @Autowired
     private EsperUserFriendlyService esperService;
@@ -34,22 +34,14 @@ public class EsperServiceTest {
     @Autowired
     private DataflowHelper dataflowHelper;
 
-    @Autowired
-    private ApplicationContext context;
-
-    private final String AMQPQueueName = "AMQPIncomingStream";
+    private final String AMQPQueueName = "inputQueue";
     private final String eventType = "myEventType";
-    private final String inputQueueName = "esperQueue";
+    private final String inputQueueName = "inputQueue";
     private final String inputExchangeName = "amq.direct";
-    private final String stringSchema = "timestamp Long, type String, p.value Integer, p.value2 String, hostname String, application String, process String, processId Integer, level Integer, priority Integer";
     private Map<String, Object> schema;
 
     private String statementName = "myTestStat";
-    private String statementName2 = "myTestStat2";
-    private String outputQueueName = "esperOutputQueue";
-    private String outputExchangeName = "sortedLogs";
-    private String query = "select avg(p.value) from " + eventType + " where p.value > 4652";
-    private String query2 = "select * from  " + eventType;
+    private String query = "select * from " + eventType;
 
     @Before
     public void resetEverything() {
@@ -66,7 +58,8 @@ public class EsperServiceTest {
         outputDataflows.forEach(esperService::removeOutputDataflow);
 
         //add basic event type for tests
-        this.schema = this.eventTypeHelper.toMap(this.stringSchema);
+        String stringSchema = "timestamp Long, type String, p.value Integer, p.value2 String, hostname String, application String, process String, processId Integer, level Integer, priority Integer";
+        this.schema = this.eventTypeHelper.toMap(stringSchema);
         esperService.addEventType(this.eventType, this.schema);
     }
 

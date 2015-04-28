@@ -16,7 +16,6 @@ public class OutputDataflowModel {
     private String outputEventType;
     private String query;
     private String queueName;
-    private String exchangeName;
 
     public OutputDataflowModel() {
     }
@@ -28,7 +27,6 @@ public class OutputDataflowModel {
         this.outputEventType = outputEventType;
         this.query = query;
         this.queueName = queueName;
-        this.exchangeName = exchangeName;
     }
 
     //for two-stream output dataflows
@@ -39,7 +37,6 @@ public class OutputDataflowModel {
         this.outputEventType = outputEventType;
         this.query = query;
         this.queueName = queueName;
-        this.exchangeName = exchangeName;
     }
 
     //for three-stream output dataflows
@@ -51,7 +48,6 @@ public class OutputDataflowModel {
         this.outputEventType = outputEventType;
         this.query = query;
         this.queueName = queueName;
-        this.exchangeName = exchangeName;
     }
 
     public String getDataflowName() {
@@ -116,13 +112,5 @@ public class OutputDataflowModel {
 
     public void setQueueName(String queueName) {
         this.queueName = queueName;
-    }
-
-    public String getExchangeName() {
-        return exchangeName;
-    }
-
-    public void setExchangeName(String exchangeName) {
-        this.exchangeName = exchangeName;
     }
 }
