@@ -5,6 +5,8 @@
     <link rel="stylesheet"
           th:href="@{/css/fieldset.css}"
           href="../../css/fieldset.css"/>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/eventProperties.js}"></script>
 </head>
 <body>
     <div align="center">
@@ -18,7 +20,30 @@
                     </fieldset>
                     <fieldset>
                         <legend>Event schema</legend>
-                        <p><input type="text" th:field="*{properties}" /></p>
+                        <a href="#" id="addProp" onclick="addRow()">Add event property</a>
+                        <table class="dynatable">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                            </tr>
+                            </thead>
+                            <tbody id="p_props">
+                            <tr>
+                                <td>
+                                    <input type="text"/>
+                                </td>
+                                <td>
+                                    <select>
+                                        <option value="String">String</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Long">Long</option>
+                                        <option value="Boolean">Boolean</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </fieldset>
                     <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
                 </fieldset>
