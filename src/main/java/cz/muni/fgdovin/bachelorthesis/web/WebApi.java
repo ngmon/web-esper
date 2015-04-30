@@ -5,12 +5,15 @@ import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
+import cz.muni.fgdovin.bachelorthesis.support.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.AutoPopulatingList;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +107,8 @@ public class WebApi {
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.POST)
     public String submitInputDataflowForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
         String dataflowName = modelClass.getEventType();
-        Map<String, Object> properties = eventTypeHelper.toMap(modelClass.getProperties());
+//        Map<String, Object> properties = eventTypeHelper.toMap(modelClass.getProperties());   //from string
+        Map<String, Object> properties = eventTypeHelper.toMap(modelClass.getListProp());       //from list of properties
 
         boolean added = esperUserFriendlyService.addEventType(dataflowName, properties);
         resultModel.addAttribute("dataflowName", dataflowName);

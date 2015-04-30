@@ -1,6 +1,7 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import java.util.HashMap;
+import cz.muni.fgdovin.bachelorthesis.support.Property;
+import java.util.List;
 
 /**
  * @author Filip Gdovin
@@ -10,7 +11,7 @@ public class EventTypeModel {
 
     private String eventType;
     private String properties;
-    private HashMap<String, Object> mapProp;
+    private List<Property> listProp;  //TODO figure out for map :/
 
     public EventTypeModel() {
     }
@@ -36,11 +37,11 @@ public class EventTypeModel {
         this.properties = properties;
     }
 
-    public HashMap<String, Object> getMapProp() {
-        return mapProp;
+    public List<Property> getListProp() {
+        return listProp;
     }
 
-    public void setMapProp(HashMap<String, Object> mapProp) {
-        this.mapProp = mapProp;
+    public void setListProp(List<Property> listProp) {
+        this.listProp = listProp;
     }
 }

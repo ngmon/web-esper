@@ -20,21 +20,21 @@
                     </fieldset>
                     <fieldset>
                         <legend>Event schema</legend>
-                        <a href="#" id="addProp" onclick="addRow()">Add event property</a>
-                        <table class="dynatable">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                            </tr>
-                            </thead>
-                            <tbody id="p_props">
+                        <input type="button" value="Add row" onclick="addRow('dynatable')"/>
+                        <input type="button" value="Delete Row" onclick="deleteRow('dynatable')"/>
+
+                        <table id="dynatable">
+                            <tbody>
+                            <!--th:field="*{listProp}"-->
                             <tr>
                                 <td>
-                                    <input type="text"/>
+                                    <input type="checkbox" name="chk"/>
                                 </td>
                                 <td>
-                                    <select>
+                                    <input type="text" id="listProp0.key" name="listProp[0].key"/>
+                                </td>
+                                <td>
+                                    <select id="listProp0.value" name="listProp[0].value">
                                         <option value="String">String</option>
                                         <option value="Integer">Integer</option>
                                         <option value="Long">Long</option>
