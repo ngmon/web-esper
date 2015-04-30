@@ -15,6 +15,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
+ * This class implements Esper's AMQPToObjectCollector, which is used to collect
+ * events coming from AMQP queue and to transform them to format suitable for
+ * further processing.
+ * This particular implementation collects JSON-formatted events and uses Jackson
+ * to convert each event to the Map and, if present, remove nested attributes.
+ *
  * @author Filip Gdovin
  * @version 6. 2. 2015
  */
@@ -23,6 +29,12 @@ public class AMQPToEvent implements AMQPToObjectCollector {
 
     private ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Overridden method which is responsible for collecting event in form of byte[]
+     * from AMQP queue and sending it to EventBus properly formatted.
+     *
+     * @param context Context provided by Esper to manipulate with.
+     */
     @Override
     public void collect(final AMQPToObjectCollectorContext context) {
         String input = new String(context.getBytes());
@@ -34,6 +46,17 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     }
 
     // TODO: Deal with invalid input
+
+    /**
+     * This method is responsible for handling the "@timestamp" attribute, presence
+     * of which is mandatory. If map of event contains no key with this name,
+     * event is not sent for further processing. Otherwise, value of such attribute
+     * is converted to Long as desired by Esper.
+     *
+     * @param input String containing one event in JSON format.
+     * @return Map of one event, with proper timestamp and no nested attributes.
+     * @throws IOException in case event doesn't have valid structure.
+     */
     private Map<String, Object> alterMap(String input) throws IOException {
         Map<String, Object> mapOfEvent = jsonToFlatMap(input);
 
@@ -49,6 +72,15 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         return mapOfEvent;
     }
 
+    /**
+     * Method used to convert String-formatted timestamp
+     * to Long number of milliseconds since
+     * the beginning of the Linux epoch.
+     * Esper needs it to be able to use external timestamps.
+     *
+     * @param input String in ISO 8601 format "yyyy-MM-dd'T'HH:mm:ss.SSSz"
+     * @return Long number of milliseconds expressing given input time.
+     */
     private Long parseDate(String input) {
         final DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME; //"yyyy-MM-dd'T'HH:mm:ss.SSSz" format
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse(input, formatter);
@@ -56,10 +88,20 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         return zonedDateTime.toInstant().toEpochMilli();
     }
 
+    /**
+     * This method converts one event saved in JSON format as String
+     * to Map<String, Object> without any nested attributes.
+     * Jackson library is used to do the conversion.
+     *
+     * @param json String containing valid JSON in format {"val1":8, "val2":"eight"}
+     * @return Map\<String, Object> representation of input event.
+     * @throws IOException in case Jackson throws it, so in case of malformed input.
+     */
     public Map<String, Object> jsonToFlatMap(String json) throws IOException {
         return process(this.mapper.readValue(json, JsonNode.class).fields());
     }
 
+    //TODO document this
     private Map<String, Object> process(Iterator<Map.Entry<String, JsonNode>> nodeIterator) {
         Map<String, Object> map1 = new HashMap<>();
 
@@ -68,6 +110,8 @@ public class AMQPToEvent implements AMQPToObjectCollector {
 
             String key = entry1.getKey();
             JsonNode value = entry1.getValue();
+
+            //TODO array??
 
             if (value.getNodeType().equals(JsonNodeType.OBJECT)) {
                 Map<String, Object> map2 = process(value.fields());

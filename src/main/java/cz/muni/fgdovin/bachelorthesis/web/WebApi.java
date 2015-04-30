@@ -344,7 +344,6 @@ public class WebApi {
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.POST)
     public String submitRemoveOutputDataflowForm(@RequestParam("dataflowName") String dataflowName, ModelMap resultModel) {
         resultModel.addAttribute("dataflowName", dataflowName);
-        System.out.println("Removing " + dataflowName);
         boolean removed = esperUserFriendlyService.removeOutputDataflow(dataflowName);
 
         if (removed) {
