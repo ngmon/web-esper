@@ -89,7 +89,7 @@ public class EsperServiceIntegrationTest {
     @Test
     public void testSendOneMessageAndSelectAll() throws Exception {
         RabbitMQsender mQsender = new RabbitMQsender();
-        mQsender.sendFileContents("jsonInput.json", 0);
+        mQsender.sendFileContents("jsonInput.json", "inputQueue", 0);
 
         RabbitMQReceiver mqReceiver = new RabbitMQReceiver();
         mqReceiver.listen(this.outputDataflow, 10); //in new thread?

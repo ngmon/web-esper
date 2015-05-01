@@ -37,7 +37,8 @@ public class RabbitMQReceiver {
      *                      the receiver will end listening. If less events
      *                      than this number is sent, it will still listen.
      *                      Set to 0 for endless listening.
-     * @throws Exception
+     * @throws Exception when listening fails, usually
+     * because AMQP queue does not exist.
      */
     public void listen(String queueName, int numOfMessages) throws Exception {
 

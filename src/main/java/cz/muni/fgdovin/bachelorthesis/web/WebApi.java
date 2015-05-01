@@ -144,6 +144,10 @@ public class WebApi {
     /**
      * This method is called when user chooses to delete input dataflow along with its event type.
      *
+     * @param dataflowName Name of dataflow to be deleted.
+     *
+     * @param resultModel ModelMap used to provide information to the View
+     *
      * @return Web page containing form to delete input dataflow by its name.
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.GET)
@@ -155,6 +159,8 @@ public class WebApi {
     /**
      * This method is called when user submits input dataflow deletion form, it finds input dataflow
      * and deletes it if possible.
+     *
+     * @param dataflowName Name of dataflow to be deleted.
      *
      * @param resultModel ModelMap containing result of input dataflow deletion.
      * @return Web page informing user if the input dataflow was successfully deleted.
@@ -323,6 +329,10 @@ public class WebApi {
     /**
      * This method is called when user chooses to delete output dataflow.
      *
+     * @param dataflowName Name of dataflow to be deleted.
+     *
+     * @param resultModel ModelMap used to provide information to the View
+     *
      * @return Web page containing form to delete output dataflow by its name.
      */
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.GET)
@@ -334,6 +344,8 @@ public class WebApi {
     /**
      * This method is called when user submits output dataflow deletion form,
      * it finds output dataflow and deletes it if possible.
+     *
+     * @param dataflowName Name of dataflow to be deleted.
      *
      * @param resultModel ModelMap containing result of output dataflow deletion.
      * @return Web page informing user if the output dataflow was successfully deleted.

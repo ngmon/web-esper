@@ -24,7 +24,7 @@ public interface EsperService{
      *
      * @param eventName String describing name of event type, it must be known before declaring
      *                  any dataflow operating on stream of such events.
-     * @param schema Map<String, Object> defining properties of the event type,
+     * @param schema Map defining properties of the event type,
      *               so that Esper can understand values and their types.
      *               It is important those properties match actual event structure,
      *               otherwise it will be impossible to execute certain queries.

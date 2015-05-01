@@ -89,11 +89,11 @@ public class AMQPToEvent implements AMQPToObjectCollector {
 
     /**
      * This method converts one event saved in JSON format as String
-     * to Map<String, Object> without any nested attributes.
+     * to Map without any nested attributes.
      * Jackson library is used to do the conversion.
      *
      * @param json String containing valid JSON in format {"val1":8, "val2":"eight"}
-     * @return Map\<String, Object> representation of input event.
+     * @return Map representation of input event.
      * @throws IOException in case Jackson throws it, so in case of malformed input.
      */
     public Map<String, Object> jsonToFlatMap(String json) throws IOException {

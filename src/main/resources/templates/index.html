@@ -2,42 +2,48 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Welcome to the Esper Continuous Engine application!</title>
+        <title>Welcome to the Wesper - Esper Continuous Engine application!</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link rel="stylesheet"
-              th:href="@{/css/fieldset.css}"
-              href="../../css/fieldset.css"/>
+              th:href="@{/css/style.css}"
+              href="../../css/style.css"/>
     </head>
     <body>
-        <div align="center">
-            <h1>Esper Continuous Engine</h1>
-            <p>
-                This is Esper Continuous Engine, which allows you to manage input dataflows (AMQP sources)
-                and output dataflows (EPL statements and AMQP sinks) on the run.
-            </p>
-            <h2>Select your action:</h2>
-            <!--@thymesVar id="rabbitMqInfo" type="Bool"-->
-            <div th:if="${rabbitMqInfo}">
-                <fieldset class="myFieldSet">
-                    <p>
-                    <form action="/manageInputDataflows">
-                        <p><input type="submit" align="center" value="Manage input dataflows"/></p>
-                    </form>
-                    <form action="/manageOutputDataflows">
-                        <p><input type="submit" align="center" value="Manage output dataflows"/></p>
-                    </form>
-                    </p>
-                </fieldset>
-            </div>
-            <div th:unless="${rabbitMqInfo}">
-                <fieldset class="myFieldSet">
-                    <h2>RabbitMQ server is not responding</h2>
-                    <p>
-                    <form action="/">
-                        <p><input type="submit" align="center" value="Reload page"/></p>
-                    </form>
-                    </p>
-                </fieldset>
+        <div>
+            <div id="leftColumn"/>
+            <div id="rightColumn"/>
+            <div id="bottomLogo"/>
+
+            <div align="center" style="width: 60%">
+                <h1>Esper Continuous Engine</h1>
+                <p>
+                    This is Esper Continuous Engine, which allows you to manage input dataflows (AMQP sources)
+                    and output dataflows (EPL statements and AMQP sinks) on the run.
+                </p>
+                <h2>Select your action:</h2>
+                <!--@thymesVar id="rabbitMqInfo" type="Bool"-->
+                <div th:if="${rabbitMqInfo}">
+                    <fieldset class="myFieldSet">
+                        <p>
+                        <form action="/manageInputDataflows">
+                            <p><input type="submit" align="center" value="Manage input dataflows"/></p>
+                        </form>
+                        <form action="/manageOutputDataflows">
+                            <p><input type="submit" align="center" value="Manage output dataflows"/></p>
+                        </form>
+                        </p>
+                    </fieldset>
+                </div>
+                <div th:unless="${rabbitMqInfo}">
+                    <fieldset class="myFieldSet">
+                        <h2>RabbitMQ server is not responding</h2>
+                        <p>
+                        <form action="/">
+                            <p><input type="submit" align="center" value="Reload page"/></p>
+                        </form>
+                        </p>
+                    </fieldset>
+                </div>
             </div>
         </div>
     </body>
