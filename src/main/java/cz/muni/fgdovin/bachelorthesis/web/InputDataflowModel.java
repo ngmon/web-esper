@@ -1,6 +1,9 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
 /**
+ * Model class to represent input dataflow,
+ * which is needed by Spring for binding.
+ *
  * @author Filip Gdovin
  * @version 26. 3. 2015
  */

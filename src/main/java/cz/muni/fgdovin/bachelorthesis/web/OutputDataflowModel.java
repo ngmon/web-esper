@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Model class to represent output dataflow,
+ * which is needed by Spring for binding.
+ *
  * @author Filip Gdovin
  * @version 11. 4. 2015
  */

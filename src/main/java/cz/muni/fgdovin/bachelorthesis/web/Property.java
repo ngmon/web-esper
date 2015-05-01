@@ -1,7 +1,7 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
 /**
- * Support class to model dynamic tables of event properties,
+ * Model class to support dynamic tables of event properties,
  * which is needed as Spring couldn't handle it as Map.
  * List of Property is used in EventTypeModel
  * so Spring can fill it from user-filled form.

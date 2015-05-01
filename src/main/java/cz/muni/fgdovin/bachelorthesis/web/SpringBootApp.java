@@ -20,6 +20,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 /**
+ * This is the "Main" class for whole application,
+ * it contains main method which stars Spring Boot,
+ * definition of all used beans and property files.
+ *
  * @author Filip Gdovin
  * @version 4. 3. 2015
  */
@@ -89,6 +93,12 @@ public class SpringBootApp {
         return new EventTypeHelper();
     }
 
+    /**
+     * main method which will run Spring Boot.
+     *
+     * @param args String[] arguments to keep convention,
+     *             could be probably used in Spring Boot.
+     */
     public static void main(String[] args) {
         SpringApplication.run(SpringBootApp.class, args);
     }

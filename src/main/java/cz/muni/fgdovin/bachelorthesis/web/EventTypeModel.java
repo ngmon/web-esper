@@ -3,6 +3,10 @@ package cz.muni.fgdovin.bachelorthesis.web;
 import java.util.List;
 
 /**
+ * Model class to represent event type,
+ * which is needed by Spring for binding.
+ * List of Property is used so Spring
+ * can fill it from user-filled form.
  * @author Filip Gdovin
  * @version 26. 3. 2015
  */
