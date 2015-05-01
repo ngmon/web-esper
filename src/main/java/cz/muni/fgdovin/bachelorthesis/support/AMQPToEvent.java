@@ -45,8 +45,6 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         }
     }
 
-    // TODO: Deal with invalid input
-
     /**
      * This method is responsible for handling the "@timestamp" attribute, presence
      * of which is mandatory. If map of event contains no key with this name,
@@ -60,6 +58,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     private Map<String, Object> alterMap(String input) throws IOException {
         Map<String, Object> mapOfEvent = jsonToFlatMap(input);
 
+        // TODO: Deal with invalid input. Done?
         String key = "@timestamp";
         if(!mapOfEvent.containsKey(key)) {
             throw new IOException("Event did not contain \"@timestamp\" attribute, which is mandatory");

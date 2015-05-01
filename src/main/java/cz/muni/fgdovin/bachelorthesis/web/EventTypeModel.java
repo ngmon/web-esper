@@ -1,6 +1,5 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import cz.muni.fgdovin.bachelorthesis.support.Property;
 import java.util.List;
 
 /**

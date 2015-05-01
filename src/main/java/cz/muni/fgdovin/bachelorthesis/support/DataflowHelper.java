@@ -7,6 +7,10 @@ import org.springframework.core.env.Environment;
 import javax.annotation.Resource;
 
 /**
+ * Support class for easy-to-use conversion of Input and OutputDataflowModel
+ * instances to String formatted dataflow information required by Esper.
+ * Config file is used to load other required data concerning AMQp queues.
+ *
  * @author Filip Gdovin
  * @version 10. 2. 2015
  */
@@ -15,6 +19,13 @@ public class DataflowHelper {
     @Resource
     private Environment environment;
 
+    /**
+     * This method is used to create String for input dataflow from
+     * InputDataflowModel.
+     *
+     * @param model InputDataflowModel to convert.
+     * @return String containing Esper-friendly dataflow configuration.
+     */
     public String generateInputDataflow(InputDataflowModel model) {
         return
         "Create Dataflow " + model.getDataflowName() + "\n" +
@@ -30,6 +41,13 @@ public class DataflowHelper {
         "EventBusSink(instream) {}";
     }
 
+    /**
+     * This method is used to create String for output dataflow from
+     * OutputDataflowModel.
+     *
+     * @param model OutputDataflowModel to convert.
+     * @return String containing Esper-friendly dataflow configuration.
+     */
     public String generateOutputDataflow(OutputDataflowModel model) {
         StringBuilder result = new StringBuilder("Create dataflow " + model.getDataflowName() + "\n");
         StringBuilder selector = new StringBuilder("Select(");
