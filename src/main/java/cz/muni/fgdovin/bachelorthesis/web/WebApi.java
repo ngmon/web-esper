@@ -61,7 +61,7 @@ public class WebApi {
     /**
      * This method is bound to "/manageInputDataflows" mapping and displays possible input dataflows options.
      *
-     * @return Page with available commands.
+     * @return Page with available commands containing list of currently defined input dataflows.
      */
     @RequestMapping(value = "/manageInputDataflows", method = RequestMethod.GET)
     public ModelAndView manageInputDataflows() {
@@ -75,7 +75,7 @@ public class WebApi {
     /**
      * This method is bound to "/manageOutputDataflows" mapping and displays possible output dataflows options.
      *
-     * @return Page with available commands.
+     * @return Page with available commands containing list of currently defined output dataflows.
      */
     @RequestMapping(value = "/manageOutputDataflows", method = RequestMethod.GET)
     public ModelAndView manageOutputDataflows() {
@@ -145,9 +145,9 @@ public class WebApi {
     }
 
     /**
-     * This method is called when user chooses to delete event type.
+     * This method is called when user chooses to delete input dataflow along with its event type.
      *
-     * @return Web page containing form to delete event type by its name.
+     * @return Web page containing form to delete input dataflow by its name.
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.GET)
     public String removeInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
@@ -156,11 +156,11 @@ public class WebApi {
     }
 
     /**
-     * This method is called when user submits event type deletion form, it finds event type
+     * This method is called when user submits input dataflow deletion form, it finds input dataflow
      * and deletes it if possible.
      *
-     * @param resultModel ModelMap containing result of event type deletion.
-     * @return Web page informing user if the event type was successfully deleted.
+     * @param resultModel ModelMap containing result of input dataflow deletion.
+     * @return Web page informing user if the input dataflow was successfully deleted.
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.POST)
     public String submitRemoveInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
@@ -354,6 +354,19 @@ public class WebApi {
         return "removeOutputDataflowResult";
     }
 
+    /**
+     * This method is used to find out if it is necessary to create new AMQP queue based on user input.
+     * If RabbitMQ server already has queue with given name, this method will return true.
+     * In this case it is up to user to check if said queue has correct parameters,
+     * mainly binding to exchange.
+     *
+     * @param eventType String describing desired AMQP queue. This string is also name of event type
+     *                  located within this queue and name of input dataflow handling this queue.
+     *
+     * @return True if RabbitMQ server has the definition of given queue. It was either already present,
+     * or this method created it with correct binding to exchange defined in config file.
+     * False is returned if creation of AMQP queue failed.
+     */
     private boolean manageAMQPQueue(String eventType) {
         List<String> allQueues = this.rabbitMqService.listQueues();
         boolean added = true;

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * {@inheritDoc}
+ *
  * @author Filip Gdovin
  * @version 20. 4. 2015
  */
@@ -28,6 +30,12 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     private String exchangeName;
     private String vhost;
 
+    /**
+     * Method called right after instance of this class is created.
+     * Loads necessary values from config file and creates
+     * instance of RabbitManagementApi for accessing
+     * RabbitMQ REST interface.
+     */
     @PostConstruct
     public void setUp() {
         String username = this.environment.getProperty("serverUsername");
@@ -41,15 +49,17 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         this.rabbitManagementApi = RabbitManagementApi.newInstance(host, username, password);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String isAlive() {
         Status serverStatus = this.rabbitManagementApi.alivenessTest(this.vhost);  //takes vhost name as argument
         return serverStatus.getStatus();
     }
 
-    public String getExchangeName() {
-        return this.exchangeName;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean createQueue(String queueName) {
         //create new queue
         Queue newOne = new Queue();
@@ -63,22 +73,41 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             bind.setRoutingKey(queueName);
             response = this.rabbitManagementApi.bindExchangeToQueue(this.vhost, this.exchangeName, queueName, bind);
         }
+        //TODO write this in better way?
         return ((response.getStatus() > 199) && (response.getStatus() < 300));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void deleteQueue(String queueName) {
+        //TODO delete only queues bound to specified exchange?
         this.rabbitManagementApi.deleteQueue(this.vhost, queueName);
     }
 
-    public List<String> listQueues() {
-        List<Queue> allQueues = this.rabbitManagementApi.listQueues();
-        return allQueues.stream().map(Queue::getName).collect(Collectors.toList());
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public void deleteAllQueues() {
         List<String> allQueues = this.listQueues();
         for(String queueName : allQueues) {
             this.deleteQueue(queueName);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> listQueues() {
+        //TODO show only queues bound to specified exchange?
+        List<Queue> allQueues = this.rabbitManagementApi.listQueues();
+        return allQueues.stream().map(Queue::getName).collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getExchangeName() {
+        return this.exchangeName;
     }
 }

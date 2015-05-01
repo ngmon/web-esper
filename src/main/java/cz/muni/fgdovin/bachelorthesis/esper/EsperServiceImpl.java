@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * This class implements basic control of dataflows and event schemas,
- * using AMQP IO adapter.
+ * {@inheritDoc}
  *
  * @author Filip Gdovin
  * @version 9. 2. 2015

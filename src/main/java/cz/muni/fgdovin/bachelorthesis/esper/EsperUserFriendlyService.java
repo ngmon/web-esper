@@ -9,7 +9,7 @@ import java.util.Map;
  */
 
 /**
- * This interface is used by API to communicate with Esper,
+ * This interface is used by API to communicate with EsperService,
  * in particular to:
  * add/remove/show(by name)/show all dataflows
  * add/remove/show(by name)/show all event types
@@ -33,8 +33,8 @@ public interface EsperUserFriendlyService {
      *               It is important those properties match actual event structure,
      *               otherwise it will be impossible to execute certain queries.
      *               (e.g. avg(val1) expects 'val1' to be Number)
-     *               Also, for the purpose of this thesis, property containing
-     *               string "timestamp" with value of Long is expected and MUST be provided.
+     *               Also, for the purpose of this thesis, property named
+     *               "@timestamp" with value of Long is expected and MUST be provided.
      * @return Returns whether the event type was successfully added to the Esper.
      */
     public boolean addEventType(String eventName, Map<String, Object> schema);
@@ -54,8 +54,8 @@ public interface EsperUserFriendlyService {
      * Method used to show event type by providing its name.
      *
      * @param eventName String describing event type name.
-     * @return String containing event type in format 'eventTypeName:eventProperties',
-     * or null if there is no event type with provided name present.
+     * @return String containing event type, or null
+     * if there is no event type with provided name present.
      */
     public String showEventType(String eventName);
 
@@ -70,7 +70,8 @@ public interface EsperUserFriendlyService {
     /**
      * Method used to show all event types known to Esper.
      *
-     * @return List of all present event types in format 'eventTypeName:eventProperties',
+     * @return List of all present event types in format
+     * 'eventTypeName:eventProperties',
      * or null if there are no event types present.
      */
     public List<String> showEventTypes();
@@ -93,15 +94,12 @@ public interface EsperUserFriendlyService {
      *     name of said dataflow,
      *     name of event type to understand events incoming from EventBusSource (MUST be defined before using addEventType() ),
      *     statement operating above incoming events, its result will be sent to AMQP Sink
-     *     name of output AMQP queue to send result of query to,
-     *     name of output AMQP exchange.
+     *     name of output AMQP queue to send result of query to.
      *
      * This type of dataflow executes continuous query on events and sends result of query
-     * to the given AMQP Sink, which is defined as queue + exchange.
-     * As the application relies on fact output AMQP queue and exchange
-     * are defined outside this application, submitting non-existing
-     * AMQP queue will cause NullPointerException.
-     *
+     * to the given AMQP Sink, which is defined with queue name.
+     * In case AMQP queue with given name is not defined,
+     * it will be created and properly bound to exchange.
      *
      * @param dataflowName String describing name of dataflow.
      * @param dataflowProperties String defining properties of the dataflow (see dataflow types above),
@@ -137,7 +135,8 @@ public interface EsperUserFriendlyService {
     /**
      * Method used to show all input dataflows known to Esper.
      *
-     * @return List of all present(state='RUNNING') input dataflows in format 'dataflowName[state]:dataflowParameters',
+     * @return List of all present input dataflows in format
+     * 'dataflowName:dataflowParameters',
      * or null if there are no input dataflows present.
      */
     public List<String> showInputDataflows();
@@ -145,7 +144,8 @@ public interface EsperUserFriendlyService {
     /**
      * Method used to show all output dataflows known to Esper.
      *
-     * @return List of all present(state='RUNNING') output dataflows in format 'dataflowName[state]:dataflowParameters',
+     * @return List of all present output dataflows in format
+     * 'dataflowName:dataflowParameters',
      * or null if there are no output dataflows present.
      */
     public List<String> showOutputDataflows();

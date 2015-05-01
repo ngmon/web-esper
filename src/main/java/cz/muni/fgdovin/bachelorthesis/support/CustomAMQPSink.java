@@ -32,6 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * This class is modified version of Esper's AMQPSink class,
+ * which is used to receive events from Esper and to send them
+ * to class responsible for further handling.
+ *
  * Modified by Filip Gdovin
  * @version 20. 4. 2015
  */
