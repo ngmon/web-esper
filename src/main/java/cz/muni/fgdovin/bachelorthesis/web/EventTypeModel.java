@@ -1,6 +1,9 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
+import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Model class to represent event type,
@@ -14,7 +17,8 @@ public class EventTypeModel {
 
     private String eventType;
     private String properties;
-    private List<Property> listProp;  //TODO figure out for map :/
+    private String exchange;
+    private Map<String, Object> mapProperties;
 
     public EventTypeModel() {
     }
@@ -40,11 +44,19 @@ public class EventTypeModel {
         this.properties = properties;
     }
 
-    public List<Property> getListProp() {
-        return listProp;
+    public String getExchange() {
+        return exchange;
     }
 
-    public void setListProp(List<Property> listProp) {
-        this.listProp = listProp;
+    public void setExchange(String exchange) {
+        this.exchange = exchange;
+    }
+
+    public Map<String, Object> getMapProperties() {
+        return mapProperties;
+    }
+
+    public void setMapProperties(Map<String, Object> mapProperties) {
+        this.mapProperties = mapProperties;
     }
 }

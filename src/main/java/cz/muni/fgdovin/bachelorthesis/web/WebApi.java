@@ -5,12 +5,14 @@ import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
+import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +92,17 @@ public class WebApi {
      */
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.GET)
     public ModelAndView InputDataflowForm() {
-        return new ModelAndView("addInputDataflow", "EventTypeModel", new EventTypeModel());
+        ModelAndView model = new ModelAndView("addInputDataflow", "EventTypeModel", new EventTypeModel());
+        List<Exchange> esperExchanges = this.rabbitMqService.listExchanges();
+        Map<String, Object> exchangesWithSchemas = new HashMap<>();
+        for(int i = 0; i < esperExchanges.size(); i++) {
+            Exchange oneExchange = esperExchanges.get(i);
+            Map<String, Object> schema = this.rabbitMqService.getSchemaForExchange(oneExchange.getName());
+            exchangesWithSchemas.put(esperExchanges.get(i).getName(), schema);
+        }
+        System.out.println(exchangesWithSchemas);
+        model.addObject("availExchanges", exchangesWithSchemas);
+        return model;
     }
 
     /**
@@ -104,10 +116,10 @@ public class WebApi {
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.POST)
     public String submitInputDataflowForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
         String dataflowName = modelClass.getEventType();
-//        Map<String, Object> properties = eventTypeHelper.toMap(modelClass.getProperties());   //from string
-        Map<String, Object> properties = eventTypeHelper.toMap(modelClass.getListProp());       //from list of properties
 
-        boolean added = esperUserFriendlyService.addEventType(dataflowName, properties);
+        System.out.println("Map of prop is " + modelClass.getMapProperties());
+
+        boolean added = false;//esperUserFriendlyService.addEventType(dataflowName, properties);
         resultModel.addAttribute("dataflowName", dataflowName);
 
         if(!added) {
