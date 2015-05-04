@@ -9,42 +9,42 @@
               href="../../css/style.css"/>
     </head>
     <body>
-        <div>
-            <div id="leftColumn"/>
-            <div id="rightColumn"/>
-            <div id="bottomLogo"/>
+        <div class="leftColumn"/>
 
-            <div align="center" style="width: 60%">
-                <h1>Esper Continuous Engine</h1>
+        <div class="middleColumn">
+            <div>
+                <h1>Wesper - Esper Continuous Engine</h1>
                 <p>
-                    This is Esper Continuous Engine, which allows you to manage input dataflows (AMQP sources)
+                    This is Wesper - Esper Continuous Engine, which allows you to manage input dataflows (AMQP sources)
                     and output dataflows (EPL statements and AMQP sinks) on the run.
                 </p>
                 <h2>Select your action:</h2>
                 <!--@thymesVar id="rabbitMqInfo" type="Bool"-->
                 <div th:if="${rabbitMqInfo}">
-                    <fieldset class="myFieldSet">
-                        <p>
-                        <form action="/manageInputDataflows">
-                            <p><input type="submit" align="center" value="Manage input dataflows"/></p>
-                        </form>
-                        <form action="/manageOutputDataflows">
-                            <p><input type="submit" align="center" value="Manage output dataflows"/></p>
-                        </form>
-                        </p>
-                    </fieldset>
+                    <p>
+                    <form action="/manageInputDataflows">
+                        <p><input type="submit" align="center" value="Manage input dataflows"/></p>
+                    </form>
+                    <form action="/manageOutputDataflows">
+                        <p><input type="submit" align="center" value="Manage output dataflows"/></p>
+                    </form>
+                    </p>
                 </div>
                 <div th:unless="${rabbitMqInfo}">
-                    <fieldset class="myFieldSet">
-                        <h2>RabbitMQ server is not responding</h2>
-                        <p>
-                        <form action="/">
-                            <p><input type="submit" align="center" value="Reload page"/></p>
-                        </form>
-                        </p>
-                    </fieldset>
+                    <h2>RabbitMQ server is not responding</h2>
+                    <p>
+                    <form action="/">
+                        <p><input type="submit" align="center" value="Reload page"/></p>
+                    </form>
+                    </p>
                 </div>
             </div>
+
+            <div class="bottomLogoWrapper">
+                <div class="bottomLogo"/>
+            </div>
         </div>
+
+        <div class="rightColumn"/>
     </body>
 </html>
