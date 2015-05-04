@@ -6,10 +6,33 @@
           th:href="@{/css/style.css}"
           href="../../css/style.css"/>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" th:src="@{/js/eventProperties.js}"></script>
+    <script type="application/javascript" th:src="@{/js/generateTable.js}"></script>
+    <!--<script type="application/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        function paintTable(){
+            var selected = $("#exchangeSelect").find("option:selected").text();
+            var URL = "http://localhost:8080/getSchema?name=" + selected;
+            $.getJSON(URL, function(data) {
+                successCallBack(data);
+            });
+
+            function successCallBack(data) {
+                $("#dyntable").find("tbody").empty();
+                $.each(data, function (k, v) {
+                    var newRowContent = "<tr><td><input type=\"checkbox\" checked=\"true\"></td>" +
+                            "<td>" + k + "</td>" +
+                            "<td>" + v + "</td></tr>";
+                    $("#dyntable").find("tbody").append(newRowContent);
+                });
+            }
+        }
+        /*]]>*/
+
+    </script>-->
 </head>
 <body>
     <div align="center">
+        <p><input id="text"/></p>
         <h3>Enter input dataflow information</h3>
         <form action="#" th:action="@{/addInputDataflow}" th:object="${EventTypeModel}" method="post">
             <div align="center">
@@ -19,29 +42,19 @@
                         <p><input type="text" th:field="*{eventType}" /></p>
                     </fieldset>
                     <fieldset>
-                        <legend>Event schema</legend>
-                        <input type="button" value="Add row" onclick="addRow('dynatable')"/>
-                        <input type="button" value="Delete Row" onclick="deleteRow('dynatable')"/>
-
-                        <table id="dynatable">
+                        <legend>Exchange</legend>
+                        <p>
+                            <!--@thymesVar id="availExchanges" type="Map"-->
+                            <select id="exchangeSelect" th:field="*{exchange}" onchange="paintTable()">
+                                <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.key}" th:text="${oneExchange.key}">Available exchanges</option>
+                            </select>
+                        </p>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Event properties</legend>
+                        <table id="dyntable">
                             <tbody>
-                            <!--th:field="*{listProp}"-->
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="chk"/>
-                                </td>
-                                <td>
-                                    <input type="text" id="listProp0.key" name="listProp[0].key"/>
-                                </td>
-                                <td>
-                                    <select id="listProp0.value" name="listProp[0].value">
-                                        <option value="String">String</option>
-                                        <option value="Integer">Integer</option>
-                                        <option value="Long">Long</option>
-                                        <option value="Boolean">Boolean</option>
-                                    </select>
-                                </td>
-                            </tr>
+                            <!--TODO figure out how to convert to map-->
                             </tbody>
                         </table>
                     </fieldset>
