@@ -27,7 +27,7 @@ import java.util.*;
 public class AMQPToEvent implements AMQPToObjectCollector {
     private static final Log log = LogFactory.getLog(CustomAMQPSink.class);
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private JSONFlattener flattener = new JSONFlattener(new ObjectMapper());
 
     /**
      * Overridden method which is responsible for collecting event in form of byte[]
@@ -56,7 +56,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
      * @throws IOException in case event doesn't have valid structure.
      */
     private Map<String, Object> alterMap(String input) throws IOException {
-        Map<String, Object> mapOfEvent = jsonToFlatMap(input);
+        Map<String, Object> mapOfEvent = flattener.jsonToFlatMap(input);
 
         // TODO: Deal with invalid input. Done?
         String key = "@timestamp";
@@ -85,44 +85,5 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse(input, formatter);
         EventToAMQP.setZoneID(zonedDateTime.getZone().getId());
         return zonedDateTime.toInstant().toEpochMilli();
-    }
-
-    /**
-     * This method converts one event saved in JSON format as String
-     * to Map without any nested attributes.
-     * Jackson library is used to do the conversion.
-     *
-     * @param json String containing valid JSON in format {"val1":8, "val2":"eight"}
-     * @return Map representation of input event.
-     * @throws IOException in case Jackson throws it, so in case of malformed input.
-     */
-    public Map<String, Object> jsonToFlatMap(String json) throws IOException {
-        return process(this.mapper.readValue(json, JsonNode.class).fields());
-    }
-
-    //TODO document this
-    private Map<String, Object> process(Iterator<Map.Entry<String, JsonNode>> nodeIterator) {
-        Map<String, Object> map1 = new HashMap<>();
-
-        while (nodeIterator.hasNext()) {
-            Map.Entry<String, JsonNode> entry1 = nodeIterator.next();
-
-            String key = entry1.getKey();
-            JsonNode value = entry1.getValue();
-
-            //TODO array??
-
-            if (value.getNodeType().equals(JsonNodeType.OBJECT)) {
-                Map<String, Object> map2 = process(value.fields());
-
-                for (Map.Entry<String, Object> entry2 : map2.entrySet()) {
-                    map1.put(key.concat(".").concat(entry2.getKey()), entry2.getValue());
-                }
-
-            } else {
-                map1.put(key, this.mapper.convertValue(value, Object.class));
-            }
-        }
-        return map1;
     }
 }
