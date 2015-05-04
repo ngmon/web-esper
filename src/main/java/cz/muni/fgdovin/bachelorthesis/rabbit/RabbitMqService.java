@@ -1,6 +1,9 @@
 package cz.muni.fgdovin.bachelorthesis.rabbit;
 
+import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface is used to communicate with RabbitMQ API library,
@@ -56,6 +59,19 @@ public interface RabbitMqService {
      */
     public List<String> listQueues();
 
+    /**
+     * Method returns list of all Esper exchanges known to RabbitMQ server.
+     *
+     * @return List of all Esper exchanges.
+     */
+    public List<Exchange> listExchanges();
+
+    /**
+     * Method returns flatted map of JSON schema for given exchange.
+     *
+     * @return flatted map of JSON schema.
+     */
+    public Map<String, Object> getSchemaForExchange(String exchangeName);
 
     /**
      * Method used for convenient way to find which exchange is loaded from

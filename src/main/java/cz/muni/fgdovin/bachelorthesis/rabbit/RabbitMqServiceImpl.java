@@ -1,8 +1,11 @@
 package cz.muni.fgdovin.bachelorthesis.rabbit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.muni.fgdovin.bachelorthesis.support.JSONFlattener;
 import org.nigajuan.rabbit.management.client.RabbitManagementApi;
 import org.nigajuan.rabbit.management.client.domain.aliveness.Status;
 import org.nigajuan.rabbit.management.client.domain.binding.queue.QueueBind;
+import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
 import org.nigajuan.rabbit.management.client.domain.queue.Arguments;
 import org.nigajuan.rabbit.management.client.domain.queue.Queue;
 import org.springframework.core.env.Environment;
@@ -11,7 +14,11 @@ import retrofit.client.Response;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,8 +33,10 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     @Resource
     private Environment environment; //to load RabbitMQ server info from properties
     private RabbitManagementApi rabbitManagementApi;
+    private JSONFlattener jsonFlattener;
 
     private String exchangeName;
+    private String exchangePrefix;
     private String vhost;
 
     /**
@@ -43,10 +52,12 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         String serverHost = this.environment.getProperty("serverHost");
         String serverPort = this.environment.getProperty("serverPort");
         this.exchangeName = this.environment.getProperty("exchangeName");
+        this.exchangePrefix = this.environment.getProperty("exchangePrefix");
         this.vhost = this.environment.getProperty("vhost");
 
         String host = "http://" + serverHost + ":" + serverPort;
         this.rabbitManagementApi = RabbitManagementApi.newInstance(host, username, password);
+        this.jsonFlattener = new JSONFlattener(new ObjectMapper());
     }
 
     /**
@@ -102,6 +113,42 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         //TODO show only queues bound to specified exchange?
         List<Queue> allQueues = this.rabbitManagementApi.listQueues();
         return allQueues.stream().map(Queue::getName).collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Exchange> listExchanges() {
+        List<Exchange> esperExchanges = new ArrayList<>();
+        List<Exchange> allExchanges = this.rabbitManagementApi.listExchanges();
+        for(Exchange oneExchange : allExchanges) {
+            if(oneExchange.getName().startsWith(this.exchangePrefix)) {
+                esperExchanges.add(oneExchange);
+            }
+        }
+        return esperExchanges;
+    }
+
+    private Exchange findExchange(String exchangeName) {
+        List<Exchange> allExchanges = this.rabbitManagementApi.listExchanges();
+        for(Exchange oneExchange : allExchanges) {
+            if(oneExchange.getName().equals(exchangeName)) {
+                return oneExchange;
+            }
+        }
+        return null;
+    }
+
+    public Map<String, Object> getSchemaForExchange(String exchangeName) {
+        Exchange esperExchange = this.findExchange(exchangeName);
+        Map<String, Object> result = new HashMap<>();
+        try {
+            result = this.jsonFlattener.jsonToFlatMap(
+                    String.valueOf(esperExchange.getArguments().getAdditionalProperties().get("schema")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
