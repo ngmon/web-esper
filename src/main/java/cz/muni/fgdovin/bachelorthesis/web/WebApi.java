@@ -5,14 +5,14 @@ import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
-import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
+import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +30,9 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/")
 public class WebApi {
+
+    @Resource
+    Environment environment;
 
     @Autowired
     private EsperUserFriendlyService esperUserFriendlyService;
@@ -108,6 +111,7 @@ public class WebApi {
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.POST)
     public String submitInputDataflowForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
         String dataflowName = modelClass.getEventType();
+        String exchangeName = modelClass.getExchange();
         Map<String, Object> properties = this.eventTypeHelper.toMap(modelClass.getMapProperties());
 
         boolean added = esperUserFriendlyService.addEventType(dataflowName, properties);
@@ -118,7 +122,7 @@ public class WebApi {
             return "addInputDataflowResult";
         }
 
-        added = manageAMQPQueue(dataflowName);
+        added = checkCorrectInputQueueBinding(dataflowName, exchangeName);
 
         if(!added) {
             resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
@@ -155,6 +159,7 @@ public class WebApi {
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.GET)
     public String removeInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
+        //TODO make it work as now it is whole dataflow, not just name
         resultModel.addAttribute("dataflowName", dataflowName);
         return "removeInputDataflow";
     }
@@ -215,22 +220,22 @@ public class WebApi {
         modelClass.setDataflowName(dataflowName);
         modelClass.setQueueName(outputEventType);
 
+        boolean added = checkCorrectOutputQueueBinding(outputEventType);
+        if(!added) {
+            resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
+            return "addOneStreamOutputDataflowResult";
+        }
+
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
-        boolean added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
+        System.out.println("params " + queueParams);
+        added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
 
         resultModel.addAttribute("dataflowName", dataflowName);
         if(!added) {
             resultModel.addAttribute("result", "Error creating output dataflow. Possible reasons: Bad user input or " +
                     "dataflow with this name already defined!");
-            return "addOneStreamOutputDataflowResult";
-        }
-
-        added = manageAMQPQueue(outputEventType);
-
-        if(!added) {
-            resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
         } else {
-            resultModel.addAttribute("result", "Output dataflow created successfully.");
+            resultModel.addAttribute("result", "Output dataflow created successfully!");
         }
         return "addOneStreamOutputDataflowResult";
     }
@@ -262,24 +267,23 @@ public class WebApi {
         modelClass.setDataflowName(dataflowName);
         modelClass.setQueueName(outputEventType);
 
+        boolean added = checkCorrectOutputQueueBinding(outputEventType);
+        if(!added) {
+            resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
+            return "addOneStreamOutputDataflowResult";
+        }
+
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
-        boolean added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
+        added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
 
         resultModel.addAttribute("dataflowName", dataflowName);
         if(!added) {
             resultModel.addAttribute("result", "Error creating output dataflow. Possible reasons: Bad user input or " +
                     "dataflow with this name already defined!");
-            return "addTwoStreamOutputDataflowResult";
-        }
-
-        added = manageAMQPQueue(outputEventType);
-
-        if(!added) {
-            resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
         } else {
-            resultModel.addAttribute("result", "Output dataflow created successfully.");
+            resultModel.addAttribute("result", "Output dataflow created successfully!");
         }
-        return "addTwoStreamOutputDataflowResult";
+        return "addOneStreamOutputDataflowResult";
     }
 
     /**
@@ -309,24 +313,23 @@ public class WebApi {
         modelClass.setDataflowName(dataflowName);
         modelClass.setQueueName(outputEventType);
 
+        boolean added = checkCorrectOutputQueueBinding(outputEventType);
+        if(!added) {
+            resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
+            return "addOneStreamOutputDataflowResult";
+        }
+
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
-        boolean added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
+        added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
 
         resultModel.addAttribute("dataflowName", dataflowName);
         if(!added) {
             resultModel.addAttribute("result", "Error creating output dataflow. Possible reasons: Bad user input or " +
                     "dataflow with this name already defined!");
-            return "addThreeStreamOutputDataflowResult";
-        }
-
-        added = manageAMQPQueue(outputEventType);
-
-        if(!added) {
-            resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
         } else {
-            resultModel.addAttribute("result", "Output dataflow created successfully.");
+            resultModel.addAttribute("result", "Output dataflow created successfully!");
         }
-        return "addThreeStreamOutputDataflowResult";
+        return "addOneStreamOutputDataflowResult";
     }
 
     /**
@@ -340,6 +343,7 @@ public class WebApi {
      */
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.GET)
     public String removeOutputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
+        //TODO make it work as now it is whole dataflow, not just name
         resultModel.addAttribute("dataflowName", dataflowName);
         return "removeOutputDataflow";
     }
@@ -365,6 +369,28 @@ public class WebApi {
         }
         return "removeOutputDataflowResult";
     }
+    //TODO fix documentation
+    /**
+     * This method is used to find out if it is necessary to create new AMQP queue based on user input.
+     * If RabbitMQ server already has queue with given name, this method will return true.
+     * In this case it is up to user to check if said queue has correct parameters,
+     * mainly binding to output exchange saved in properties file..
+     *
+     * @param eventType String describing desired AMQP queue. This string is also name of event type
+     *                  located within this queue and name of input dataflow handling this queue.
+     *
+     * @return True if RabbitMQ server has the definition of given queue. It was either already present,
+     * or this method created it with correct binding to exchange defined in config file.
+     * False is returned if creation of AMQP queue failed.
+     */
+    private boolean checkCorrectOutputQueueBinding(String eventType) {
+        List<String> allQueues = this.rabbitMqService.listQueues();
+        boolean added = true;
+        if (!allQueues.contains(eventType)) {
+            added = this.rabbitMqService.createQueue(eventType);
+        }
+        return added;
+    }
 
     /**
      * This method is used to find out if it is necessary to create new AMQP queue based on user input.
@@ -375,15 +401,18 @@ public class WebApi {
      * @param eventType String describing desired AMQP queue. This string is also name of event type
      *                  located within this queue and name of input dataflow handling this queue.
      *
+     * @param exchangeName String containing name of exchange, to which queue should be bound.
+     *                     This is different than binding to implicitly saved output one.
+     *
      * @return True if RabbitMQ server has the definition of given queue. It was either already present,
      * or this method created it with correct binding to exchange defined in config file.
      * False is returned if creation of AMQP queue failed.
      */
-    private boolean manageAMQPQueue(String eventType) {
-        List<String> allQueues = this.rabbitMqService.listQueues();
+    private boolean checkCorrectInputQueueBinding(String eventType, String exchangeName) {
+        List<String> allQueues = this.rabbitMqService.listQueues(exchangeName);
         boolean added = true;
         if (!allQueues.contains(eventType)) {
-            added = this.rabbitMqService.createQueue(eventType);
+            added = this.rabbitMqService.createQueue(eventType, exchangeName);
         }
         return added;
     }
