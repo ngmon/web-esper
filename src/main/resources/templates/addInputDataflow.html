@@ -7,32 +7,9 @@
           href="../../css/style.css"/>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="application/javascript" th:src="@{/js/generateTable.js}"></script>
-    <!--<script type="application/javascript" th:inline="javascript">
-        /*<![CDATA[*/
-        function paintTable(){
-            var selected = $("#exchangeSelect").find("option:selected").text();
-            var URL = "http://localhost:8080/getSchema?name=" + selected;
-            $.getJSON(URL, function(data) {
-                successCallBack(data);
-            });
-
-            function successCallBack(data) {
-                $("#dyntable").find("tbody").empty();
-                $.each(data, function (k, v) {
-                    var newRowContent = "<tr><td><input type=\"checkbox\" checked=\"true\"></td>" +
-                            "<td>" + k + "</td>" +
-                            "<td>" + v + "</td></tr>";
-                    $("#dyntable").find("tbody").append(newRowContent);
-                });
-            }
-        }
-        /*]]>*/
-
-    </script>-->
 </head>
 <body>
     <div align="center">
-        <p><input id="text"/></p>
         <h3>Enter input dataflow information</h3>
         <form action="#" th:action="@{/addInputDataflow}" th:object="${EventTypeModel}" method="post">
             <div align="center">
@@ -44,9 +21,10 @@
                     <fieldset>
                         <legend>Exchange</legend>
                         <p>
-                            <!--@thymesVar id="availExchanges" type="Map"-->
+                            <!--@thymesVar id="availExchanges" type="List"-->
                             <select id="exchangeSelect" th:field="*{exchange}" onchange="paintTable()">
-                                <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.key}" th:text="${oneExchange.key}">Available exchanges</option>
+                                <option value="Available exchanges">Available exchanges</option>
+                                <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.name}" th:text="${oneExchange.name}"/>
                             </select>
                         </p>
                     </fieldset>
