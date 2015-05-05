@@ -27,8 +27,7 @@ public interface RabbitMqService {
     public String isAlive();
 
     /**
-     * This method creates new AMQP queue bound to exchange specified
-     * in config file.
+     * This method creates new AMQP queue bound to implicit (output) exchange.
      *
      * @param queueName Name used to create queue with,
      *                  also serves as routing key to
@@ -38,6 +37,20 @@ public interface RabbitMqService {
      * meaning success, false otherwise.
      */
     public boolean createQueue(String queueName);
+
+    /**
+     * This method creates new AMQP queue bound to specific exchange.
+     *
+     * @param queueName Name used to create queue with,
+     *                  also serves as routing key to
+     *                  define binding to exchange.
+     *
+     * @param exchangeName Name used to define exchange for binding.
+     *
+     * @return Returns true if creation returned with HTTP code
+     * meaning success, false otherwise.
+     */
+    public boolean createQueue(String queueName, String exchangeName);
 
     /**
      * Method used to delete queue with given name.
@@ -53,11 +66,18 @@ public interface RabbitMqService {
     public void deleteAllQueues();
 
     /**
-     * Method returns list of all queue names known to RabbitMQ server.
+     * Method returns list of all queue names bound to Esper Root exchange.
      *
      * @return List of all queue names.
      */
     public List<String> listQueues();
+
+    /**
+     * Method returns list of all queue names bound to specific exchange.
+     *
+     * @return List of all queue names.
+     */
+    public List<String> listQueues(String exchangeName);
 
     /**
      * Method returns list of all Esper exchanges known to RabbitMQ server.
@@ -65,6 +85,8 @@ public interface RabbitMqService {
      * @return List of all Esper exchanges.
      */
     public List<Exchange> listExchanges();
+
+    public List<String> listExchangeNames();
 
     /**
      * Method returns flatted map of JSON schema for given exchange.
