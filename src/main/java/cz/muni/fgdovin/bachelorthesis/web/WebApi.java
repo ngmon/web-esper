@@ -93,15 +93,7 @@ public class WebApi {
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.GET)
     public ModelAndView InputDataflowForm() {
         ModelAndView model = new ModelAndView("addInputDataflow", "EventTypeModel", new EventTypeModel());
-        List<Exchange> esperExchanges = this.rabbitMqService.listExchanges();
-        Map<String, Object> exchangesWithSchemas = new HashMap<>();
-        for(int i = 0; i < esperExchanges.size(); i++) {
-            Exchange oneExchange = esperExchanges.get(i);
-            Map<String, Object> schema = this.rabbitMqService.getSchemaForExchange(oneExchange.getName());
-            exchangesWithSchemas.put(esperExchanges.get(i).getName(), schema);
-        }
-        System.out.println(exchangesWithSchemas);
-        model.addObject("availExchanges", exchangesWithSchemas);
+        model.addObject("availExchanges", this.rabbitMqService.listExchanges());
         return model;
     }
 
@@ -116,10 +108,9 @@ public class WebApi {
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.POST)
     public String submitInputDataflowForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
         String dataflowName = modelClass.getEventType();
+        Map<String, Object> properties = this.eventTypeHelper.toMap(modelClass.getMapProperties());
 
-        System.out.println("Map of prop is " + modelClass.getMapProperties());
-
-        boolean added = false;//esperUserFriendlyService.addEventType(dataflowName, properties);
+        boolean added = esperUserFriendlyService.addEventType(dataflowName, properties);
         resultModel.addAttribute("dataflowName", dataflowName);
 
         if(!added) {
