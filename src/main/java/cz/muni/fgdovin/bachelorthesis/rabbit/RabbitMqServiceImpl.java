@@ -206,9 +206,8 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             e.printStackTrace();
         }
         for(String key : temp.keySet()) {
-            result.put(key, temp.get(key).getClass());
+            result.put(key, temp.get(key).getClass().getSimpleName());
         }
-        System.out.println("Map is " + result);
         return result;
     }
 

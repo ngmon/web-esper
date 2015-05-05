@@ -5,6 +5,7 @@ import cz.muni.fgdovin.bachelorthesis.demo.rabbitMQSender.src.main.java.RabbitMQ
 import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
+import cz.muni.fgdovin.bachelorthesis.support.EventProperty;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 import cz.muni.fgdovin.bachelorthesis.web.InputDataflowModel;
 import cz.muni.fgdovin.bachelorthesis.web.OutputDataflowModel;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,10 +61,21 @@ public class EsperServiceIntegrationTest {
         outputDataflows.forEach(this.esperService::removeOutputDataflow);
 
         //add basic event type for tests
-        String stringSchema = "timestamp Long, type String, p.value Integer, p.value2 String, hostname String, application String, process String, processId Integer, level Integer, priority Integer";
-        Map<String, Object> schema = this.eventTypeHelper.toMap(stringSchema);
+        List<EventProperty> schema = new ArrayList<>();
+        schema.add(new EventProperty("timestamp", Long.class));
+        schema.add(new EventProperty("type", String.class));
+        schema.add(new EventProperty("p.value", Integer.class));
+        schema.add(new EventProperty("p.value2", String.class));
+        schema.add(new EventProperty("hostname", String.class));
+        schema.add(new EventProperty("application", String.class));
+        schema.add(new EventProperty("process", String.class));
+        schema.add(new EventProperty("processId", Integer.class));
+        schema.add(new EventProperty("level", Integer.class));
+        schema.add(new EventProperty("priority", Integer.class));
+
+        Map<String, Object> mapSchema = this.eventTypeHelper.toMap(schema);
         String inputDataflow = "myEventType";
-        this.esperService.addEventType(inputDataflow, schema);
+        this.esperService.addEventType(inputDataflow, mapSchema);
 
         InputDataflowModel inputModel = new InputDataflowModel();
         inputModel.setDataflowName(inputDataflow);
@@ -71,7 +84,7 @@ public class EsperServiceIntegrationTest {
         String dataflowParams = this.dataflowHelper.generateInputDataflow(inputModel);
         this.esperService.addDataflow(inputDataflow, dataflowParams);
 
-        this.rabbitMqService.createQueue(inputDataflow);
+        //this.rabbitMqService.createQueue(inputDataflow);
 
         OutputDataflowModel outputModel = new OutputDataflowModel();
         outputModel.setDataflowName(this.outputDataflow + System.currentTimeMillis());

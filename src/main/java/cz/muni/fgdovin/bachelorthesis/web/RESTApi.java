@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * Created by Filip Gdovin on 4. 5. 2015.
+ * @author Filip Gdovin
+ * @version 5. 5. 2015
  */
 @RestController
 public class RESTApi {

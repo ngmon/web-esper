@@ -40,11 +40,11 @@ public class EventTypeHelper {
             }
             String value = pair.substring(spacePosition+1);
 
-            if (value.equalsIgnoreCase("java.lang.Integer")) {
+            if (value.equalsIgnoreCase("Integer")) {
                 schemaMap.put(key, Integer.class);
-            } else if (value.equalsIgnoreCase("java.lang.Boolean")) {
+            } else if (value.equalsIgnoreCase("Boolean")) {
                 schemaMap.put(key, Boolean.class);
-            } else if (value.equalsIgnoreCase("java.lang.Long")) {
+            } else if (value.equalsIgnoreCase("Long")) {
                 schemaMap.put(key, Long.class);
             }else {
                 schemaMap.put(key, String.class);

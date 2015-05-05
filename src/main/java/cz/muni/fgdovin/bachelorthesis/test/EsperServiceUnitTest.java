@@ -2,6 +2,7 @@ package cz.muni.fgdovin.bachelorthesis.test;
 
 import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
+import cz.muni.fgdovin.bachelorthesis.support.EventProperty;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 import cz.muni.fgdovin.bachelorthesis.web.InputDataflowModel;
 import cz.muni.fgdovin.bachelorthesis.web.OutputDataflowModel;
@@ -16,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +60,19 @@ public class EsperServiceUnitTest {
         outputDataflows.forEach(esperService::removeOutputDataflow);
 
         //add basic event type for tests
-        String stringSchema = "timestamp Long, type String, p.value Integer, p.value2 String, hostname String, application String, process String, processId Integer, level Integer, priority Integer";
-        this.schema = this.eventTypeHelper.toMap(stringSchema);
+        List<EventProperty> listSchema = new ArrayList<>();
+        listSchema.add(new EventProperty("timestamp", Long.class));
+        listSchema.add(new EventProperty("type", String.class));
+        listSchema.add(new EventProperty("p.value", Integer.class));
+        listSchema.add(new EventProperty("p.value2", String.class));
+        listSchema.add(new EventProperty("hostname", String.class));
+        listSchema.add(new EventProperty("application", String.class));
+        listSchema.add(new EventProperty("process", String.class));
+        listSchema.add(new EventProperty("processId", Integer.class));
+        listSchema.add(new EventProperty("level", Integer.class));
+        listSchema.add(new EventProperty("priority", Integer.class));
+
+        this.schema = this.eventTypeHelper.toMap(listSchema);
         esperService.addEventType(this.eventType, this.schema);
     }
 

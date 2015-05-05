@@ -227,7 +227,6 @@ public class WebApi {
         }
 
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
-        System.out.println("params " + queueParams);
         added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
 
         resultModel.addAttribute("dataflowName", dataflowName);
