@@ -1,9 +1,8 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
+import cz.muni.fgdovin.bachelorthesis.support.EventProperty;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Model class to represent event type,
@@ -17,15 +16,10 @@ public class EventTypeModel {
 
     private String eventType;
     private String properties;
-    private String exchange;
-    private Map<String, Object> mapProperties;
+    private String exchange;  //TODO redundant?
+    private List<EventProperty> mapProperties;
 
     public EventTypeModel() {
-    }
-
-    public EventTypeModel(String eventType, String properties) {
-        this.eventType = eventType;
-        this.properties = properties;
     }
 
     public String getEventType() {
@@ -52,11 +46,11 @@ public class EventTypeModel {
         this.exchange = exchange;
     }
 
-    public Map<String, Object> getMapProperties() {
+    public List<EventProperty> getMapProperties() {
         return mapProperties;
     }
 
-    public void setMapProperties(Map<String, Object> mapProperties) {
+    public void setMapProperties(List<EventProperty> mapProperties) {
         this.mapProperties = mapProperties;
     }
 }
