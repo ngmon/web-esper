@@ -70,7 +70,7 @@ public class DataflowHelper {
                 "declareDurable: " + this.environment.getProperty("outputDeclareDurable") + ",\n" +
                 "declareExclusive: " + this.environment.getProperty("outputDeclareExclusive") + ",\n" +
                 "declareAutoDelete: " + this.environment.getProperty("outputDeclareAutoDelete") + ",\n" +
-                "exchange: '" + this.environment.getProperty("exchangeName") + "',\n" +
+                "exchange: '" + this.environment.getProperty("outputExchangeName") + "',\n" +
                 "collector: {class: '" + this.environment.getProperty("outputCollector") + "'}\n" +
                 "}");
         return result.toString();
