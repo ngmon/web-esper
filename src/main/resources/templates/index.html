@@ -6,11 +6,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link rel="stylesheet"
               th:href="@{/css/style.css}"
-              href="../../css/style.css"/>
+              href="../../resources/static/css/style.css"/>
     </head>
     <body>
     <div class="columns">
-        <div class="leftColumn"/>
+        <div class="leftColumn"></div>
 
         <div class="middleColumn">
             <div>
@@ -29,7 +29,6 @@
                     <form action="/manageOutputDataflows">
                         <p><input type="submit" align="center" value="Manage output dataflows"/></p>
                     </form>
-                    </p>
                 </div>
                 <div th:unless="${rabbitMqInfo}">
                     <h2>RabbitMQ server is not responding</h2>
@@ -37,18 +36,17 @@
                     <form action="/">
                         <p><input type="submit" align="center" value="Reload page"/></p>
                     </form>
-                    </p>
                 </div>
             </div>
 
             <div class="bottomLogoWrapper">
-                <div class="bottomLogo"/>
+                <div class="bottomLogo"></div>
             </div>
         </div>
 
-        <div class="rightColumn"/>
+        <div class="rightColumn"></div>
 
-        <div class="afterColumns"/>
+        <div class="afterColumns"></div>
     </div>
     </body>
 </html>

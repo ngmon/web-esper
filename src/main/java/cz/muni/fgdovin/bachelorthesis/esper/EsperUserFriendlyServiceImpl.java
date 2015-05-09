@@ -3,7 +3,6 @@ package cz.muni.fgdovin.bachelorthesis.esper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.espertech.esper.client.ConfigurationException;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventType;
 import com.espertech.esper.client.dataflow.EPDataFlowAlreadyExistsException;

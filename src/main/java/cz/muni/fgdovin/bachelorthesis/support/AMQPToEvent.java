@@ -3,9 +3,7 @@ package cz.muni.fgdovin.bachelorthesis.support;
 import com.espertech.esperio.amqp.AMQPToObjectCollector;
 import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

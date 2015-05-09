@@ -4,11 +4,11 @@
 <head>
     <link rel="stylesheet"
           th:href="@{/css/style.css}"
-          href="../../css/style.css"/>
+          href="../../resources/static/css/style.css"/>
 </head>
 <body>
 <div class="columns">
-    <div class="leftColumn"/>
+    <div class="leftColumn"></div>
 
     <div class="middleColumn">
     <div align="center">
@@ -29,8 +29,8 @@
                         <table>
                             <tbody>
                             <tr th:each="item : ${allOutputDataflows}">
-                                <td th:text="${item.key}" />
-                                <td th:text="${item.value}" />
+                                <td th:text="${item.key}" ></td>
+                                <td th:text="${item.value}" ></td>
                                 <td> <a th:action="GET" th:href="@{/removeOutputDataflow/(dataflowName=${item.key})}">Delete</a></td>
                             </tr>
                             </tbody>
@@ -42,32 +42,28 @@
                 </div>
             </fieldset>
         </fieldset>
-        </p>
         <p>
         <form method="GET" action="/addOneStreamOutputDataflow">
             <input type="submit" value="Add one-stream output dataflow"/>
         </form>
-        </p>
         <p>
         <form method="GET" action="/addTwoStreamOutputDataflow">
             <input type="submit" value="Add two-stream output dataflow"/>
         </form>
-        </p>
         <p>
         <form method="GET" action="/addThreeStreamOutputDataflow">
             <input type="submit" value="Add three-stream output dataflow"/>
         </form>
-        </p>
         <div th:include="fragments/footer :: footer"></div>
     </div>
 
     <div class="bottomLogoWrapper">
-        <div class="bottomLogo"/>
+        <div class="bottomLogo"></div>
     </div>
     </div>
 
-    <div class="rightColumn"/>
-    <div class="afterColumns"/>
+    <div class="rightColumn"></div>
+    <div class="afterColumns"></div>
     </div>
 </body>
 </html>

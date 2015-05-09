@@ -4,11 +4,11 @@
 <head>
     <link rel="stylesheet"
           th:href="@{/css/style.css}"
-          href="../../css/style.css"/>
+          href="../../resources/static/css/style.css"/>
 </head>
 <body>
 <div class="columns">
-    <div class="leftColumn"/>
+    <div class="leftColumn"></div>
 
     <div class="middleColumn">
     <div align="center">
@@ -21,26 +21,38 @@
                         <fieldset>
                             <legend>First event type</legend>
                             <p>
-                                <select th:field="*{firstEventType}">
-                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
-                                </select>
+                                <label>
+                                    <select th:field="*{firstEventType}">
+                                        <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">
+                                            Available event types
+                                        </option>
+                                    </select>
+                                </label>
                             </p>
                         </fieldset>
                         <fieldset>
                             <legend>Second event type</legend>
                             <p>
-                                <select th:field="*{secondEventType}">
-                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
-                                </select>
+                                <label>
+                                    <select th:field="*{secondEventType}">
+                                        <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">
+                                            Available event types
+                                        </option>
+                                    </select>
+                                </label>
                             </p>
                         </fieldset>
                         <fieldset>
                             <legend>Output event type</legend>
-                            <p><input type="text" th:field="*{outputEventType}" /></p>
+                            <p><label>
+                                <input type="text" th:field="*{outputEventType}"/>
+                            </label></p>
                         </fieldset>
                         <fieldset>
                             <legend>EPL statement</legend>
-                            <p><input type="text" th:field="*{query}" /></p>
+                            <p><label>
+                                <input type="text" th:field="*{query}"/>
+                            </label></p>
                         </fieldset>
                         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
                     </fieldset>
@@ -55,12 +67,12 @@
     </div>
 
     <div class="bottomLogoWrapper">
-        <div class="bottomLogo"/>
+        <div class="bottomLogo"></div>
     </div>
     </div>
 
-    <div class="rightColumn"/>
-    <div class="afterColumns"/>
+    <div class="rightColumn"></div>
+    <div class="afterColumns"></div>
     </div>
 </body>
 </html>

@@ -5,7 +5,8 @@ import retrofit.RequestInterceptor;
 import java.util.Base64;
 
 /**
- * Created by nlabrot on 21/11/14.
+ * @author nlabrot
+ * @version 21.11.14
  */
 public class AuthenticationRequestInterceptor implements RequestInterceptor {
 

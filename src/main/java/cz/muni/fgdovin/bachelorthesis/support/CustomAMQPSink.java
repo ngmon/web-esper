@@ -127,16 +127,14 @@ public class CustomAMQPSink implements DataFlowOpLifecycle {
                 if (log.isDebugEnabled()) {
                     log.debug("Using exchange " + settings.getExchange() + " routing-key " + settings.getRoutingKey());
                 }
-                holder = new ObjectToAMQPCollectorContext(new AMQPEmitter() {
-                    public void send(byte[] bytes) {
-                        try {
-                            channel.basicPublish(settings.getExchange(), settings.getRoutingKey(), null, bytes);
-                        }
-                        catch (IOException e) {
-                            String message = "Failed to publish to AMQP: " + e.getMessage();
-                            log.error(message, e);
-                            throw new RuntimeException(message, e);
-                        }
+                holder = new ObjectToAMQPCollectorContext(bytes -> {
+                    try {
+                        channel.basicPublish(settings.getExchange(), settings.getRoutingKey(), null, bytes);
+                    }
+                    catch (IOException e) {
+                        String message = "Failed to publish to AMQP: " + e.getMessage();
+                        log.error(message, e);
+                        throw new RuntimeException(message, e);
                     }
                 }, result);
             }
@@ -144,16 +142,14 @@ public class CustomAMQPSink implements DataFlowOpLifecycle {
                 if (log.isDebugEnabled()) {
                     log.debug("Using queue " + settings.getQueueName());
                 }
-                holder = new ObjectToAMQPCollectorContext(new AMQPEmitter() {
-                    public void send(byte[] bytes) {
-                        try {
-                            channel.basicPublish("", settings.getQueueName(), null, bytes);
-                        }
-                        catch (IOException e) {
-                            String message = "Failed to publish to AMQP: " + e.getMessage();
-                            log.error(message, e);
-                            throw new RuntimeException(message, e);
-                        }
+                holder = new ObjectToAMQPCollectorContext(bytes -> {
+                    try {
+                        channel.basicPublish("", settings.getQueueName(), null, bytes);
+                    }
+                    catch (IOException e) {
+                        String message = "Failed to publish to AMQP: " + e.getMessage();
+                        log.error(message, e);
+                        throw new RuntimeException(message, e);
                     }
                 }, result);
             }

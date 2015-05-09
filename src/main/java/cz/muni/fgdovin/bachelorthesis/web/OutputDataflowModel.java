@@ -86,7 +86,7 @@ public class OutputDataflowModel {
     }
 
     public List<String> getAllEventTypes() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         result.add(0, firstEventType);
         result.add(1, secondEventType);
         result.add(2, thirdEventType);

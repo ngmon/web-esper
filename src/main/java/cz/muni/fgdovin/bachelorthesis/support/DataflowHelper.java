@@ -53,7 +53,7 @@ public class DataflowHelper {
         StringBuilder selector = new StringBuilder("Select(");
 
         model.getAllEventTypes().stream().filter(eventType -> (eventType != null)
-                && (eventType != "null")).forEach(eventType -> {
+                ).forEach(eventType -> {
             result.append("EventBusSource -> " + eventType + "<" + eventType + "> {}\n");
             selector.append(eventType + ", ");
         });

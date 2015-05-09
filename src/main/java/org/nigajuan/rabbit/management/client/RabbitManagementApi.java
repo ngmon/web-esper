@@ -21,7 +21,8 @@ import retrofit.http.*;
 import java.util.List;
 
 /**
- * Created by nlabrot on 21/11/14.
+ * @author nlabrot
+ * @version 21.11.14
  */
 public interface RabbitManagementApi {
 

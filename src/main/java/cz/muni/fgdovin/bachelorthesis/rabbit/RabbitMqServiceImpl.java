@@ -124,9 +124,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
      */
     public void deleteAllQueues() {
         List<String> allQueues = this.listQueues();
-        for(String queueName : allQueues) {
-            this.deleteQueue(queueName);
-        }
+        allQueues.forEach(this::deleteQueue);
     }
 
     public List<String> getQueueNames() {
@@ -166,11 +164,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     public List<Exchange> listExchanges() {
         List<Exchange> esperExchanges = new ArrayList<>();
         List<Exchange> allExchanges = this.rabbitManagementApi.listExchanges();
-        for(Exchange oneExchange : allExchanges) {
-            if(oneExchange.getName().startsWith(this.exchangePrefix)) {
-                esperExchanges.add(oneExchange);
-            }
-        }
+        esperExchanges.addAll(allExchanges.stream().filter(oneExchange -> oneExchange.getName().startsWith(this.exchangePrefix)).collect(Collectors.toList()));
         return esperExchanges;
     }
 
