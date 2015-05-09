@@ -217,13 +217,9 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
     }
 
     /**
-     * Method used to show dataflow by providing its name (used by other methods).
-     *
-     * @param dataflowName String describing dataflow name.
-     * @return String containing dataflow in format 'dataflowDetails[state]:dataflowParameters',
-     * or null if there is no dataflow with provided name present (never created or already removed).
+     * {@inheritDoc}
      */
-    private String showDataflow(String dataflowName) {
+    public String showDataflow(String dataflowName) {
         EPStatement myDataflow;
         try {
             myDataflow = this.esperService.showDataflow(dataflowName);
@@ -241,7 +237,7 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
             }
             return null;
         }
-        return myDataflow.getName() + ":\n\"" + myDataflow.getText() + "\"\n";
+        return myDataflow.getText();
     }
 
     /**
@@ -298,6 +294,6 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * or false otherwise.
      */
     private boolean isInputDataflow(String dataflowDetails) {
-        return dataflowDetails.endsWith("EventBusSink(instream) {}\"\n");
+        return dataflowDetails.endsWith("EventBusSink(instream) {}");
     }
 }

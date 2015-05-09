@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,16 +62,21 @@ public class WebApi {
     }
 
     /**
-     * This method is bound to "/manageInputDataflows" mapping and displays possible input dataflows options.
+     * This method is bound to "/manageInputDataflows" mapping and displays possible projections options.
      *
-     * @return Page with available commands containing list of currently defined input dataflows.
+     * @return Page with available commands containing list of currently defined projections.
      */
     @RequestMapping(value = "/manageInputDataflows", method = RequestMethod.GET)
     public ModelAndView manageInputDataflows() {
         List<String> list = esperUserFriendlyService.showInputDataflows();
 
+        Map<String, String> mapOfDetails = new HashMap<>();
+        for(String dataflowName : list) {
+            mapOfDetails.put(dataflowName, this.esperUserFriendlyService.showDataflow(dataflowName));
+        }
+
         ModelAndView model = new ModelAndView("manageInputDataflows");
-        model.addObject("allInputDataflows", list);
+        model.addObject("allInputDataflows", mapOfDetails);
         return model;
     }
 
@@ -83,15 +89,20 @@ public class WebApi {
     public ModelAndView manageOutputDataflows() {
         List<String> list = esperUserFriendlyService.showOutputDataflows();
 
+        Map<String, String> mapOfDetails = new HashMap<>();
+        for(String dataflowName : list) {
+            mapOfDetails.put(dataflowName, this.esperUserFriendlyService.showDataflow(dataflowName));
+        }
+
         ModelAndView model = new ModelAndView("manageOutputDataflows");
-        model.addObject("allOutputDataflows", list);
+        model.addObject("allOutputDataflows", mapOfDetails);
         return model;
     }
 
     /**
-     * This method is called when user decides to add new input dataflow based on event type.
+     * This method is called when user decides to add new projection based on event type.
      *
-     * @return Web page containing form for input dataflow creation.
+     * @return Web page containing form for projection creation.
      */
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.GET)
     public ModelAndView InputDataflowForm() {
@@ -102,11 +113,11 @@ public class WebApi {
 
     /**
      * This method is called when user submits a form, it POSTs form contents
-     * so that new event type and its input dataflow can be created.
+     * so that new event type and its projection can be created.
      *
      * @param modelClass Model class representing fields in form, form contents are mapped to instance of this class.
-     * @param resultModel ModelMap containing input dataflow information, it will be displayed as confirmation of creation.
-     * @return Page displaying newly created input dataflow.
+     * @param resultModel ModelMap containing projection information, it will be displayed as confirmation of creation.
+     * @return Page displaying newly created projection.
      */
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.POST)
     public String submitInputDataflowForm(@ModelAttribute("EventTypeModel") EventTypeModel modelClass, ModelMap resultModel) {
@@ -118,14 +129,14 @@ public class WebApi {
         resultModel.addAttribute("dataflowName", dataflowName);
 
         if(!added) {
-            resultModel.addAttribute("result", "Error creating input dataflow. Bad input or is already defined!");
+            resultModel.addAttribute("result", "Error creating projection. Bad input or is already defined!");
             return "addInputDataflowResult";
         }
 
         added = checkCorrectInputQueueBinding(dataflowName, exchangeName);
 
         if(!added) {
-            resultModel.addAttribute("result", "Error declaring dataflow. Creation of AMQP queue failed!");
+            resultModel.addAttribute("result", "Error declaring projection. Creation of AMQP queue failed!");
             this.esperUserFriendlyService.removeEventType(dataflowName);
             return "addInputDataflowResult";
         }
@@ -140,38 +151,38 @@ public class WebApi {
         added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
 
         if(added) {
-            resultModel.addAttribute("result", "Input dataflow created successfully.");
+            resultModel.addAttribute("result", "Projection created successfully.");
         } else {
-            resultModel.addAttribute("result", "Error creating input dataflow. Possible reasons: Bad user input or " +
-                    "dataflow with this name already defined!");
+            resultModel.addAttribute("result", "Error creating projection. Possible reasons: Bad user input or " +
+                    "projection with this name already defined!");
         }
+
         return "addInputDataflowResult";
     }
 
     /**
-     * This method is called when user chooses to delete input dataflow along with its event type.
+     * This method is called when user chooses to delete projection along with its event type.
      *
-     * @param dataflowName Name of dataflow to be deleted.
+     * @param dataflowName Name of projection to be deleted.
      *
      * @param resultModel ModelMap used to provide information to the View
      *
-     * @return Web page containing form to delete input dataflow by its name.
+     * @return Web page containing form to delete projection by its name.
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.GET)
     public String removeInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
-        //TODO make it work as now it is whole dataflow, not just name
         resultModel.addAttribute("dataflowName", dataflowName);
         return "removeInputDataflow";
     }
 
     /**
-     * This method is called when user submits input dataflow deletion form, it finds input dataflow
+     * This method is called when user submits projection deletion form, it finds projection
      * and deletes it if possible.
      *
-     * @param dataflowName Name of dataflow to be deleted.
+     * @param dataflowName Name of projection to be deleted.
      *
-     * @param resultModel ModelMap containing result of input dataflow deletion.
-     * @return Web page informing user if the input dataflow was successfully deleted.
+     * @param resultModel ModelMap containing result of projection deletion.
+     * @return Web page informing user if the projection was successfully deleted.
      */
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.POST)
     public String submitRemoveInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
@@ -179,16 +190,16 @@ public class WebApi {
         boolean removed = esperUserFriendlyService.removeEventType(dataflowName);
 
         if (!removed) {
-            resultModel.addAttribute("result", "Input dataflow with this name was not found, or is still in use and was not removed.");
+            resultModel.addAttribute("result", "Projection with this name was not found, or is still in use and was not removed.");
             return "removeInputDataflowResult";
         }
 
         removed = esperUserFriendlyService.removeInputDataflow(dataflowName);
 
         if (removed) {
-            resultModel.addAttribute("result", "No statements rely on this event type, its dataflow removed successfully.");
+            resultModel.addAttribute("result", "Projection removed successfully.");
         } else {
-            resultModel.addAttribute("result", "Input dataflow removal failed, its event type removed to avoid undefined behaviour.");
+            resultModel.addAttribute("result", "Projection removal failed, its event type removed to avoid undefined behaviour.");
         }
         return "removeInputDataflowResult";
     }
@@ -376,7 +387,7 @@ public class WebApi {
      * mainly binding to output exchange saved in properties file..
      *
      * @param eventType String describing desired AMQP queue. This string is also name of event type
-     *                  located within this queue and name of input dataflow handling this queue.
+     *                  located within this queue and name of projection handling this queue.
      *
      * @return True if RabbitMQ server has the definition of given queue. It was either already present,
      * or this method created it with correct binding to exchange defined in config file.
@@ -398,7 +409,7 @@ public class WebApi {
      * mainly binding to exchange.
      *
      * @param eventType String describing desired AMQP queue. This string is also name of event type
-     *                  located within this queue and name of input dataflow handling this queue.
+     *                  located within this queue and name of projection handling this queue.
      *
      * @param exchangeName String containing name of exchange, to which queue should be bound.
      *                     This is different than binding to implicitly saved output one.

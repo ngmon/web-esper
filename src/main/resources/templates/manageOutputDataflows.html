@@ -7,6 +7,10 @@
           href="../../css/style.css"/>
 </head>
 <body>
+<div class="columns">
+    <div class="leftColumn"/>
+
+    <div class="middleColumn">
     <div align="center">
         <h1>Output dataflow management</h1>
         <p>
@@ -18,20 +22,21 @@
         <p>
         <fieldset class="myFieldSet">
             <fieldset>
+                <!--@thymesVar id="allOutputDataflows" type="Map"-->
                 <legend>All output dataflows</legend>
-                <div th:unless="${#lists.isEmpty(allOutputDataflows)}">
+                <div th:unless="${#maps.isEmpty(allOutputDataflows)}">
                     <form action="#" th:object="${OutputDataflowModel}">
                         <table>
                             <tbody>
                             <tr th:each="item : ${allOutputDataflows}">
-                                <td th:text="${item}" />
-                                <td> <a th:action="GET" th:href="@{/removeOutputDataflow/(dataflowName=${item})}">Delete</a></td>
+                                <td th:text="${item.key}" />
+                                <td th:text="${item.value}" />
+                                <td> <a th:action="GET" th:href="@{/removeOutputDataflow/(dataflowName=${item.key})}">Delete</a></td>
                             </tr>
                             </tbody>
                         </table>
                     </form>
                 </div>
-                <!--@thymesVar id="allOutputDataflows" type="List"-->
                 <div th:if="${#lists.isEmpty(allOutputDataflows)}">
                     No event types present.
                 </div>
@@ -54,6 +59,15 @@
         </form>
         </p>
         <div th:include="fragments/footer :: footer"></div>
+    </div>
+
+    <div class="bottomLogoWrapper">
+        <div class="bottomLogo"/>
+    </div>
+    </div>
+
+    <div class="rightColumn"/>
+    <div class="afterColumns"/>
     </div>
 </body>
 </html>

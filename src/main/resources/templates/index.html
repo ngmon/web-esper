@@ -9,13 +9,14 @@
               href="../../css/style.css"/>
     </head>
     <body>
+    <div class="columns">
         <div class="leftColumn"/>
 
         <div class="middleColumn">
             <div>
                 <h1>Wesper - Esper Continuous Engine</h1>
                 <p>
-                    This is Wesper - Esper Continuous Engine, which allows you to manage input dataflows (AMQP sources)
+                    This is Wesper - Esper Continuous Engine, which allows you to manage projections (AMQP sources)
                     and output dataflows (EPL statements and AMQP sinks) on the run.
                 </p>
                 <h2>Select your action:</h2>
@@ -23,7 +24,7 @@
                 <div th:if="${rabbitMqInfo}">
                     <p>
                     <form action="/manageInputDataflows">
-                        <p><input type="submit" align="center" value="Manage input dataflows"/></p>
+                        <p><input type="submit" align="center" value="Manage projections"/></p>
                     </form>
                     <form action="/manageOutputDataflows">
                         <p><input type="submit" align="center" value="Manage output dataflows"/></p>
@@ -46,5 +47,8 @@
         </div>
 
         <div class="rightColumn"/>
+
+        <div class="afterColumns"/>
+    </div>
     </body>
 </html>

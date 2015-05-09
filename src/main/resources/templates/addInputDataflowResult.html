@@ -7,22 +7,35 @@
           href="../../css/style.css"/>
 </head>
 <body>
-    <div align="center">
-        <h3>Creating input dataflow...</h3>
-        <fieldset class="myFieldSet">
-            <fieldset>
-                <legend>Dataflow name</legend>
-                <!--@thymesVar id="dataflowName" type="String"-->
-                <p th:text="${dataflowName}" />
+<div class="columns">
+    <div class="leftColumn"/>
+
+    <div class="middleColumn">
+        <div align="center">
+            <h3>Creating projection...</h3>
+            <fieldset class="myFieldSet">
+                <fieldset>
+                    <legend>Projection name</legend>
+                    <!--@thymesVar id="dataflowName" type="String"-->
+                    <p th:text="${dataflowName}" />
+                </fieldset>
+                <fieldset>
+                    <legend>Creation result</legend>
+                    <!--@thymesVar id="result" type="String"-->
+                    <p th:text="${result}" />
+                </fieldset>
             </fieldset>
-            <fieldset>
-                <legend>Creation result</legend>
-                <!--@thymesVar id="result" type="String"-->
-                <p th:text="${result}" />
-            </fieldset>
-        </fieldset>
-        <div th:include="fragments/backToManagement :: inputDataflow"></div>
-        <div th:include="fragments/footer :: footer"></div>
+            <div th:include="fragments/backToManagement :: inputDataflow"></div>
+            <div th:include="fragments/footer :: footer"></div>
+        </div>
+
+        <div class="bottomLogoWrapper">
+            <div class="bottomLogo"/>
+        </div>
     </div>
+
+    <div class="rightColumn"/>
+    <div class="afterColumns"/>
+</div>
 </body>
 </html>

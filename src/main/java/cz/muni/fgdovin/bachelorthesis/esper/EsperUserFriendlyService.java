@@ -133,6 +133,16 @@ public interface EsperUserFriendlyService {
     public boolean removeOutputDataflow(String dataflowName);
 
     /**
+     * Method used to show dataflow details by providing its name.
+     *
+     * @param dataflowName String describing dataflow name.
+     * @return String containing dataflow details, or null
+     * if there is no dataflow with provided name present
+     * (never created or already removed).
+     */
+    public String showDataflow(String dataflowName);
+
+    /**
      * Method used to show all input dataflows known to Esper.
      *
      * @return List of all present input dataflows in format

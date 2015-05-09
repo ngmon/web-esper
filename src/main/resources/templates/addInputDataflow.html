@@ -9,39 +9,52 @@
     <script type="application/javascript" th:src="@{/js/generateTable.js}"></script>
 </head>
 <body>
-    <div align="center">
-        <h3>Enter input dataflow information</h3>
-        <form action="#" th:action="@{/addInputDataflow}" th:object="${EventTypeModel}" method="post">
+    <div class="columns">
+        <div class="leftColumn"/>
+
+        <div class="middleColumn">
             <div align="center">
-                <fieldset class="myFieldSet">
-                    <fieldset>
-                        <legend>Input dataflow name</legend>
-                        <p><input type="text" th:field="*{eventType}" /></p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Exchange</legend>
-                        <p>
-                            <!--@thymesVar id="availExchanges" type="List"-->
-                            <select id="exchangeSelect" th:field="*{exchange}" onchange="paintTable()">
-                                <option value="Available exchanges">Available exchanges</option>
-                                <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.name}" th:text="${oneExchange.name}"/>
-                            </select>
-                        </p>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Event properties</legend>
-                        <table id="dyntable">
-                            <tbody>
-                            <!--TODO figure out how to convert to map-->
-                            </tbody>
-                        </table>
-                    </fieldset>
-                    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
-                </fieldset>
+                <h3>Enter projection information</h3>
+                <form action="#" th:action="@{/addInputDataflow}" th:object="${EventTypeModel}" method="post">
+                    <div align="center">
+                        <fieldset class="myFieldSet">
+                            <fieldset>
+                                <legend>Projection name</legend>
+                                <p><input type="text" th:field="*{eventType}" /></p>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Exchange</legend>
+                                <p>
+                                    <!--@thymesVar id="availExchanges" type="List"-->
+                                    <select id="exchangeSelect" th:field="*{exchange}" onchange="paintTable()">
+                                        <option value="Available exchanges">Available exchanges</option>
+                                        <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.name}" th:text="${oneExchange.name}"/>
+                                    </select>
+                                </p>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Event properties</legend>
+                                <table id="dyntable">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                            <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
+                        </fieldset>
+                    </div>
+                </form>
+                <div th:include="fragments/backToManagement :: inputDataflow"></div>
+                <div th:include="fragments/footer :: footer"></div>
             </div>
-        </form>
-        <div th:include="fragments/backToManagement :: inputDataflow"></div>
-        <div th:include="fragments/footer :: footer"></div>
+
+            <div class="bottomLogoWrapper">
+                <div class="bottomLogo"/>
+            </div>
+        </div>
+
+        <div class="rightColumn"/>
+
+        <div class="afterColumns"/>
     </div>
 </body>
 </html>

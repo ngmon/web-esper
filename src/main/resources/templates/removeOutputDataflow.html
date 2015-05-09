@@ -7,6 +7,10 @@
           href="../../css/style.css"/>
 </head>
 <body>
+<div class="columns">
+    <div class="leftColumn"/>
+
+    <div class="middleColumn">
     <div align="center">
         <h3>Are you sure you want to remove this output dataflow?</h3>
         <!--@thymesVar id="dataflowName" type="String"-->
@@ -24,5 +28,14 @@
         <div th:include="fragments/backToManagement :: outputDataflow"></div>
         <div th:include="fragments/footer :: footer"></div>
     </div>
+
+        <div class="bottomLogoWrapper">
+            <div class="bottomLogo"/>
+        </div>
+    </div>
+
+    <div class="rightColumn"/>
+    <div class="afterColumns"/>
+</div>
 </body>
 </html>

@@ -7,42 +7,59 @@
           href="../../css/style.css"/>
 </head>
 <body>
-    <div align="center">
-        <h1>Input dataflow management</h1>
-        <p>
-            Input dataflow management allows you to add and remove
-            input dataflows, which represent AMQP stream sources
-            and send upcoming events into Esper for querying.
-        </p>
-        <p>
-        <fieldset class="myFieldSet">
-            <fieldset>
-                <legend>All input dataflows</legend>
-                <div th:unless="${#lists.isEmpty(allInputDataflows)}">
-                    <form action="#" th:object="${EventTypeModel}">
-                        <table>
-                            <tbody>
-                            <tr th:each="item : ${allInputDataflows}">
-                                <td th:text="${item}" />
-                                <td> <a th:action="GET" th:href="@{/removeInputDataflow/(dataflowName=${item})}">Delete</a></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </form>
-                </div>
-                <!--@thymesVar id="allInputDataflows" type="List"-->
-                <div th:if="${#lists.isEmpty(allInputDataflows)}">
-                    No input dataflows present.
-                </div>
+<div class="columns">
+    <div class="leftColumn"/>
+
+    <div class="middleColumn">
+        <div align="center">
+            <h1>Projection management</h1>
+            <p>
+                Projection management allows you to add and remove
+                projections, which represent AMQP stream sources based on
+                existing Esper exchanges and are used for sending
+                upcoming events into Esper for querying.
+                User can choose which event's properties
+                should be present in projection.
+            </p>
+            <p>
+            <fieldset class="myFieldSet">
+                <fieldset>
+                    <!--@thymesVar id="allInputDataflows" type="Map"-->
+                    <legend>All projections</legend>
+                    <div th:unless="${#maps.isEmpty(allInputDataflows)}">
+                        <form action="#" th:object="${EventTypeModel}">
+                            <table>
+                                <tbody>
+                                <tr th:each="item : ${allInputDataflows}">
+                                    <td th:text="${item.key}" />
+                                    <td th:text="${item.value}" />
+                                    <td> <a th:action="GET" th:href="@{/removeInputDataflow/(dataflowName=${item.key})}">Delete</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                    <div th:if="${#maps.isEmpty(allInputDataflows)}">
+                        No projections present.
+                    </div>
+                </fieldset>
             </fieldset>
-        </fieldset>
-        </p>
-        <p>
-        <form method="GET" action="/addInputDataflow">
-            <input type="submit" align="center" value="Add input dataflow"/>
-        </form>
-        </p>
-        <div th:include="fragments/footer :: footer"></div>
+            </p>
+            <p>
+            <form method="GET" action="/addInputDataflow">
+                <input type="submit" align="center" value="Add new projection"/>
+            </form>
+            </p>
+            <div th:include="fragments/footer :: footer"></div>
+        </div>
+
+        <div class="bottomLogoWrapper">
+            <div class="bottomLogo"/>
+        </div>
+    </div>
+
+    <div class="rightColumn"/>
+    <div class="afterColumns"/>
     </div>
 </body>
 </html>
