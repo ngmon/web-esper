@@ -429,10 +429,14 @@ public class WebApi {
         String characters = outputEventType + System.currentTimeMillis();
         Random rng = new Random(System.currentTimeMillis());
 
-        char[] text = new char[10];
-        for (int i = 0; i < 10; i++)
+        char[] text = new char[12];
+        for (int i = 0; i < 12; i++)
         {
             text[i] = characters.charAt(rng.nextInt(characters.length()));
+
+            while(Character.isDigit(text[0])) {
+                text[0] = characters.charAt(rng.nextInt(characters.length()));
+            }
         }
         return new String(text);
     }
