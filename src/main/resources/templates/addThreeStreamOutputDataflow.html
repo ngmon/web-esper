@@ -4,11 +4,11 @@
 <head>
     <link rel="stylesheet"
           th:href="@{/css/style.css}"
-          href="../../resources/static/css/style.css"/>
+          href="../../css/style.css"/>
 </head>
 <body>
 <div class="columns">
-    <div class="leftColumn"></div>
+    <div class="leftColumn"/>
 
     <div class="middleColumn">
     <div align="center">
@@ -19,52 +19,36 @@
                 <form action="#" th:action="@{/addThreeStreamOutputDataflow}" th:object="${OutputDataflowModel}" method="post">
                     <fieldset class="myFieldSet">
                         <fieldset>
-                            <legend>First event type</legend>
+                            <legend>First projection</legend>
                             <p>
-                                <label>
-                                    <select th:field="*{firstEventType}">
-                                        <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">
-                                            Available event types
-                                        </option>
-                                    </select>
-                                </label>
+                                <select th:field="*{firstEventType}">
+                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
+                                </select>
                             </p>
                         </fieldset>
                         <fieldset>
-                            <legend>Second event type</legend>
+                            <legend>Second projection</legend>
                             <p>
-                                <label>
-                                    <select th:field="*{secondEventType}">
-                                        <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">
-                                            Available event types
-                                        </option>
-                                    </select>
-                                </label>
+                                <select th:field="*{secondEventType}">
+                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
+                                </select>
                             </p>
                         </fieldset>
                         <fieldset>
-                            <legend>Third event type</legend>
+                            <legend>Third projection</legend>
                             <p>
-                                <label>
-                                    <select th:field="*{thirdEventType}">
-                                        <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">
-                                            Available event types
-                                        </option>
-                                    </select>
-                                </label>
+                                <select th:field="*{thirdEventType}">
+                                    <option th:each="sopt:${availEventTypes}" th:value="${sopt}" th:text="${sopt}">Available event types</option>
+                                </select>
                             </p>
                         </fieldset>
                         <fieldset>
-                            <legend>Output event type</legend>
-                            <p><label>
-                                <input type="text" th:field="*{outputEventType}"/>
-                            </label></p>
+                            <legend>Output routing key</legend>
+                            <p><input type="text" th:field="*{outputEventType}" /></p>
                         </fieldset>
                         <fieldset>
                             <legend>EPL statement</legend>
-                            <p><label>
-                                <input type="text" th:field="*{query}"/>
-                            </label></p>
+                            <p><input type="text" th:field="*{query}" /></p>
                         </fieldset>
                         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset"/></p>
                     </fieldset>
@@ -79,12 +63,12 @@
     </div>
 
         <div class="bottomLogoWrapper">
-            <div class="bottomLogo"></div>
+            <div class="bottomLogo"/>
         </div>
     </div>
 
-    <div class="rightColumn"></div>
-    <div class="afterColumns"></div>
+    <div class="rightColumn"/>
+    <div class="afterColumns"/>
 </div>
 </body>
 </html>

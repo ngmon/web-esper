@@ -4,11 +4,11 @@
 <head>
     <link rel="stylesheet"
           th:href="@{/css/style.css}"
-          href="../../resources/static/css/style.css"/>
+          href="../../css/style.css"/>
 </head>
 <body>
 <div class="columns">
-    <div class="leftColumn"></div>
+    <div class="leftColumn"/>
 
     <div class="middleColumn">
         <div align="center">
@@ -28,11 +28,11 @@
                     <legend>All projections</legend>
                     <div th:unless="${#maps.isEmpty(allInputDataflows)}">
                         <form action="#" th:object="${EventTypeModel}">
-                            <table>
+                            <table class="tableOfFlows">
                                 <tbody>
                                 <tr th:each="item : ${allInputDataflows}">
-                                    <td th:text="${item.key}" ></td>
-                                    <td th:text="${item.value}" ></td>
+                                    <td th:text="${item.key}" />
+                                    <td th:text="${item.value}" />
                                     <td> <a th:action="GET" th:href="@{/removeInputDataflow/(dataflowName=${item.key})}">Delete</a></td>
                                 </tr>
                                 </tbody>
@@ -44,20 +44,22 @@
                     </div>
                 </fieldset>
             </fieldset>
+            </p>
             <p>
             <form method="GET" action="/addInputDataflow">
                 <input type="submit" align="center" value="Add new projection"/>
             </form>
+            </p>
             <div th:include="fragments/footer :: footer"></div>
         </div>
 
         <div class="bottomLogoWrapper">
-            <div class="bottomLogo"></div>
+            <div class="bottomLogo"/>
         </div>
     </div>
 
-    <div class="rightColumn"></div>
-    <div class="afterColumns"></div>
+    <div class="rightColumn"/>
+    <div class="afterColumns"/>
     </div>
 </body>
 </html>

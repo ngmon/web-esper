@@ -4,11 +4,11 @@
 <head>
     <link rel="stylesheet"
           th:href="@{/css/style.css}"
-          href="../../resources/static/css/style.css"/>
+          href="../../css/style.css"/>
 </head>
 <body>
 <div class="columns">
-    <div class="leftColumn"></div>
+    <div class="leftColumn"/>
 
     <div class="middleColumn">
         <div align="center">
@@ -18,12 +18,12 @@
                     <fieldset>
                         <legend>Projection name</legend>
                         <!--@thymesVar id="dataflowName" type="String"-->
-                        <p th:text="${dataflowName}" ></p>
+                        <p th:text="${dataflowName}" />
                     </fieldset>
                     <fieldset>
                         <legend>Deletion result</legend>
                         <!--@thymesVar id="result" type="String"-->
-                        <p th:text="${result}" ></p>
+                        <p th:text="${result}" />
                     </fieldset>
                 </fieldset>
             </div>
@@ -32,12 +32,12 @@
         </div>
 
         <div class="bottomLogoWrapper">
-            <div class="bottomLogo"></div>
+            <div class="bottomLogo"/>
         </div>
     </div>
 
-    <div class="rightColumn"></div>
-    <div class="afterColumns"></div>
+    <div class="rightColumn"/>
+    <div class="afterColumns"/>
     </div>
 </body>
 </html>

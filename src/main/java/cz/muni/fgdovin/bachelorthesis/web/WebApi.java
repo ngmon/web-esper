@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * This class provides web application interface, it reflects
@@ -227,7 +228,7 @@ public class WebApi {
     @RequestMapping(value = "/addOneStreamOutputDataflow", method = RequestMethod.POST)
     public String submitOneStreamOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
         String outputEventType = modelClass.getOutputEventType();
-        String dataflowName = outputEventType + System.currentTimeMillis();
+        String dataflowName = hashWithCurrTime(outputEventType);
         modelClass.setDataflowName(dataflowName);
         modelClass.setQueueName(outputEventType);
 
@@ -249,7 +250,6 @@ public class WebApi {
         }
         return "addOneStreamOutputDataflowResult";
     }
-
     /**
      * This method is called when user decides to add new two-stream output dataflow.
      *
@@ -273,7 +273,7 @@ public class WebApi {
     @RequestMapping(value = "/addTwoStreamOutputDataflow", method = RequestMethod.POST)
     public String submitTwoStreamOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
         String outputEventType = modelClass.getOutputEventType();
-        String dataflowName = outputEventType + System.currentTimeMillis();
+        String dataflowName = hashWithCurrTime(outputEventType);
         modelClass.setDataflowName(dataflowName);
         modelClass.setQueueName(outputEventType);
 
@@ -319,7 +319,7 @@ public class WebApi {
     @RequestMapping(value = "/addThreeStreamOutputDataflow", method = RequestMethod.POST)
     public String submitThreeStreamOutputDataflowForm(@ModelAttribute("OutputDataflowModel") OutputDataflowModel modelClass, ModelMap resultModel) {
         String outputEventType = modelClass.getOutputEventType();
-        String dataflowName = outputEventType + System.currentTimeMillis();
+        String dataflowName = hashWithCurrTime(outputEventType);
         modelClass.setDataflowName(dataflowName);
         modelClass.setQueueName(outputEventType);
 
@@ -353,7 +353,6 @@ public class WebApi {
      */
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.GET)
     public String removeOutputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
-        //TODO make it work as now it is whole dataflow, not just name
         resultModel.addAttribute("dataflowName", dataflowName);
         return "removeOutputDataflow";
     }
@@ -379,18 +378,17 @@ public class WebApi {
         }
         return "removeOutputDataflowResult";
     }
-    //TODO fix documentation
+
     /**
      * This method is used to find out if it is necessary to create new AMQP queue based on user input.
      * If RabbitMQ server already has queue with given name, this method will return true.
      * In this case it is up to user to check if said queue has correct parameters,
      * mainly binding to output exchange saved in properties file..
      *
-     * @param eventType String describing desired AMQP queue. This string is also name of event type
-     *                  located within this queue and name of projection handling this queue.
+     * @param eventType String describing desired AMQP queue. This serves as routing key.
      *
-     * @return True if RabbitMQ server has the definition of given queue. It was either already present,
-     * or this method created it with correct binding to exchange defined in config file.
+     * @return True if RabbitMQ server has the definition of given queue bound to output exchange.
+     * It was either already present, or this method created it with correct binding.
      * False is returned if creation of AMQP queue failed.
      */
     private boolean checkCorrectOutputQueueBinding(String eventType) {
@@ -426,4 +424,17 @@ public class WebApi {
         }
         return added;
     }
+
+    private String hashWithCurrTime(String outputEventType) {
+        String characters = outputEventType + System.currentTimeMillis();
+        Random rng = new Random(System.currentTimeMillis());
+
+        char[] text = new char[10];
+        for (int i = 0; i < 10; i++)
+        {
+            text[i] = characters.charAt(rng.nextInt(characters.length()));
+        }
+        return new String(text);
+    }
+
 }

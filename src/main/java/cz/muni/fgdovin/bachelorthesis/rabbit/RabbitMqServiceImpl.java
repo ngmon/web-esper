@@ -193,13 +193,16 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         Map<String, Object> temp = new HashMap<>();
         Map<String, Object> result = new HashMap<>();
         try {
-            //TODO return event types
             temp = this.jsonFlattener.jsonToFlatMap(
                     String.valueOf(esperExchange.getArguments().getAdditionalProperties().get("schema")));
         } catch (IOException e) {
             e.printStackTrace();
         }
         for(String key : temp.keySet()) {
+            if(key.equals("@timestamp")) {
+                result.put(key, Long.class.getSimpleName());
+                continue;
+            }
             result.put(key, temp.get(key).getClass().getSimpleName());
         }
         return result;

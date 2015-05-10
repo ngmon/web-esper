@@ -11,6 +11,9 @@ import com.espertech.esper.client.dataflow.EPDataFlowInstantiationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -236,7 +239,40 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
             }
             return null;
         }
-        return myDataflow.getText();
+        String details = myDataflow.getText();
+
+        BufferedReader reader = new BufferedReader(new StringReader(details));
+        StringBuilder result = new StringBuilder("");
+        String line;
+        try {
+            line = reader.readLine();
+            while(line != null) {
+                if(line.startsWith("queueName")) {
+                    result.append(line.substring(0, line.length() - 1));
+                }
+                else if(line.startsWith("exchange")) {
+                    result.append(line.substring(0, line.length() - 1));
+                }
+                else if(line.startsWith("AMQP")) {
+                    result.append(line);
+                }
+                else if(line.startsWith("select")){
+                    result.append(line);
+                }
+                else if(line.startsWith("}")) {
+                    result.append("}");
+                }
+                else {
+                    line = reader.readLine();
+                    continue;
+                }
+                result.append("\n");
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            return null;
+        }
+        return result.toString();
     }
 
     /**
@@ -293,6 +329,6 @@ public class EsperUserFriendlyServiceImpl implements EsperUserFriendlyService {
      * or false otherwise.
      */
     private boolean isInputDataflow(String dataflowDetails) {
-        return dataflowDetails.endsWith("EventBusSink(instream) {}");
+        return dataflowDetails.contains("AMQPSource");
     }
 }

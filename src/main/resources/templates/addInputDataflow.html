@@ -4,13 +4,13 @@
 <head>
     <link rel="stylesheet"
           th:href="@{/css/style.css}"
-          href="../../resources/static/css/style.css"/>
+          href="../../css/style.css"/>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="application/javascript" th:src="@{/js/generateTable.js}"></script>
 </head>
 <body>
     <div class="columns">
-        <div class="leftColumn"></div>
+        <div class="leftColumn"/>
 
         <div class="middleColumn">
             <div align="center">
@@ -20,17 +20,15 @@
                         <fieldset class="myFieldSet">
                             <fieldset>
                                 <legend>Projection name</legend>
-                                <p><label>
-                                    <input type="text" th:field="*{eventType}"/>
-                                </label></p>
+                                <p><input type="text" th:field="*{eventType}" /></p>
                             </fieldset>
                             <fieldset>
                                 <legend>Exchange</legend>
                                 <p>
                                     <!--@thymesVar id="availExchanges" type="List"-->
-                                    <label for="exchangeSelect"></label><select id="exchangeSelect" th:field="*{exchange}" onchange="paintTable()">
+                                    <select id="exchangeSelect" th:field="*{exchange}" onchange="paintTable()">
                                         <option value="Available exchanges">Available exchanges</option>
-                                        <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.name}" th:text="${oneExchange.name}"></option>
+                                        <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.name}" th:text="${oneExchange.name}"/>
                                     </select>
                                 </p>
                             </fieldset>
@@ -50,13 +48,13 @@
             </div>
 
             <div class="bottomLogoWrapper">
-                <div class="bottomLogo"></div>
+                <div class="bottomLogo"/>
             </div>
         </div>
 
-        <div class="rightColumn"></div>
+        <div class="rightColumn"/>
 
-        <div class="afterColumns"></div>
+        <div class="afterColumns"/>
     </div>
 </body>
 </html>

@@ -4,11 +4,11 @@
 <head>
     <link rel="stylesheet"
           th:href="@{/css/style.css}"
-          href="../../resources/static/css/style.css"/>
+          href="../../css/style.css"/>
 </head>
 <body>
 <div class="columns">
-    <div class="leftColumn"></div>
+    <div class="leftColumn"/>
 
     <div class="middleColumn">
 <div align="center">
@@ -16,12 +16,12 @@
     <fieldset class="myFieldSet">
         <fieldset>
             <legend>Dataflow name</legend>
-            <p th:text="${OutputDataflowModel.dataflowName}" ></p>
+            <p th:text="${OutputDataflowModel.dataflowName}" />
         </fieldset>
         <fieldset>
             <legend>Creation result</legend>
             <!--@thymesVar id="result" type="String"-->
-            <p th:text="${result}" ></p>
+            <p th:text="${result}" />
         </fieldset>
     </fieldset>
     <div th:include="fragments/backToManagement :: outputDataflow"></div>
@@ -29,12 +29,12 @@
 </div>
 
 <div class="bottomLogoWrapper">
-    <div class="bottomLogo"></div>
+    <div class="bottomLogo"/>
 </div>
 </div>
 
-<div class="rightColumn"></div>
-<div class="afterColumns"></div>
+<div class="rightColumn"/>
+<div class="afterColumns"/>
 </div>
 </body>
 </html>
