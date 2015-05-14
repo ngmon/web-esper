@@ -18,11 +18,11 @@ function paintTable(){
 
             var id = "mapProperties" + i + ".key";
             var arrayId = "mapProperties[" + i + "].key";
-            newRowContent += "<td><input readonly type=\"text\" class=\"propertyName\" id=\"" + id + "\" name=\"" + arrayId + "\" value=\"" + k + "\"></td>";
+            newRowContent += "<td><input STYLE=\"text-align: center\" size=\"50\" readonly type=\"text\" class=\"propertyName\" id=\"" + id + "\" name=\"" + arrayId + "\" value=\"" + k + "\"></td>";
 
             id = "mapProperties" + i + ".value";
             arrayId = "mapProperties[" + i + "].value";
-            newRowContent += ("<td><input readonly type=\"text\" class=\"propertyType\" id=\"" + id + "\" name=\"" + arrayId + "\" value=\"" + v + "\"></td>");
+            newRowContent += ("<td><input STYLE=\"text-align: center\" size=\"10\" readonly type=\"text\" class=\"propertyType\" id=\"" + id + "\" name=\"" + arrayId + "\" value=\"" + v + "\"></td>");
 
             $("#dyntable").find("tbody").append(newRowContent);
             i++;
