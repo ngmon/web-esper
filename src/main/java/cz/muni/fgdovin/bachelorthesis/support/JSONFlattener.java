@@ -9,10 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * @author Filip Gdovin
- * @version 4. 5. 2015
- */
 public class JSONFlattener {
 
     private ObjectMapper objectMapper;
@@ -44,10 +40,8 @@ public class JSONFlattener {
             String key = entry1.getKey();
             JsonNode value = entry1.getValue();
 
-            //TODO array??
-
             if (value.getNodeType().equals(JsonNodeType.OBJECT)) {
-                Map<String, Object> map2 = process(value.fields());
+                Map<String, Object> map2 = process(value.fields()); // recursion
 
                 for (Map.Entry<String, Object> entry2 : map2.entrySet()) {
                     map1.put(key.concat(".").concat(entry2.getKey()), entry2.getValue());
