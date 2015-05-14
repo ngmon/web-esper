@@ -67,7 +67,12 @@ public class RabbitMqServiceImpl implements RabbitMqService {
      * {@inheritDoc}
      */
     public String isAlive() {
-        Status serverStatus = this.rabbitManagementApi.alivenessTest(this.vhost);  //takes vhost name as argument
+        Status serverStatus;
+        try {
+            serverStatus = this.rabbitManagementApi.alivenessTest(this.vhost);  //takes vhost name as argument
+        } catch (Exception ex) {
+            return "NOK" + ex.getMessage();
+        }
         return serverStatus.getStatus();
     }
 
