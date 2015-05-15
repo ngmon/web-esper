@@ -1,6 +1,6 @@
-function paintTable(){
+function paintTable(applicationLocation){
     var selected = $("#exchangeSelect").find("option:selected").text();
-    var URL = "http://localhost:8080/getSchema?name=" + selected;
+    var URL = applicationLocation + "/getSchema?name=" + selected;
     $.getJSON(URL, function(data) {
         successCallBack(data);
     });

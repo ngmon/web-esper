@@ -118,6 +118,9 @@ public class WebApi {
     @RequestMapping(value = "/addInputDataflow", method = RequestMethod.GET)
     public ModelAndView InputDataflowForm() {
         ModelAndView model = new ModelAndView("addInputDataflow", "EventTypeModel", new EventTypeModel());
+        String appLocation = environment.getProperty("applicationURL")
+                + ":" + environment.getProperty("applicationPort");
+        model.addObject("applicationLocation", appLocation);
         model.addObject("availExchanges", this.rabbitMqService.listExchanges());
         return model;
     }

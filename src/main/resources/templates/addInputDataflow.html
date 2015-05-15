@@ -26,7 +26,8 @@
                                 <legend>Exchange</legend>
                                 <p>
                                     <!--@thymesVar id="availExchanges" type="List"-->
-                                    <select id="exchangeSelect" th:field="*{exchange}" onchange="paintTable()">
+                                    <!--@thymesVar id="applicationLocation" type="String"-->
+                                    <select id="exchangeSelect" th:field="*{exchange}" th:attr="onchange='javascript:paintTable(\'' + ${applicationLocation} + '\');'">
                                         <option value="Available exchanges">Available exchanges</option>
                                         <option th:each="oneExchange: ${availExchanges}" th:value="${oneExchange.name}" th:text="${oneExchange.name}"/>
                                     </select>
