@@ -1,5 +1,8 @@
 package cz.muni.fgdovin.bachelorthesis.support;
 
+import org.springframework.core.env.Environment;
+
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,8 +10,8 @@ import java.util.Map;
 /**
  * Support class for easy-to-use conversion of list of
  * Property instances to Map required by Esper.
- * Also '@' is removed from "@timestamp" attribute
- * because Esper treats it as special character.
+ * Also, timestamp attribute specified in config file
+ * is renamed to "timestamp".
  *
  * @author Filip Gdovin
  * @version 7. 3. 2015
@@ -22,6 +25,10 @@ public class EventTypeHelper {
      * @param properties List of Property, where each contains pair "attributeName attributeType"
      * @return Map representation of such List, with special characters removed.
      */
+
+    @Resource
+    private Environment environment;
+
     public Map<String, Object> toMap(List<EventProperty> properties) {
         if((properties == null) || (properties.isEmpty()) ) {
             return null;
@@ -35,7 +42,9 @@ public class EventTypeHelper {
             int spacePosition = pair.indexOf(" ");
             String key = pair.substring(0, spacePosition);
             //TODO remove from all attributes if necessary?
-            if(key.equals("@timestamp")) {
+
+            String timestampKey = environment.getProperty("timestampAttribute");
+            if(key.equals(timestampKey)) {
                 key = "timestamp";
             }
             String value = pair.substring(spacePosition+1);

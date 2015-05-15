@@ -33,8 +33,8 @@ public interface EsperUserFriendlyService {
      *               It is important those properties match actual event structure,
      *               otherwise it will be impossible to execute certain queries.
      *               (e.g. avg(val1) expects 'val1' to be Number)
-     *               Also, for the purpose of this thesis, property named
-     *               "@timestamp" with value of Long is expected and MUST be provided.
+     *               Also, for the purpose of this thesis, property carrying timestamp
+     *               with value of Long is expected and MUST be provided.
      * @return Returns whether the event type was successfully added to the Esper.
      */
     public boolean addEventType(String eventName, Map<String, Object> schema);

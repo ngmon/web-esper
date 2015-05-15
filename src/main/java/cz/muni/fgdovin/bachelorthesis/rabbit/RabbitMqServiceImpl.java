@@ -203,9 +203,12 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        String timestampKey = environment.getProperty("timestampAttribute");
+
         for(String key : temp.keySet()) {
-            if(key.equals("@timestamp")) {
-                result.put(key, Long.class.getSimpleName());
+            if(key.equals(timestampKey)) {
+                result.put("timestamp", Long.class.getSimpleName());
                 continue;
             }
             result.put(key, temp.get(key).getClass().getSimpleName());

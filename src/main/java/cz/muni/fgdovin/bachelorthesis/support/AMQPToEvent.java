@@ -6,7 +6,10 @@ import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,10 +25,14 @@ import java.util.*;
  * @author Filip Gdovin
  * @version 6. 2. 2015
  */
+@Service
 public class AMQPToEvent implements AMQPToObjectCollector {
     private static final Log log = LogFactory.getLog(CustomAMQPSink.class);
 
+    private static String timestampKey;
+
     private JSONFlattener flattener = new JSONFlattener(new ObjectMapper());
+
 
     /**
      * Overridden method which is responsible for collecting event in form of byte[]
@@ -44,8 +51,9 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     }
 
     /**
-     * This method is responsible for handling the "@timestamp" attribute, presence
-     * of which is mandatory. If map of event contains no key with this name,
+     * This method is responsible for handling the timestamp attribute, presence
+     * of which is mandatory. Name of this attribute is loaded from config file.
+     * If map of event contains no key with this name,
      * event is not sent for further processing. Otherwise, value of such attribute
      * is converted to Long as desired by Esper.
      *
@@ -56,13 +64,11 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     private Map<String, Object> alterMap(String input) throws IOException {
         Map<String, Object> mapOfEvent = flattener.jsonToFlatMap(input);
 
-        // TODO: Deal with invalid input. Done?
-        String key = "@timestamp";
-        if(!mapOfEvent.containsKey(key)) {
-            throw new IOException("Event did not contain \"@timestamp\" attribute, which is mandatory");
+        if(!mapOfEvent.containsKey(timestampKey)) {
+            throw new IOException("Event did not contain " + timestampKey + " timestamp attribute, which is mandatory");
         } else {
-            String timestampString = (mapOfEvent.get(key).toString());
-            mapOfEvent.remove(key);
+            String timestampString = (mapOfEvent.get(timestampKey).toString());
+            mapOfEvent.remove(timestampKey);
             Long timestampLong = parseDate(timestampString);
             mapOfEvent.put("timestamp", timestampLong);
         }
@@ -83,5 +89,9 @@ public class AMQPToEvent implements AMQPToObjectCollector {
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse(input, formatter);
         EventToAMQP.setZoneID(zonedDateTime.getZone().getId());
         return zonedDateTime.toInstant().toEpochMilli();
+    }
+
+    public static void setTimestampKey(String timestampKey) {
+        AMQPToEvent.timestampKey = timestampKey;
     }
 }

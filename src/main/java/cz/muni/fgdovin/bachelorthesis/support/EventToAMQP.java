@@ -4,7 +4,10 @@ import com.espertech.esperio.amqp.ObjectToAMQPCollector;
 import com.espertech.esperio.amqp.ObjectToAMQPCollectorContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Map;
@@ -19,9 +22,12 @@ import java.util.Map;
  * @author Filip Gdovin
  * @version 6. 4. 2015
  */
+@Service
 public class EventToAMQP implements ObjectToAMQPCollector {
 
     private static String zoneID;
+
+    private static String timestampKey;
 
     /**
      * Overridden method which is responsible for collecting event in form of Map
@@ -34,9 +40,12 @@ public class EventToAMQP implements ObjectToAMQPCollector {
         context.getEmitter().send(fromMap(context.getObject()));
     }
 
+
+    //TODO fix documentation
     /**
-     * This method is responsible for handling the "@timestamp" attribute, presence
-     * of which is mandatory. If map of event contains no key with this name,
+     * This method is responsible for handling the timestamp attribute, presence
+     * of which is mandatory. Name of this attribute is loaded from config file.
+     * If map of event contains no key with this name,
      * event is not sent for further processing. Otherwise, value of such attribute
      * is converted to Long as desired by Esper.
      *
@@ -50,7 +59,7 @@ public class EventToAMQP implements ObjectToAMQPCollector {
             Long timestampLong = Long.parseLong(mapOfEvent.get(key).toString());
             mapOfEvent.remove(key);
             String timestampString = returnTimeStampAsString(timestampLong);
-            mapOfEvent.put("@timestamp", timestampString);
+            mapOfEvent.put(timestampKey, timestampString);
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -83,5 +92,9 @@ public class EventToAMQP implements ObjectToAMQPCollector {
      */
     public static void setZoneID(String zoneID) {
         EventToAMQP.zoneID = zoneID;
+    }
+
+    public static void setTimestampKey(String timestampKey) {
+        EventToAMQP.timestampKey = timestampKey;
     }
 }

@@ -2,7 +2,9 @@ package cz.muni.fgdovin.bachelorthesis.web;
 
 import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
+import cz.muni.fgdovin.bachelorthesis.support.AMQPToEvent;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
+import cz.muni.fgdovin.bachelorthesis.support.EventToAMQP;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
 
 import org.springframework.core.env.Environment;
@@ -12,6 +14,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +50,13 @@ public class WebApi {
 
     @Autowired
     private RabbitMqService rabbitMqService;
+
+    @PostConstruct
+    public void setTimestampValue() {
+        String usedTimestampKey = environment.getProperty("timestampAttribute");
+        AMQPToEvent.setTimestampKey(usedTimestampKey);
+        EventToAMQP.setTimestampKey(usedTimestampKey);
+    }
 
     /**
      * This method is bound to "/" mapping and displays welcome page.

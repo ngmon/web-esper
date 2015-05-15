@@ -9,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.env.Environment;
+
+import javax.annotation.Resource;
 
 /**
  * Demo RabbitMQ Receiver is used to test the application,
@@ -24,6 +27,9 @@ import org.apache.logging.log4j.Logger;
 public class RabbitMQReceiver {
 
     private static final Logger logger = LogManager.getLogger(RabbitMQReceiver.class);
+
+    @Resource
+    private Environment environment;
 
     /**
      * This method is used to listen to given AMQP queue for
@@ -52,7 +58,9 @@ public class RabbitMQReceiver {
         QueueingConsumer consumer = new QueueingConsumer(channel);
         channel.basicConsume(queueName, true, consumer);
 
-        String pattern = "@timestamp\":";
+        String timestampKey = environment.getProperty("timestampAttribute");
+
+        String pattern = timestampKey + "\":";
 
         int messageCount = 0;
         while (messageCount < numOfMessages) {
