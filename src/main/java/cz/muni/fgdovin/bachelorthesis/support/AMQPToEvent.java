@@ -28,7 +28,6 @@ public class AMQPToEvent implements AMQPToObjectCollector {
     private static final Log log = LogFactory.getLog(CustomAMQPSink.class);
 
     private static String timestampKey;
-    private static Map<String, Object> mapOfEvent;
 
     private JSONFlattener flattener = new JSONFlattener(new ObjectMapper());
 
@@ -61,7 +60,7 @@ public class AMQPToEvent implements AMQPToObjectCollector {
      * @throws IOException in case event doesn't have valid structure.
      */
     private Map<String, Object> alterMap(String input) throws IOException {
-        mapOfEvent = flattener.jsonToFlatMap(input);
+        Map<String, Object> mapOfEvent = flattener.jsonToFlatMap(input);
 
         if(!mapOfEvent.containsKey(timestampKey)) {
             throw new IOException("Event did not contain " + timestampKey + " timestamp attribute, which is mandatory");
