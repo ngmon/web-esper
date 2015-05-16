@@ -4,10 +4,8 @@ import com.espertech.esperio.amqp.ObjectToAMQPCollector;
 import com.espertech.esperio.amqp.ObjectToAMQPCollectorContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Map;

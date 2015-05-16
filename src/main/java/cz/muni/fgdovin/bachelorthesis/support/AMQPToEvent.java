@@ -6,10 +6,8 @@ import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -63,9 +61,6 @@ public class AMQPToEvent implements AMQPToObjectCollector {
      * @throws IOException in case event doesn't have valid structure.
      */
     private Map<String, Object> alterMap(String input) throws IOException {
-        if(mapOfEvent != null) {
-            mapOfEvent.clear();
-        }
         mapOfEvent = flattener.jsonToFlatMap(input);
 
         if(!mapOfEvent.containsKey(timestampKey)) {
