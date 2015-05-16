@@ -63,7 +63,9 @@ public class AMQPToEvent implements AMQPToObjectCollector {
      * @throws IOException in case event doesn't have valid structure.
      */
     private Map<String, Object> alterMap(String input) throws IOException {
-        mapOfEvent.clear();
+        if(mapOfEvent != null) {
+            mapOfEvent.clear();
+        }
         mapOfEvent = flattener.jsonToFlatMap(input);
 
         if(!mapOfEvent.containsKey(timestampKey)) {
