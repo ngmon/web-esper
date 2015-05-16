@@ -19,8 +19,7 @@ public class JSONFlattener {
 
     /**
      * This method converts one event saved in JSON format as String
-     * to Map without any nested attributes.
-     * Jackson library is used to do the conversion.
+     * to Map. Jackson library is used to do the conversion.
      *
      * @param json String containing valid JSON in format {"val1":8, "val2":"eight"}
      * @return Map representation of input event.
@@ -30,7 +29,13 @@ public class JSONFlattener {
         return process(this.objectMapper.readValue(json, JsonNode.class).fields());
     }
 
-    //TODO document this
+    /**
+     * Method used to process map, changing nested attributes
+     * into simple ones.
+     *
+     * @param nodeIterator iterator over one map entry
+     * @return map without nested attributes
+     */
     private Map<String, Object> process(Iterator<Map.Entry<String, JsonNode>> nodeIterator) {
         Map<String, Object> map1 = new HashMap<>();
 
