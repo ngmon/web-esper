@@ -38,14 +38,11 @@ public class EventToAMQP implements ObjectToAMQPCollector {
         context.getEmitter().send(fromMap(context.getObject()));
     }
 
-
-    //TODO fix documentation
     /**
      * This method is responsible for handling the timestamp attribute, presence
      * of which is mandatory. Name of this attribute is loaded from config file.
-     * If map of event contains no key with this name,
-     * event is not sent for further processing. Otherwise, value of such attribute
-     * is converted to Long as desired by Esper.
+     * If map of event contains key with this name, value of such attribute
+     * is converted back to String ISO8601 as desired by Esper.
      *
      * @param object Object containing one event in Map format.
      * @return JSON representation of one event, with timestamp again in String.

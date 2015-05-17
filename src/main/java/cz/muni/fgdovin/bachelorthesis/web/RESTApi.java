@@ -1,6 +1,5 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +38,7 @@ public class RESTApi {
         try {
             result = mapper.writeValueAsString(this.rabbitMqService.getSchemaForExchange(name));
         } catch (Exception e) {
-            logger.error("Failed to get schema for exchange " + name + ", returning " + result);
+            logger.error("Failed to get schema for exchange " + name + ", returning " + null);
         }
         if(logger.isDebugEnabled()){
             logger.debug("Returning " + result + " as schema for " + name);

@@ -92,7 +92,6 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             bind.setRoutingKey(queueName);
             response = this.rabbitManagementApi.bindExchangeToQueue(this.vhost, this.outputExchangeName, queueName, bind);
         }
-        //TODO write this in better way?
         return ((response.getStatus() > 199) && (response.getStatus() < 300));
     }
 
@@ -112,7 +111,6 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             bind.setRoutingKey(queueName);
             response = this.rabbitManagementApi.bindExchangeToQueue(this.vhost, exchangeName, queueName, bind);
         }
-        //TODO write this in better way?
         return ((response.getStatus() > 199) && (response.getStatus() < 300));
     }
 
@@ -120,7 +118,6 @@ public class RabbitMqServiceImpl implements RabbitMqService {
      * {@inheritDoc}
      */
     public void deleteQueue(String queueName) {
-        //TODO delete only queues bound to specified exchange?
         this.rabbitManagementApi.deleteQueue(this.vhost, queueName);
     }
 

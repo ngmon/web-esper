@@ -17,6 +17,10 @@ import java.util.Map;
  * @version 7. 3. 2015
  */
 public class EventTypeHelper {
+
+    @Resource
+    private Environment environment;
+
     /**
      * Method used to convert List of Property instances to Map.
      * Value in each Property must be String, Boolean, Integer or Long.
@@ -25,10 +29,6 @@ public class EventTypeHelper {
      * @param properties List of Property, where each contains pair "attributeName attributeType"
      * @return Map representation of such List, with special characters removed.
      */
-
-    @Resource
-    private Environment environment;
-
     public Map<String, Object> toMap(List<EventProperty> properties) {
         if((properties == null) || (properties.isEmpty()) ) {
             return null;
@@ -41,7 +41,6 @@ public class EventTypeHelper {
             pair = pair.trim();
             int spacePosition = pair.indexOf(" ");
             String key = pair.substring(0, spacePosition);
-            //TODO remove from all attributes if necessary?
 
             String timestampKey = environment.getProperty("timestampAttribute");
             if(key.equals(timestampKey)) {

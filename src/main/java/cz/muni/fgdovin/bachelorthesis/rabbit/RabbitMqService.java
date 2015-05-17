@@ -9,7 +9,7 @@ import java.util.Map;
  * This interface is used to communicate with RabbitMQ API library,
  * in particular to:
  * test if server is responding
- * add/remove//show all queues
+ * add/remove/show all queues
  * show(by name) exchange
  *
  * @author Filip Gdovin

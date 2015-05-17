@@ -16,7 +16,7 @@ public class EventTypeModel {
 
     private String eventType;
     private String properties;
-    private String exchange;  //TODO redundant?
+    private String exchange;
     private List<EventProperty> mapProperties;
 
     public EventTypeModel() {
