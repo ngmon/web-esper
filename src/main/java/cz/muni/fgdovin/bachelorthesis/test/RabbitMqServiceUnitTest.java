@@ -29,20 +29,20 @@ public class RabbitMqServiceUnitTest {
     }
 
     @Test
-    public void testQueueListShouldContainTwoQueues() {
-        assertEquals(0, this.rabbitMqService.listQueues().size());
+    public void testQueueListShouldContainNoQueues() {
+        assertEquals(0, this.rabbitMqService.listQueues("esperExchange").size());
     }
 
     @Test
     public void testCreateNewQueue() {
-        this.rabbitMqService.createQueue("someNewQueue");
-        assertEquals(1, this.rabbitMqService.listQueues().size());
+        this.rabbitMqService.createQueue("someNewQueue", "esperExchange");
+        assertEquals(1, this.rabbitMqService.listQueues("esperExchange").size());
     }
 
     @Test
     public void testRecreateAlreadyDefinedQueue() {
-        this.rabbitMqService.createQueue("someNewQueue");
-        this.rabbitMqService.createQueue("someNewQueue");
-        assertEquals(1, this.rabbitMqService.listQueues().size());
+        this.rabbitMqService.createQueue("someNewQueue", "esperExchange");
+        this.rabbitMqService.createQueue("someNewQueue", "esperExchange");
+        assertEquals(1, this.rabbitMqService.listQueues("esperExchange").size());
     }
 }
