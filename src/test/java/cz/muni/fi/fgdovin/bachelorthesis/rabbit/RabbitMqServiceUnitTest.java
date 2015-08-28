@@ -1,4 +1,4 @@
-package cz.muni.fgdovin.bachelorthesis.test;
+package cz.muni.fi.fgdovin.bachelorthesis.rabbit;
 
 import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.web.SpringBootApp;

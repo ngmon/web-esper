@@ -1,4 +1,4 @@
-package cz.muni.fgdovin.bachelorthesis.test;
+package cz.muni.fi.fgdovin.bachelorthesis.esper;
 
 import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
