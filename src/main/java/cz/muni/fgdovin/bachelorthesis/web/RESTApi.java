@@ -38,7 +38,7 @@ public class RESTApi {
         try {
             result = mapper.writeValueAsString(this.rabbitMqService.getSchemaForExchange(name));
         } catch (Exception e) {
-            logger.error("Failed to get schema for exchange " + name + ", returning " + null);
+            logger.error("Failed to get schema for exchange " + name + ", returning " + result);
         }
         if(logger.isDebugEnabled()){
             logger.debug("Returning " + result + " as schema for " + name);

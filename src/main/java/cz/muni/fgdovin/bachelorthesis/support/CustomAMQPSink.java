@@ -17,7 +17,6 @@ import com.espertech.esper.dataflow.annotations.DataFlowOpPropertyHolder;
 import com.espertech.esper.dataflow.annotations.DataFlowOperator;
 import com.espertech.esper.dataflow.interfaces.*;
 import com.espertech.esper.event.EventBeanAdapterFactory;
-import com.espertech.esperio.amqp.AMQPEmitter;
 import com.espertech.esperio.amqp.AMQPSettingsSink;
 import com.espertech.esperio.amqp.ObjectToAMQPCollectorContext;
 import com.rabbitmq.client.AMQP;
@@ -50,11 +49,13 @@ public class CustomAMQPSink implements DataFlowOpLifecycle {
     private transient Connection connection;
     private transient Channel channel;
     private ThreadLocal<ObjectToAMQPCollectorContext> collectorDataTL = new ThreadLocal<ObjectToAMQPCollectorContext>() {
+        @Override
         protected synchronized ObjectToAMQPCollectorContext initialValue() {
             return null;
         }
     };
 
+    @Override
     public DataFlowOpInitializeResult initialize(DataFlowOpInitializateContext context) throws Exception {
 
         EventType[] eventTypes = new EventType[context.getInputPorts().size()];
@@ -69,6 +70,7 @@ public class CustomAMQPSink implements DataFlowOpLifecycle {
         return null;
     }
 
+    @Override
     public void open(DataFlowOpOpenContext openContext) {
         log.info("Opening AMQP, settings are: " + settings.toString());
 
@@ -185,6 +187,7 @@ public class CustomAMQPSink implements DataFlowOpLifecycle {
         return result;
     }
 
+    @Override
     public void close(DataFlowOpCloseContext openContext) {
         try {
             if (channel != null) {

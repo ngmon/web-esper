@@ -66,6 +66,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String isAlive() {
         Status serverStatus;
         try {
@@ -79,25 +80,15 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean createQueue(String queueName) {
-        //create new queue
-        Queue newOne = new Queue();
-        newOne.setAutoDelete(false);
-        newOne.setDurable(false);
-        newOne.setArguments(new Arguments());
-        Response response = this.rabbitManagementApi.createQueue(this.vhost, queueName, newOne);
-        if((response.getStatus() > 199) && (response.getStatus() < 300)) {
-            //bind this queue to given output exchange
-            QueueBind bind = new QueueBind();
-            bind.setRoutingKey(queueName);
-            response = this.rabbitManagementApi.bindExchangeToQueue(this.vhost, this.outputExchangeName, queueName, bind);
-        }
-        return ((response.getStatus() > 199) && (response.getStatus() < 300));
+        return createQueue(queueName, this.outputExchangeName);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean createQueue(String queueName, String exchangeName) {
         //create new queue
         Queue newOne = new Queue();
@@ -117,6 +108,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void deleteQueue(String queueName) {
         this.rabbitManagementApi.deleteQueue(this.vhost, queueName);
     }
@@ -124,6 +116,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void deleteAllQueues() {
         List<String> allQueues = this.listQueues();
         allQueues.forEach(this::deleteQueue);
@@ -137,19 +130,15 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> listQueues() {
-        List<String> result = new ArrayList<>();
-        List<String> allQueueNames = this.getQueueNames();
-        List<Binding> allBindings = this.rabbitManagementApi.listBindings(this.vhost);
-        result.addAll(allBindings.stream().filter(oneBind -> oneBind.getSource().equals(this.exchangeName))
-                .filter(oneBind -> allQueueNames.contains(oneBind.getDestination()))
-                .map(Binding::getDestination).collect(Collectors.toList()));
-        return result;
+        return listQueues(this.exchangeName);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> listQueues(String exchangeName) {
         List<String> result = new ArrayList<>();
         List<String> allQueueNames = this.getQueueNames();
@@ -163,6 +152,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Exchange> listExchanges() {
         List<Exchange> esperExchanges = new ArrayList<>();
         List<Exchange> allExchanges = this.rabbitManagementApi.listExchanges();
@@ -170,6 +160,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         return esperExchanges;
     }
 
+    @Override
     public List<String> listExchangeNames() {
         List<String> esperExchangeNames = new ArrayList<>();
         List<Exchange> allExchanges = this.listExchanges();
@@ -190,6 +181,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         return null;
     }
 
+    @Override
     public Map<String, Object> getSchemaForExchange(String exchangeName) {
         Exchange esperExchange = this.findExchange(exchangeName);
         Map<String, Object> temp = new HashMap<>();
@@ -216,6 +208,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getExchangeName() {
         return this.exchangeName;
     }
