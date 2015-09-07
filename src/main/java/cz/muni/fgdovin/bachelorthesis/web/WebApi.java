@@ -37,7 +37,7 @@ import java.util.Random;
 public class WebApi {
 
     @Resource
-    Environment environment;
+    private Environment environment;
 
     @Autowired
     private EsperUserFriendlyService esperUserFriendlyService;

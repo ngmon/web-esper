@@ -90,6 +90,10 @@ public class RabbitMqServiceImpl implements RabbitMqService {
      */
     @Override
     public boolean createQueue(String queueName, String exchangeName) {
+        return createQueue(queueName, exchangeName, queueName);
+    }
+    
+    public boolean createQueue(String queueName, String exchangeName, String routingKey) {
         //create new queue
         Queue newOne = new Queue();
         newOne.setAutoDelete(false);
@@ -99,7 +103,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         if((response.getStatus() > 199) && (response.getStatus() < 300)) {
             //bind this queue to specific exchange
             QueueBind bind = new QueueBind();
-            bind.setRoutingKey(queueName);
+            bind.setRoutingKey(routingKey);
             response = this.rabbitManagementApi.bindExchangeToQueue(this.vhost, exchangeName, queueName, bind);
         }
         return ((response.getStatus() > 199) && (response.getStatus() < 300));
