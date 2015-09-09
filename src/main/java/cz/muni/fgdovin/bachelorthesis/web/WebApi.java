@@ -1,6 +1,6 @@
 package cz.muni.fgdovin.bachelorthesis.web;
 
-import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperService;
 import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.support.AMQPToEvent;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
@@ -40,7 +40,7 @@ public class WebApi {
     private Environment environment;
 
     @Autowired
-    private EsperUserFriendlyService esperUserFriendlyService;
+    private EsperService esperService;
 
     @Autowired
     private DataflowHelper dataflowHelper;
@@ -79,11 +79,11 @@ public class WebApi {
      */
     @RequestMapping(value = "/manageInputDataflows", method = RequestMethod.GET)
     public ModelAndView manageInputDataflows() {
-        List<String> list = esperUserFriendlyService.showInputDataflows();
+        List<String> list = esperService.showInputDataflows();
 
         Map<String, String> mapOfDetails = new HashMap<>();
         for(String dataflowName : list) {
-            mapOfDetails.put(dataflowName, this.esperUserFriendlyService.showDataflow(dataflowName));
+            mapOfDetails.put(dataflowName, this.esperService.showDataflow(dataflowName));
         }
 
         ModelAndView model = new ModelAndView("manageInputDataflows");
@@ -98,11 +98,11 @@ public class WebApi {
      */
     @RequestMapping(value = "/manageOutputDataflows", method = RequestMethod.GET)
     public ModelAndView manageOutputDataflows() {
-        List<String> list = esperUserFriendlyService.showOutputDataflows();
+        List<String> list = esperService.showOutputDataflows();
 
         Map<String, String> mapOfDetails = new HashMap<>();
         for(String dataflowName : list) {
-            mapOfDetails.put(dataflowName, this.esperUserFriendlyService.showDataflow(dataflowName));
+            mapOfDetails.put(dataflowName, this.esperService.showDataflow(dataflowName));
         }
 
         ModelAndView model = new ModelAndView("manageOutputDataflows");
@@ -139,7 +139,7 @@ public class WebApi {
         String exchangeName = modelClass.getExchange();
         Map<String, Object> properties = this.eventTypeHelper.toMap(modelClass.getMapProperties());
 
-        boolean added = esperUserFriendlyService.addEventType(dataflowName, properties);
+        boolean added = esperService.addEventType(dataflowName, properties);
         resultModel.addAttribute("dataflowName", dataflowName);
 
         if(!added) {
@@ -151,7 +151,7 @@ public class WebApi {
 
         if(!added) {
             resultModel.addAttribute("result", "Error declaring projection. Creation of AMQP queue failed!");
-            this.esperUserFriendlyService.removeEventType(dataflowName);
+            this.esperService.removeEventType(dataflowName);
             return "addInputDataflowResult";
         }
         //create dataflow fot this event type
@@ -162,7 +162,7 @@ public class WebApi {
         myModel.setQueueName(dataflowName);
 
         String queueParams = dataflowHelper.generateInputDataflow(myModel);
-        added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
+        added = esperService.addDataflow(dataflowName, queueParams);
 
         if(added) {
             resultModel.addAttribute("result", "Projection created successfully.");
@@ -201,14 +201,14 @@ public class WebApi {
     @RequestMapping(value = "/removeInputDataflow", method = RequestMethod.POST)
     public String submitRemoveInputDataflowForm(@RequestParam("dataflowName")String dataflowName, ModelMap resultModel) {
         resultModel.addAttribute("dataflowName", dataflowName);
-        boolean removed = esperUserFriendlyService.removeEventType(dataflowName);
+        boolean removed = esperService.removeEventType(dataflowName);
 
         if (!removed) {
             resultModel.addAttribute("result", "Projection with this name was not found, or is still in use and was not removed.");
             return "removeInputDataflowResult";
         }
 
-        removed = esperUserFriendlyService.removeInputDataflow(dataflowName);
+        removed = esperService.removeInputDataflow(dataflowName);
 
         if (removed) {
             resultModel.addAttribute("result", "Projection removed successfully.");
@@ -226,7 +226,7 @@ public class WebApi {
     @RequestMapping(value = "/addOneStreamOutputDataflow", method = RequestMethod.GET)
     public ModelAndView oneStreamOutputDataflowForm() {
         ModelAndView model = new ModelAndView("addOneStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
-        model.addObject("availEventTypes", this.esperUserFriendlyService.showEventTypeNames());
+        model.addObject("availEventTypes", this.esperService.showEventTypeNames());
         return model;
     }
 
@@ -252,7 +252,7 @@ public class WebApi {
         }
 
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
-        added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
+        added = esperService.addDataflow(dataflowName, queueParams);
 
         resultModel.addAttribute("dataflowName", dataflowName);
         if(!added) {
@@ -271,7 +271,7 @@ public class WebApi {
     @RequestMapping(value = "/addTwoStreamOutputDataflow", method = RequestMethod.GET)
     public ModelAndView twoStreamOutputDataflowForm() {
         ModelAndView model = new ModelAndView("addTwoStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
-        model.addObject("availEventTypes", this.esperUserFriendlyService.showEventTypeNames());
+        model.addObject("availEventTypes", this.esperService.showEventTypeNames());
         return model;
     }
 
@@ -297,7 +297,7 @@ public class WebApi {
         }
 
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
-        added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
+        added = esperService.addDataflow(dataflowName, queueParams);
 
         resultModel.addAttribute("dataflowName", dataflowName);
         if(!added) {
@@ -317,7 +317,7 @@ public class WebApi {
     @RequestMapping(value = "/addThreeStreamOutputDataflow", method = RequestMethod.GET)
     public ModelAndView threeStreamOutputDataflowForm() {
         ModelAndView model = new ModelAndView("addThreeStreamOutputDataflow", "OutputDataflowModel", new OutputDataflowModel());
-        model.addObject("availEventTypes", this.esperUserFriendlyService.showEventTypeNames());
+        model.addObject("availEventTypes", this.esperService.showEventTypeNames());
         return model;
     }
 
@@ -343,7 +343,7 @@ public class WebApi {
         }
 
         String queueParams = dataflowHelper.generateOutputDataflow(modelClass);
-        added = esperUserFriendlyService.addDataflow(dataflowName, queueParams);
+        added = esperService.addDataflow(dataflowName, queueParams);
 
         resultModel.addAttribute("dataflowName", dataflowName);
         if(!added) {
@@ -382,7 +382,7 @@ public class WebApi {
     @RequestMapping(value = "/removeOutputDataflow", method = RequestMethod.POST)
     public String submitRemoveOutputDataflowForm(@RequestParam("dataflowName") String dataflowName, ModelMap resultModel) {
         resultModel.addAttribute("dataflowName", dataflowName);
-        boolean removed = esperUserFriendlyService.removeOutputDataflow(dataflowName);
+        boolean removed = esperService.removeOutputDataflow(dataflowName);
 
         if (removed) {
             resultModel.addAttribute("result", "Output dataflow with given name removed successfully.");

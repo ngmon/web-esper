@@ -1,6 +1,6 @@
 package cz.muni.fi.fgdovin.bachelorthesis.esper;
 
-import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
+import cz.muni.fgdovin.bachelorthesis.esper.EsperService;
 import cz.muni.fgdovin.bachelorthesis.support.DataflowHelper;
 import cz.muni.fgdovin.bachelorthesis.support.EventProperty;
 import cz.muni.fgdovin.bachelorthesis.support.EventTypeHelper;
@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 public class EsperServiceUnitTest {
 
     @Autowired
-    private EsperUserFriendlyService esperService;
+    private EsperService esperService;
 
     @Autowired
     private EventTypeHelper eventTypeHelper;

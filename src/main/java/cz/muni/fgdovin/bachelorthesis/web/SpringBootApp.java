@@ -2,8 +2,6 @@ package cz.muni.fgdovin.bachelorthesis.web;
 
 import cz.muni.fgdovin.bachelorthesis.esper.EsperService;
 import cz.muni.fgdovin.bachelorthesis.esper.EsperServiceImpl;
-import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyService;
-import cz.muni.fgdovin.bachelorthesis.esper.EsperUserFriendlyServiceImpl;
 import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqService;
 import cz.muni.fgdovin.bachelorthesis.rabbit.RabbitMqServiceImpl;
 import cz.muni.fgdovin.bachelorthesis.support.CustomAMQPSink;
@@ -75,11 +73,6 @@ public class SpringBootApp {
     @Bean
     public EsperService esperService() {
         return new EsperServiceImpl();
-    }
-
-    @Bean
-    public EsperUserFriendlyService esperUserFriendlyService() {
-        return new EsperUserFriendlyServiceImpl();
     }
 
     //support beans

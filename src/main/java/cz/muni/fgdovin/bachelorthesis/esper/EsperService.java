@@ -4,6 +4,7 @@ import com.espertech.esper.client.ConfigurationException;
 import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventType;
+import java.util.List;
 
 import java.util.Map;
 
@@ -12,8 +13,13 @@ import java.util.Map;
  * in particular to:
  * add/remove/show(by name)/show all dataflows
  * add/remove/show(by name)/show all event types
+ * 
+ * Provides convenient and mostly String-arguments-based
+ * methods and manages all possible exceptions thrown by
+ * lower layers.
  *
  * @author Filip Gdovin
+ * @version 26. 3. 2015
  */
 
 public interface EsperService{
@@ -39,25 +45,38 @@ public interface EsperService{
      * Method used to remove event type by providing its name.
      *
      * @param eventName String describing event type name.
-     * @return true is event type was found and removed, false otherwise.
+     * @return True if event event type with provided name was deleted,
+     * false if Esper doesn't contain event type with such name,
+     * or if event type was found, but wasn't deleted as there are
+     * running dataflows using this event type. Remove those first.
      */
-    public boolean removeEventType(String eventName) throws ConfigurationException, NullPointerException;
+    public boolean removeEventType(String eventName);
 
     /**
      * Method used to show event type by providing its name.
      *
      * @param eventName String describing event type name.
-     * @return EventType matching given event type name,
-     * or null if there is no event type with provided name present.
+     * @return String containing event type, or null
+     * if there is no event type with provided name present.
      */
-    public EventType showEventType(String eventName)throws NullPointerException;
+    public String showEventType(String eventName);
 
+    /**
+     * Method used to show all event type names known to Esper.
+     *
+     * @return List of all present event type names,
+     * or null if there are no event types present.
+     */
+    public List<String> showEventTypeNames();
+    
     /**
      * Method used to show all event types known to Esper.
      *
-     * @return array of all present event types.
+     * @return List of all present event types in format
+     * 'eventTypeName:eventProperties',
+     * or null if there are no event types present.
      */
-    public EventType[] showEventTypes();
+    public List<String> showEventTypes();
 
     /**
      * Method used to add new dataflow to the Esper.
@@ -90,30 +109,56 @@ public interface EsperService{
      *                        parameters and creates String defining the whole dataflow, adding static
      *                        parameters such as host, port, etc. Those properties, however, can be changed
      *                        in properties file 'config.properties', located under 'resources'.
+     * @return Returns true if dataflow was successfully created,
+     *         or false otherwise.
      */
-    public void addDataflow(String dataflowName, String dataflowProperties) throws NullPointerException, EPException, IllegalStateException;
+    public boolean addDataflow(String dataflowName, String dataflowProperties);
 
     /**
-     * Method used to remove dataflow by providing its name.
+     * Method used to remove input dataflow by providing its name.
+     *
+     * @param dataflowName String describing input dataflow name.
+     * @return True if input dataflow with provided name was deleted,
+     * false if Esper doesn't contain input dataflow with such name.
+     *
+     */
+    public boolean removeInputDataflow(String dataflowName);
+
+    /**
+     * Method used to remove output dataflow by providing its name.
+     *
+     * @param dataflowName String describing output dataflow name.
+     * @return True if output dataflow with provided name was deleted,
+     * false if Esper doesn't contain output dataflow with such name.
+     *
+     */
+    public boolean removeOutputDataflow(String dataflowName);
+
+    /**
+     * Method used to show dataflow details by providing its name.
      *
      * @param dataflowName String describing dataflow name.
-     * @return true if dataflow was found and removed, false otherwise.
+     * @return String containing dataflow details, or null
+     * if there is no dataflow with provided name present
+     * (never created or already removed).
      */
-    public boolean removeDataflow(String dataflowName) throws NullPointerException;
+    public String showDataflow(String dataflowName);
 
     /**
-     * Method used to show dataflow by providing its name.
+     * Method used to show all input dataflows known to Esper.
      *
-     * @param dataflowName String describing dataflow name.
-     * @return EPStatement containing dataflow with given name,
-     * or null if there is no dataflow with provided name present (never created or already removed).
+     * @return List of all present input dataflows in format
+     * 'dataflowName:dataflowParameters',
+     * or null if there are no input dataflows present.
      */
-    public EPStatement showDataflow(String dataflowName) throws NullPointerException;
+    public List<String> showInputDataflows();
 
     /**
-     * Method used to show all dataflows known to Esper.
+     * Method used to show all output dataflows known to Esper.
      *
-     * @return array of all present dataflows.
+     * @return List of all present output dataflows in format
+     * 'dataflowName:dataflowParameters',
+     * or null if there are no output dataflows present.
      */
-    public String[] showDataflows();
+    public List<String> showOutputDataflows();
 }
