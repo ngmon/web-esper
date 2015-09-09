@@ -1,5 +1,6 @@
 package cz.muni.fgdovin.bachelorthesis.rabbit;
 
+import cz.muni.fgdovin.bachelorthesis.support.ExchangeType;
 import org.nigajuan.rabbit.management.client.domain.exchange.Exchange;
 
 import java.util.List;
@@ -75,9 +76,46 @@ public interface RabbitMqService {
     /**
      * Method returns list of all queue names bound to specific exchange.
      *
+     * @param exchangeName
      * @return List of all queue names.
      */
     public List<String> listQueues(String exchangeName);
+    
+    /**
+     * This method creates new exchange with the common prefix, bound to the root Esper exchange.
+     *
+     * @param exchangeName Name used to create exchange with;
+     *                     will be prepended with the common prefix and an underscore (if it does not already start with it)
+     * @param exchangeType The type of exchange
+     * @param routingKey   The routing key to bind the exchange with
+     *
+     * @return Returns true if creation returned with HTTP code
+     * meaning success, false otherwise.
+     */
+    public boolean createExchange(String exchangeName, ExchangeType exchangeType, String routingKey);
+    
+    /**
+     * This method creates new exchange with the common prefix, bound to the root Esper exchange.
+     *
+     * @param exchangeName Name used to create exchange with; FANOUT by default
+     *                     will be prepended with the common prefix and an underscore (if it does not already start with it)
+     *
+     * @return Returns true if creation returned with HTTP code
+     * meaning success, false otherwise.
+     */
+    public boolean createExchange(String exchangeName);
+    
+    /**
+     * Method used to delete exchange with given name.
+     *
+     * @param exchangeName name of the exchange
+     */
+    public void deleteExchange(String exchangeName);
+    
+    /**
+     * Method used to delete all exchanges present.
+     */
+    public void deleteAllExchanges();
 
     /**
      * Method returns list of all Esper exchanges known to RabbitMQ server.
@@ -91,6 +129,7 @@ public interface RabbitMqService {
     /**
      * Method returns flatted map of JSON schema for given exchange.
      *
+     * @param exchangeName
      * @return flatted map of JSON schema.
      */
     public Map<String, Object> getSchemaForExchange(String exchangeName);

@@ -1,7 +1,9 @@
 package cz.muni.fgdovin.bachelorthesis.rabbit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.muni.fgdovin.bachelorthesis.support.ExchangeType;
 import cz.muni.fgdovin.bachelorthesis.support.JSONFlattener;
+import cz.muni.fgdovin.bachelorthesis.support.RabbitManagementApiExtension;
 import org.nigajuan.rabbit.management.client.RabbitManagementApi;
 import org.nigajuan.rabbit.management.client.domain.aliveness.Status;
 import org.nigajuan.rabbit.management.client.domain.binding.Binding;
@@ -34,6 +36,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     @Resource
     private Environment environment; //to load RabbitMQ server info from properties
     private RabbitManagementApi rabbitManagementApi;
+    private RabbitManagementApiExtension rabbitMgmtApiExtension;
     private JSONFlattener jsonFlattener;
 
     private String exchangeName;
@@ -60,6 +63,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
 
         String host = "http://" + serverHost + ":" + serverPort;
         this.rabbitManagementApi = RabbitManagementApi.newInstance(host, username, password);
+        this.rabbitMgmtApiExtension = RabbitManagementApiExtension.newInstance(host, username, password);
         this.jsonFlattener = new JSONFlattener(new ObjectMapper());
     }
 
@@ -151,6 +155,45 @@ public class RabbitMqServiceImpl implements RabbitMqService {
                 .filter(oneBind -> allQueueNames.contains(oneBind.getDestination()))
                 .map(Binding::getDestination).collect(Collectors.toList()));
         return result;
+    }
+    
+    @Override
+    public boolean createExchange(String exchangeName) {
+        return createExchange(exchangeName, ExchangeType.fanout, exchangeName);
+    }
+
+    @Override
+    //bound by default to the main esperExchange; TODO enable arbitrary binding?
+    public boolean createExchange(String exchangeName, ExchangeType type, String routingKey) {
+        Exchange exchange = new Exchange();
+        exchange.setDurable(true);
+        String name = exchangeName;
+        if (! name.startsWith(this.environment.getProperty("exchangePrefix"))) {
+            name = this.environment.getProperty("exchangePrefix") + "_" + exchangeName;
+        }
+        exchange.setName(name);
+        exchange.setType(type.name());
+        exchange.setVhost(this.vhost);
+        
+        Response response = this.rabbitManagementApi.createExchange(this.vhost, name, exchange);
+        if ((response.getStatus() > 199) && (response.getStatus() < 300)) {
+            //bind this exchange to the root esper exchange
+            QueueBind bind = new QueueBind(); //TODO schema!
+            bind.setRoutingKey(routingKey);
+            response = this.rabbitMgmtApiExtension.bindExchangeToExchangeWithKey(this.vhost, this.exchangeName, name, bind);
+        }
+        return ((response.getStatus() > 199) && (response.getStatus() < 300));
+    }
+
+    @Override
+    public void deleteExchange(String exchangeName) {
+        this.rabbitManagementApi.deleteExchange(this.vhost, exchangeName);
+    }
+
+    @Override
+    public void deleteAllExchanges() {
+        List<String> allExchanges = this.listExchangeNames();
+        allExchanges.forEach(this::deleteExchange);
     }
 
     /**
