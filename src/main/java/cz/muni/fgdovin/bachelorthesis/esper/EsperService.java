@@ -1,9 +1,5 @@
 package cz.muni.fgdovin.bachelorthesis.esper;
 
-import com.espertech.esper.client.ConfigurationException;
-import com.espertech.esper.client.EPException;
-import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventType;
 import java.util.List;
 
 import java.util.Map;

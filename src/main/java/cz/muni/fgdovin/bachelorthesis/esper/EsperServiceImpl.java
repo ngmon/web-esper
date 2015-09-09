@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * {@inheritDoc}
@@ -50,7 +52,7 @@ public class EsperServiceImpl implements EsperService {
     @Override
     public boolean addEventType(String eventName, Map<String, Object> schema) {
         if ((eventName == null) || (eventName.isEmpty()) || (schema == null)
-                || (this.showEventType(eventName) != null)) {
+                || (showEventType(eventName) != null)) {
             return false;
         }
         
@@ -70,7 +72,7 @@ public class EsperServiceImpl implements EsperService {
     @Override
     public boolean removeEventType(String eventName) {
         if ((eventName == null) || (eventName.isEmpty())
-                || (this.showEventType(eventName) == null)) {
+                || (showEventType(eventName) == null)) {
             return false;
         }
         
@@ -87,41 +89,22 @@ public class EsperServiceImpl implements EsperService {
     @Override
     public String showEventType(String eventName) {
         EventType myEvent = this.configurationOperations.getEventType(eventName);
-        if(myEvent == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No event type with given name[" + eventName + "] was found.");
-            }
+        if (myEvent == null) {
+            logger.debug("No event type with given name[" + eventName + "] was found.");
             return null;
         }
+        
         return myEvent.getName() + ":" + Arrays.toString(myEvent.getPropertyNames());
     }
 
     @Override
     public List<String> showEventTypeNames() {
-        EventType[] allEvents = this.configurationOperations.getEventTypes();
-        List<String> result = new ArrayList<>();
-
-        if((allEvents == null) || (allEvents.length == 0)) {
-            return result;
-        }
-        for (EventType allEvent : allEvents) {
-            result.add(allEvent.getName());
-        }
-        return result;
+        return Arrays.stream(this.configurationOperations.getEventTypes()).map(eventType -> eventType.getName()).collect(Collectors.toList());
     }
 
     @Override
     public List<String> showEventTypes() {
-        EventType[] allEvents = this.configurationOperations.getEventTypes();
-        List<String> result = new ArrayList<>();
-
-        if((allEvents == null) || (allEvents.length == 0)) {
-            return result;
-        }
-        for (EventType allEvent : allEvents) {
-            result.add(this.showEventType(allEvent.getName()));
-        }
-        return result;
+        return Arrays.stream(this.configurationOperations.getEventTypes()).map(eventType -> showEventType(eventType.getName())).collect(Collectors.toList());
     }
 
     /**
@@ -132,7 +115,7 @@ public class EsperServiceImpl implements EsperService {
         try {
             EPDataFlowInstance currentInstance = this.esperDataFlowRuntime.getSavedInstance(dataflowName);
             EPStatement currentStatement = this.esperAdministrator.getStatement(dataflowName);
-            if((currentInstance != null) || (currentStatement != null)){
+            if ((currentInstance != null) || (currentStatement != null)){
                 throw new NullPointerException("Dataflow with this name is already defined!");
             }
             try {
@@ -140,9 +123,8 @@ public class EsperServiceImpl implements EsperService {
                 currentInstance = this.esperDataFlowRuntime.instantiate(dataflowName);
                 currentInstance.start();
             } catch (EPDataFlowInstantiationException ex) {
-                if(logger.isDebugEnabled()) {
-                    logger.debug("Dataflow creation aborted! Dataflow instance instantiation failed, destroying EPL statement!");
-                }
+                logger.debug("Dataflow creation aborted! Dataflow instance instantiation failed, destroying EPL statement!");
+                
                 assert currentStatement != null;
                 currentStatement.destroy();
                 throw new EPDataFlowInstantiationException("Dataflow creation aborted! Dataflow instance instantiation failed!", ex);
@@ -162,6 +144,7 @@ public class EsperServiceImpl implements EsperService {
             logger.debug("Failed to start new dataflow!", ex);
             return false;
         }
+        
         return true;
     }
 
@@ -171,17 +154,11 @@ public class EsperServiceImpl implements EsperService {
      * @param dataflowName String describing dataflow name.
      * @return true if dataflow was found and removed, false otherwise.
      */
-    public boolean removeDataflow(String dataflowName) {
-        String dataflowInfo = showDataflow(dataflowName);
-        if (dataflowInfo == null) {
-            logger.debug("No dataflow with given name present: " + dataflowName);
-            return false;
-        }
-        
+    private boolean removeDataflow(String dataflowName) {
         boolean result = false;
         try {
             EPDataFlowInstance sourceInstance = this.esperDataFlowRuntime.getSavedInstance(dataflowName);
-            if(sourceInstance == null) {
+            if (sourceInstance == null) {
                 throw new NullPointerException("No dataflow instance with given name found.");
             }
             EPStatement creatingStatement = this.esperAdministrator.getStatement(dataflowName);
@@ -209,8 +186,9 @@ public class EsperServiceImpl implements EsperService {
             logger.debug("No dataflow with given name present: " + dataflowName);
             return false;
         }
+        
         if (isInputDataflow(dataflowInfo)) { //its an input dataflow
-            return this.removeDataflow(dataflowName);
+            return removeDataflow(dataflowName);
         } else {
             logger.debug("Dataflow with given name is not an input one: " + dataflowName);
             return false;
@@ -227,8 +205,9 @@ public class EsperServiceImpl implements EsperService {
             logger.debug("No dataflow with given name present: " + dataflowName);
             return false;
         }
+        
         if (!(isInputDataflow(dataflowInfo))) { //its NOT an input dataflow
-            return this.removeDataflow(dataflowName);
+            return removeDataflow(dataflowName);
         } else {
             logger.debug("Dataflow with given name is not an output one: " + dataflowName);
             return false;
@@ -247,10 +226,12 @@ public class EsperServiceImpl implements EsperService {
             logger.debug("Failed to find dataflow!", ex);
             return null;
         }
+        
         if (myDataflow == null) {
             logger.debug("Failed to find dataflow! NULL");
             return null;
         }
+        
         String details = myDataflow.getText();
 
         BufferedReader reader = new BufferedReader(new StringReader(details));
@@ -259,16 +240,10 @@ public class EsperServiceImpl implements EsperService {
         try {
             line = reader.readLine();
             while (line != null) {
-                if (line.startsWith("queueName")) {
+                if (line.startsWith("queueName") || line.startsWith("exchange")) {
                     result.append(line.substring(0, line.length() - 1));
                 }
-                else if (line.startsWith("exchange")) {
-                    result.append(line.substring(0, line.length() - 1));
-                }
-                else if (line.startsWith("AMQP")) {
-                    result.append(line);
-                }
-                else if (line.startsWith("select")){
+                else if (line.startsWith("AMQP") || line.startsWith("select")){
                     result.append(line);
                 }
                 else if (line.startsWith("}")) {
@@ -289,10 +264,14 @@ public class EsperServiceImpl implements EsperService {
     }
 
     /**
-     * {@inheritDoc}
+     * Method used to show all dataflows known to Esper.
+     *
+     * @return List of all present dataflows in format
+     * 'dataflowName:dataflowParameters',
+     * or null if there are no dataflows present.
      */
-    public String[] showDataflows(){
-        return this.esperDataFlowRuntime.getSavedInstances();
+    public List<String> showDataflows() {
+        return Arrays.asList(this.esperDataFlowRuntime.getSavedInstances());
     }
 
     /**
@@ -300,22 +279,7 @@ public class EsperServiceImpl implements EsperService {
      */
     @Override
     public List<String> showInputDataflows() {
-        String[] allDataflows = showDataflows();
-        List<String> result = new ArrayList<>();
-
-        if((allDataflows == null) || (allDataflows.length == 0)) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("No input dataflows present.");
-            }
-            return result;
-        }
-        for (String oneDataflow : allDataflows) {
-            String oneDataflowDetails = showDataflow(oneDataflow);
-            if(isInputDataflow(oneDataflowDetails)) {  //only input dataflows, NO output ones
-                result.add(oneDataflow);
-            }
-        }
-        return result;
+        return filterDataflows(dataflow -> isInputDataflow(dataflow));
     }
 
     /**
@@ -323,22 +287,11 @@ public class EsperServiceImpl implements EsperService {
      */
     @Override
     public List<String> showOutputDataflows() {
-        String[] allDataflows = showDataflows();
-        List<String> result = new ArrayList<>();
-
-        if((allDataflows == null) || (allDataflows.length == 0)) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("No output dataflows present.");
-            }
-            return result;
-        }
-        for (String oneDataflow : allDataflows) {
-            String oneDataflowDetails = showDataflow(oneDataflow);
-            if(!isInputDataflow(oneDataflowDetails)) {  //only output dataflows, NO input ones
-                result.add(oneDataflow);
-            }
-        }
-        return result;
+        return filterDataflows(dataflow -> ! isInputDataflow(dataflow));
+    }
+    
+    private List<String> filterDataflows(Predicate<String> filter) {
+        return showDataflows().stream().filter(filter).collect(Collectors.toList());
     }
     
     /**
