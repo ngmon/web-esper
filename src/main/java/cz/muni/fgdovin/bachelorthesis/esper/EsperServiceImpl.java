@@ -206,7 +206,7 @@ public class EsperServiceImpl implements EsperService {
             return false;
         }
         
-        if (!(isInputDataflow(dataflowInfo))) { //its NOT an input dataflow
+        if (! isInputDataflow(dataflowInfo)) { //its NOT an input dataflow
             return removeDataflow(dataflowName);
         } else {
             logger.debug("Dataflow with given name is not an output one: " + dataflowName);
@@ -279,7 +279,7 @@ public class EsperServiceImpl implements EsperService {
      */
     @Override
     public List<String> showInputDataflows() {
-        return filterDataflows(dataflow -> isInputDataflow(dataflow));
+        return filterDataflows(dataflow -> isInputDataflow(showDataflow(dataflow)));
     }
 
     /**
@@ -287,7 +287,7 @@ public class EsperServiceImpl implements EsperService {
      */
     @Override
     public List<String> showOutputDataflows() {
-        return filterDataflows(dataflow -> ! isInputDataflow(dataflow));
+        return filterDataflows(dataflow -> ! isInputDataflow(showDataflow(dataflow)));
     }
     
     private List<String> filterDataflows(Predicate<String> filter) {
@@ -298,10 +298,10 @@ public class EsperServiceImpl implements EsperService {
      * Method used to decide whether given dataflow is input dataflow (used by other methods).
      *
      * @param dataflowDetails String describing dataflow with its details.
-     * @return true if given dataflow is input one (ends with "EventBusSink(instream) {}""),
+     * @return true if given dataflow is an input one (starts with "AMQPSource"),
      * or false otherwise.
      */
     private boolean isInputDataflow(String dataflowDetails) {
-        return dataflowDetails.contains("AMQPSource");
+        return dataflowDetails.startsWith("AMQPSource");
     }
 }

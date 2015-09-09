@@ -37,7 +37,7 @@ public class DataflowHelper {
         "declareExclusive: " + this.environment.getProperty("inputDeclareExclusive") + ",\n" +
         "declareAutoDelete: " + this.environment.getProperty("inputDeclareAutoDelete") + ",\n" +
         "collector: {class: '" + this.environment.getProperty("inputCollector") + "'}\n" +
-        "}" +
+        "}\n" +
         "EventBusSink(instream) {}";
     }
 
